@@ -1,0 +1,20 @@
+{
+  "@@locale": "fa",
+  "appTitle": "هایپرنت",
+  "addSubscription": "افزودن اشتراک",
+  "subscription": "اشتراک",
+  "connect": "اتصال",
+  "disconnect": "قطع اتصال",
+  "cancel": "انصراف",
+  "add": "افزودن",
+  "url": "آدرس",
+  "enterSubscriptionUrl": "آدرس اشتراک را وارد کنید",
+  "language": "زبان",
+  "appearance": "ظاهر",
+  "system": "پیش‌فرض سیستم",
+  "lightMode": "حالت روشن",
+  "darkMode": "حالت تاریک",
+  "english": "انگلیسی",
+  "persian": "فارسی",
+  "settings": "تنظیمات"
+}

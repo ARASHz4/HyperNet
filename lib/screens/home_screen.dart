@@ -1,71 +1,16 @@
-// import 'dart:developer';
-//
-// import 'package:flutter/material.dart';
-// import 'package:flutter_vless/flutter_vless.dart';
-//
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-//
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-//
-// class _HomeScreenState extends State<HomeScreen> {
-//   final subscriptionTextController = TextEditingController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("HyperNet")),
-//       body: SafeArea(child: Column(children: [
-//         TextField(
-//           controller: subscriptionTextController,
-//           decoration: InputDecoration(labelText: "Subscription"),
-//         ),
-//         ElevatedButton(onPressed: () {
-//           final subscription = subscriptionTextController.text;
-//
-//           connect(subscription);
-//
-//         }, child: Text("Connect"),),
-//       ],),),
-//     );
-//   }
-//
-//   final flutterVless = FlutterVless(
-//     onStatusChanged: (status) {
-//       debugPrint(
-//         'status=${status.state} connection=${status.connectionState.name} '
-//             'delay=${status.duration}s',
-//       );
-//     },
-//   );
-//
-//   Future<void> connect(String shareLink) async {
-//     final parsed = FlutterVless.parse("ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpRcjNSTEhKTG5nYnBsUFdk@20.238.125.195:443#%40meliproxyy");
-//     final config = parsed.getFullConfiguration();
-//
-//     log(config);
-//
-//     await flutterVless.initializeVless(
-//       providerBundleIdentifier: 'com.arashz4.hypernet',
-//       groupIdentifier: 'group.com.arashz4.hypernet',
-//     );
-//
-//     if (await flutterVless.requestPermission()) {
-//       await flutterVless.startVless(
-//         remark: parsed.remark,
-//         config: config,
-//         //androidDnsPolicy: AndroidDnsPolicy.proxy
-//       );
-//     }
-//   }
-// }
-
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vless/flutter_vless.dart';
-import 'package:hyper_net/screens/routing.dart';
+import 'package:http/http.dart' as http;
+import 'package:hyper_net/l10n/app_localizations.dart';
+import 'package:hyper_net/models/subscription.dart';
+import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
+import 'package:hyper_net/screens/settings/application_languages_screen.dart';
+import 'package:hyper_net/application.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -75,39 +20,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ValueNotifier<VlessStatus> vlessStatus = ValueNotifier<VlessStatus>(VlessStatus());
+  List<Subscription> subscriptions = [];
+  FlutterVlessURL? selectedConfig;
 
-  late final FlutterVless flutterVless = FlutterVless(
+  final vlessStatus = ValueNotifier<VlessStatus>(VlessStatus());
+
+  late final flutterVless = FlutterVless(
     onStatusChanged: (status) {
       vlessStatus.value = status;
+
+      debugPrint(
+        'status=${status.state} connection=${status.connectionState.name} '
+            'delay=${status.duration}s',
+      );
     },
   );
 
-  final TextEditingController config = TextEditingController(text: '{}');
-  bool proxyOnly = false;
-  List<String> bypassSubnets = [];
-  List<String> blockedApps = [];
-
-  /// Domains routed directly, bypassing the VPN.
-  /// Use https://tfox.dev/ip/ to check the IP address of the direct connection.
-  List<String> blockedDomains = [];
-  String? coreVersion;
-  String remark = 'Example Remark';
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Plugin initialization
-    flutterVless.initializeVless(providerBundleIdentifier: 'com.arashz4.hypernet', groupIdentifier: 'group.com.arashz4.hypernet').then((_) async {
-      coreVersion = await flutterVless.getCoreVersion();
-      setState(() {});
-    });
-  }
-
   @override
   void dispose() {
-    config.dispose();
     vlessStatus.dispose();
 
     super.dispose();
@@ -117,139 +47,153 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Vless — Example'),
+        title: Text(AppLocalizations.of(context)!.appTitle),
         actions: [
-          IconButton(
+          PopupMenuButton<int>(
             icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      Routing(
-                        config: config.text,
-                        blockedApps: blockedApps,
-                        blockedDomains: blockedDomains,
-                        onApplyConfig: (String c) => config.text = c,
-                        onApplyApps: (List<String> apps) => blockedApps = apps,
-                        onApplyDomains: (List<String> domains) => blockedDomains = domains,),
+            itemBuilder: (context) {
+              final l10n = AppLocalizations.of(context)!;
+              return [
+                PopupMenuItem<int>(
+                  value: 1,
+                  child: Text(l10n.language),
                 ),
-              );
+                PopupMenuItem<int>(
+                  value: 2,
+                  child: Text(l10n.appearance),
+                ),
+              ];
             },
-            tooltip: 'Routing / Rules',
+            onSelected: (value) async {
+              final cubit = context.read<ApplicationCubit>();
+              final localeTheme = cubit.state;
+
+              if (value == 1) {
+                final current = localeTheme.$1 == null
+                    ? languages[0]
+                    : languages.firstWhere(
+                        (element) =>
+                            element.code == localeTheme.$1!.languageCode,
+                        orElse: () => languages[0],
+                      );
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        ApplicationLanguageScreen(language: current),
+                  ),
+                );
+              } else if (value == 2) {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ApplicationAppearanceScreen(
+                      appearance: ThemeMode.values.indexOf(localeTheme.$2),
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          PopupMenuButton<int>(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem<int>(
+                  value: 0,
+                  child: ListTile(
+                    title: Text(AppLocalizations.of(context)!.addSubscription),
+                    leading: Icon(Icons.add),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  onTap: () async {
+                    final url = await addSubscription();
+                    if (url != null) {
+                      final subscription = await getSubscription(url);
+                      if (subscription != null) {
+                        setState(() {
+                          subscriptions.add(subscription);
+                        });
+                      }
+                    }
+                  },
+                ),
+              ];
+            },
           ),
         ],
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [_buildConfigCard(), const SizedBox(height: 12), _buildStatusCard(), const SizedBox(height: 12), _buildControls(), const SizedBox(height: 52),],),
+      body: ListView.separated(
+        itemBuilder: (context, index) {
+          final subscription = subscriptions[index];
+
+          return ExpansionTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    subscription.getTitle ?? AppLocalizations.of(context)!.subscription,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+                IconButton(
+                  onPressed: () {
+
+                  },
+                  icon: Icon(Icons.speed),
+                ),
+              ],
+            ),
+            leading: IconButton(
+              onPressed: () {
+
+              },
+              icon: Icon(Icons.refresh),
+            ),
+            children: List.generate(
+              subscription.configs.length,
+                  (index) {
+                final config = subscription.configs[index];
+                return ListTile(
+                  title: Text(config.remark),
+                  subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
+                  onTap: () {
+                    setState(() {
+                      selectedConfig = config;
+                    });
+                  },
+                );
+              },
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(height: 16);
+        },
+        itemCount: subscriptions.length,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
+        onPressed: selectedConfig != null ? () async {
           if (_canStop(vlessStatus.value)) {
             await _disconnect();
           } else {
-            await _connect();
+            await connect(selectedConfig!);
           }
-        },
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .primary,
-        icon: const Icon(Icons.power_settings_new, color: Colors.black87),
+        } : null,
         label: ValueListenableBuilder<VlessStatus>(
           valueListenable: vlessStatus,
           builder: (context, status, child) {
-            return Text(_canStop(status) ? 'Disconnect' : 'Connect', style: const TextStyle(color: Colors.black87));
+            return Text(
+              _canStop(status) ? AppLocalizations.of(context)!.disconnect : AppLocalizations.of(context)!.connect,
+            );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildConfigCard() {
-    return Card(
-      color: Colors.grey[900],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Configuration (JSON)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 140,
-              child: TextField(
-                controller: config,
-                maxLines: null,
-                expands: true,
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
-                decoration: const InputDecoration(isDense: true, contentPadding: EdgeInsets.all(12)),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [
-                ElevatedButton.icon(onPressed: _requestPermission, icon: const Icon(Icons.shield), label: const Text('Request Permission')),
-                ElevatedButton.icon(onPressed: _importFromClipboard, icon: const Icon(Icons.paste), label: const Text('Import (clipboard)')),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusCard() {
-    return Card(
-      color: Colors.grey[900],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: ValueListenableBuilder<VlessStatus>(
+        icon: ValueListenableBuilder<VlessStatus>(
           valueListenable: vlessStatus,
-          builder: (context, st, child) {
-            final state = st.state;
-            final durationSeconds = st.duration;
-            final upSpeed = st.uploadSpeed;
-            final downSpeed = st.downloadSpeed;
-            final upTraffic = st.upload;
-            final downTraffic = st.download;
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(state, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Chip(backgroundColor: Colors.orangeAccent.shade100.withValues(alpha: 0.15), label: Text(_formatDuration(durationSeconds))),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(child: _smallInfo('Up', _formatBytes(upTraffic), '$upSpeed B/s')),
-                    const SizedBox(width: 12),
-                    Expanded(child: _smallInfo('Down', _formatBytes(downTraffic), '$downSpeed B/s')),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if ((vlessStatus.value.state).toUpperCase() == 'CONNECTED') LinearProgressIndicator(value: null),
-                const SizedBox(height: 8),
-                Text('Core: ${coreVersion ?? '-'}', style: const TextStyle(fontSize: 12)),
-              ],
+          builder: (context, status, child) {
+            return Icon(
+              _canStop(status) ? Icons.stop : Icons.play_arrow,
             );
           },
         ),
@@ -257,188 +201,179 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildControls() {
-    return Card(
-      color: Colors.grey[900],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Wrap(
-          spacing: 8,
-          children: [
-            ElevatedButton.icon(onPressed: _showBypassEditor, icon: const Icon(Icons.wifi_off), label: const Text('Bypass Subnets')),
-            ElevatedButton.icon(onPressed: () => setState(() => proxyOnly = !proxyOnly), icon: const Icon(Icons.swap_horiz), label: Text(proxyOnly ? 'Proxy Only' : 'VPN Mode')),
-            ElevatedButton.icon(
-              onPressed: () async {
-                // Get server delay
-                int delay;
-                if ((vlessStatus.value.state).toUpperCase() == 'CONNECTED') {
-                  delay = await flutterVless.getConnectedServerDelay();
-                } else {
-                  delay = await flutterVless.getServerDelay(config: config.text);
-                }
-                if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$delay ms')));
-              },
-              icon: const Icon(Icons.timer),
-              label: const Text('Delay'),
+  Future<String?> addSubscription() async {
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    final subscriptionTextController = TextEditingController();
+
+    final resalt = await showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (builderContext) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  Text(AppLocalizations.of(context)!.addSubscription),
+                  Form(
+                    key: formKey,
+                    child: TextFormField(
+                      controller: subscriptionTextController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.url,
+                        border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          onPressed: () async {
+                            final text = await importFromClipboard();
+                            if ((text ?? "").isNotEmpty) {
+                              subscriptionTextController.text = text!;
+                            }
+                          },
+                          icon: Icon(Icons.paste),
+                        ),
+                      ),
+                      validator: (value) {
+                        if ((value ?? "").isEmpty) {
+                          return AppLocalizations.of(context)!.enterSubscriptionUrl;
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(builderContext);
+                        },
+                        child: Text(AppLocalizations.of(context)!.cancel),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            Navigator.pop(builderContext, subscriptionTextController.text);
+                          }
+                        },
+                        child: Text(AppLocalizations.of(context)!.add),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton.icon(onPressed: _showProviderDiagnostics, icon: const Icon(Icons.bug_report_outlined), label: const Text('VPN Diagnostics')),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
-  }
 
-  Widget _smallInfo(String title, String traffic, String speed) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: const TextStyle(fontSize: 12, color: Colors.white70)),
-        const SizedBox(height: 6),
-        Text(traffic, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-        const SizedBox(height: 4),
-        Text(speed, style: const TextStyle(fontSize: 12, color: Colors.white60)),
-      ],
-    );
-  }
-
-  Future<void> _requestPermission() async {
-    final ok = await flutterVless.requestPermission();
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ok ? 'Permission granted' : 'Permission denied')));
-  }
-
-  Future<void> _connect() async {
-    if (!proxyOnly && !await flutterVless.requestPermission()) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Permission Denied')));
-      return;
+    if (resalt is String) {
+      return resalt;
     }
 
-    await flutterVless.startVless(
-      remark: remark,
-      config: config.text,
-      proxyOnly: proxyOnly,
-      bypassSubnets: bypassSubnets,
-      blockedApps: blockedApps,
-      notificationDisconnectButtonName: 'DISCONNECT',);
+    return null;
+  }
+
+  Future<String?> importFromClipboard() async {
+    if (await Clipboard.hasStrings()) {
+      return (await Clipboard.getData('text/plain'))?.text?.trim();
+    }
+
+    return null;
+  }
+
+  Future<Subscription?> getSubscription(String subscription) async {
+    try {
+      final url = Uri.parse(subscription);
+      final response = await http.get(url);
+
+      print(response.statusCode);
+
+      if (response.statusCode == HttpStatus.ok) {
+        List<FlutterVlessURL> configs = [];
+        String? title;
+        String? user;
+        String? announce;
+        String? announceUrl;
+        String? supportUrl;
+
+        String decodedConfigs = utf8.decode(base64Url.decode(response.body));
+        configs = FlutterVless.parseMany(decodedConfigs);
+
+        String? titleHeader = response.headers["profile-title"];
+        if (titleHeader != null) {
+          titleHeader = titleHeader.replaceFirst('base64:', '');
+          title = utf8.decode(base64Url.decode(titleHeader));
+        }
+
+        String? contentDispositionHeader = response.headers["content-disposition"];
+        if (contentDispositionHeader != null) {
+          contentDispositionHeader = contentDispositionHeader.replaceFirst('attachment; filename=', '');
+          contentDispositionHeader = contentDispositionHeader.replaceAll("\"", '');
+          if (contentDispositionHeader.isNotEmpty) {
+            user = contentDispositionHeader;
+          }
+        }
+
+        String? announceHeader = response.headers["announce"];
+        if (announceHeader != null) {
+          announceHeader = announceHeader.replaceFirst('base64:', '');
+          announce = utf8.decode(base64Url.decode(announceHeader));
+        }
+
+        announceUrl = response.headers["announce-url"];
+
+        supportUrl = response.headers["support-url"];
+
+        return Subscription(url: subscription, configs: configs, title: title, user: user, announce: announce, announceUrl: announceUrl, supportUrl: supportUrl);
+      }
+    } catch (ex) {
+      if (kDebugMode) {
+        print("get subscription fail $ex");
+      }
+    }
+
+    return null;
+  }
+
+  Future<void> connect(FlutterVlessURL config) async {
+    await flutterVless.initializeVless(
+      providerBundleIdentifier: 'com.arashz4.hypernet',
+      groupIdentifier: 'group.com.arashz4.hypernet',
+    );
+
+    if (await flutterVless.requestPermission()) {
+      await flutterVless.startVless(
+        remark: config.remark,
+        config: config.getFullConfiguration(),
+      );
+
+      final version = await flutterVless.getCoreVersion();
+
+      print("version: $version");
+    }
   }
 
   Future<void> _disconnect() async {
     await flutterVless.stopVless();
   }
 
-  Future<void> _showProviderDiagnostics() async {
-    try {
-      final snapshot = await flutterVless.getProviderDebugSnapshot();
-      if (!mounted) return;
-
-      final content = snapshot.trim().isEmpty ? 'No provider diagnostics have been recorded yet. Connect the VPN first, then retry after a failure.' : snapshot;
-      await showDialog<void>(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: const Text('VPN diagnostics'),
-          content: SizedBox(
-            width: double.maxFinite,
-            height: 420,
-            child: Scrollbar(
-              thumbVisibility: true,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(right: 12),
-                child: SelectableText(content, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Close')),
-            ElevatedButton.icon(
-              onPressed: snapshot.trim().isEmpty
-                  ? null
-                  : () async {
-                      await Clipboard.setData(ClipboardData(text: snapshot));
-                      if (!dialogContext.mounted || !mounted) return;
-                      Navigator.of(dialogContext).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('VPN diagnostics copied')));
-                    },
-              icon: const Icon(Icons.copy),
-              label: const Text('Copy'),
-            ),
-          ],
-        ),
-      );
-    } on PlatformException catch (error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Diagnostics unavailable: ${error.message}')));
-    }
-  }
-
-  Future<void> _importFromClipboard() async {
-    if (await Clipboard.hasStrings()) {
-      try {
-        final text = (await Clipboard.getData('text/plain'))?.text?.trim() ?? '';
-        final FlutterVlessURL parsed = FlutterVless.parse(text);
-        remark = parsed.remark;
-        config.text = parsed.getFullConfiguration();
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Imported')));
-      } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Import error: $e')));
-      }
-    }
-  }
-
   bool _canStop(VlessStatus status) {
     return switch (status.connectionState) {
-      VlessConnectionState.connected || VlessConnectionState.connecting || VlessConnectionState.disconnecting => true,
-      VlessConnectionState.disconnected || VlessConnectionState.unknown => false,
+      VlessConnectionState.connected ||
+      VlessConnectionState.connecting ||
+      VlessConnectionState.disconnecting =>
+      true,
+      VlessConnectionState.disconnected ||
+      VlessConnectionState.unknown =>
+      false,
     };
-  }
-
-  Future<void> _showBypassEditor() async {
-    final controller = TextEditingController(text: bypassSubnets.join('\n'));
-    await showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900],
-        title: const Text('Bypass subnets'),
-        content: TextField(
-          controller: controller,
-          maxLines: 6,
-          decoration: const InputDecoration(hintText: 'one subnet per line, e.g. 192.168.0.0/13'),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
-          ElevatedButton(
-            onPressed: () {
-              final list = controller.text.split('\n').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
-              setState(() {
-                bypassSubnets = list;
-              });
-              Navigator.of(context).pop();
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatBytes(int? bytes) {
-    if (bytes == null) return '-';
-    const units = ['B', 'KB', 'MB', 'GB'];
-    double b = bytes.toDouble();
-    int i = 0;
-    while (b >= 1024 && i < units.length - 1) {
-      b /= 1024;
-      i++;
-    }
-    return '${b.toStringAsFixed(b >= 10 ? 0 : 1)} ${units[i]}';
-  }
-
-  String _formatDuration(int? seconds) {
-    if (seconds == null) return '- s';
-    return '$seconds s';
   }
 }

@@ -1,0 +1,20 @@
+{
+  "@@locale": "en",
+  "appTitle": "HyperNet",
+  "addSubscription": "Add Subscription",
+  "subscription": "Subscription",
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "cancel": "Cancel",
+  "add": "Add",
+  "url": "Url",
+  "enterSubscriptionUrl": "Enter Subscription Url",
+  "language": "Language",
+  "appearance": "Appearance",
+  "system": "System",
+  "lightMode": "Light Mode",
+  "darkMode": "Dark Mode",
+  "english": "English",
+  "persian": "Persian",
+  "settings": "Settings"
+}
