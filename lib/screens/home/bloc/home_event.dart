@@ -51,6 +51,15 @@ final class Disconnect extends HomeEvent {
   const Disconnect();
 }
 
+final class RefreshSubscription extends HomeEvent {
+  final String url;
+
+  const RefreshSubscription(this.url);
+
+  @override
+  List<Object?> get props => [url];
+}
+
 final class PingConfigs extends HomeEvent {
   final List<FlutterVlessURL> configs;
 

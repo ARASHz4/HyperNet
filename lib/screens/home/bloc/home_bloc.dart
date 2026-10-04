@@ -36,6 +36,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
+    on<RefreshSubscription>((event, emit) async {
+      if (state is! HomeLoaded) return;
+
+      final currentState = state as HomeLoaded;
+
+      final subscription = await getSubscription(event.url);
+
+      if (subscription != null) {
+        await LocalStorage().saveSubscription(subscription);
+
+        emit(currentState.copyWith(
+          subscriptions: currentState.subscriptions
+              .map((s) => s.url == subscription.url ? subscription : s)
+              .toList(),
+        ));
+      }
+    });
+
     on<SelectConfig>((event, emit) {
       if (state is! HomeLoaded) return;
 

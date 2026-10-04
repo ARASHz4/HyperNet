@@ -116,7 +116,11 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 leading: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context
+                        .read<HomeBloc>()
+                        .add(RefreshSubscription(subscription.url));
+                  },
                   icon: const Icon(Icons.refresh),
                 ),
                 children: List.generate(
