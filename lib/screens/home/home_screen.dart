@@ -106,7 +106,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context
+                            .read<HomeBloc>()
+                            .add(PingConfigs(subscription.configs));
+                      },
                       icon: const Icon(Icons.speed),
                     ),
                   ],
@@ -120,6 +124,25 @@ class HomeScreen extends StatelessWidget {
                   (index) {
                     final config = subscription.configs[index];
                     return ListTile(
+                      leading: state.pinging.contains(config.url)
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : state.delays.containsKey(config.url)
+                              ? Text(
+                                  state.delays[config.url]! < 0
+                                      ? 'timeout'
+                                      : '${state.delays[config.url]} ms',
+                                  style: TextStyle(
+                                    color: state.delays[config.url]! < 0
+                                        ? Colors.red
+                                        : Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : null,
                       title: Text(config.remark),
                       subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
                       onTap: () {

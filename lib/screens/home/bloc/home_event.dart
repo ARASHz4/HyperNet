@@ -50,3 +50,12 @@ final class Connect extends HomeEvent {
 final class Disconnect extends HomeEvent {
   const Disconnect();
 }
+
+final class PingConfigs extends HomeEvent {
+  final List<FlutterVlessURL> configs;
+
+  const PingConfigs(this.configs);
+
+  @override
+  List<Object?> get props => [configs];
+}

@@ -66,6 +66,41 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<Disconnect>((event, emit) async {
       await flutterVless.stopVless();
     });
+
+    on<PingConfigs>((event, emit) async {
+      if (state is! HomeLoaded) return;
+
+      final currentState = state as HomeLoaded;
+
+      emit(currentState.copyWith(
+        pinging: [
+          ...currentState.pinging,
+          for (final config in event.configs)
+            if (!currentState.pinging.contains(config.url)) config.url,
+        ],
+      ));
+
+      final delays = Map<String, int>.from(currentState.delays);
+
+      await Future.wait(event.configs.map((config) async {
+        int delay = -1;
+        try {
+          delay = await flutterVless.getServerDelay(
+            config: config.getFullConfiguration(),
+          );
+        } catch (_) {
+          delay = -1;
+        }
+
+        delays[config.url] = delay;
+
+        final latest = state as HomeLoaded;
+        emit(latest.copyWith(
+          delays: Map<String, int>.from(delays),
+          pinging: latest.pinging.where((url) => url != config.url).toList(),
+        ));
+      }));
+    });
   }
 
   late final flutterVless = FlutterVless(
