@@ -1,11 +1,11 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:hyper_net/models/language.dart';
 import 'package:hyper_net/preferences.dart';
-import 'package:hyper_net/screens/home_screen.dart';
+import 'package:hyper_net/screens/home/home_screen.dart';
+import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 
 final List<Language> languages = [
   Language(
@@ -45,6 +45,7 @@ class Application extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ApplicationCubit()),
+        BlocProvider(create: (_) => HomeBloc()),
       ],
       child: const ApplicationView(),
     );
