@@ -61,8 +61,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get settings => 'تنظیمات';
 
   @override
-  String get removeSubscription => 'حذف';
+  String get removeSubscription => 'پاک کردن';
 
   @override
-  String get shareSubscriptionUrl => 'اشتراک‌گذاری';
+  String get shareSubscriptionUrl => 'هم‌رسانی';
 }
