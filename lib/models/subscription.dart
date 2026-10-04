@@ -59,8 +59,3 @@ class Subscription {
     return null;
   }
 }
-
-extension Ping on FlutterVlessURL {
-  // Ping results should be stored externally (e.g. in a Map<FlutterVlessURL, int>);
-  // extensions cannot declare instance fields.
-}

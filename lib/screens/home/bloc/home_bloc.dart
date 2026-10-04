@@ -17,6 +17,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(const LoadSubscriptions());
 
     on<LoadSubscriptions>((event, emit) {
+      if (!Hive.isBoxOpen('subscriptions')) return;
+
       final box = Hive.box<String>('subscriptions');
       final subscriptions = box.values
           .map((value) {
@@ -41,8 +43,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final subscription = await getSubscription(event.url);
 
       if (subscription != null) {
-        Hive.box<String>('subscriptions')
-            .put(subscription.url, jsonEncode(subscription.toJson()));
+        if (Hive.isBoxOpen('subscriptions')) {
+          Hive.box<String>('subscriptions')
+              .put(subscription.url, jsonEncode(subscription.toJson()));
+        }
 
         emit(currentState.copyWith(
           subscriptions: [...currentState.subscriptions, subscription],
