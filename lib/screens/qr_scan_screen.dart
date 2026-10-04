@@ -72,7 +72,10 @@ class _QrScanScreenState extends State<QrScanScreen> {
     if (image == null || !mounted) return;
 
     try {
-      final capture = await _controller.analyzeImage(image.path);
+      final capture = await _controller.analyzeImage(image.path, formats: [BarcodeFormat.qrCode]);
+      print(capture != null);
+      print(capture?.barcodes.firstOrNull);
+
       final code = capture != null && capture.barcodes.isNotEmpty
           ? capture.barcodes.first.rawValue
           : null;

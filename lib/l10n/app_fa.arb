@@ -20,5 +20,6 @@
   "removeSubscription": "پاک کردن",
   "shareSubscriptionUrl": "هم‌رسانی",
   "noSubscriptionsYet": "هنوز اشتراکی ندارید",
-  "scanQrCode": "اسکن کد QR"
+  "scanQrCode": "اسکن کد QR",
+  "copyLink": "کپی کردن لینک"
 }

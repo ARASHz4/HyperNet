@@ -20,5 +20,6 @@
   "removeSubscription": "Remove",
   "shareSubscriptionUrl": "Share",
   "noSubscriptionsYet": "No subscriptions yet",
-  "scanQrCode": "Scan QR code"
+  "scanQrCode": "Scan QR code",
+  "copyLink": "Copy link"
 }

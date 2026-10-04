@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hyper_net/screens/qr_scan_screen.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
@@ -181,9 +182,7 @@ class HomeScreen extends StatelessWidget {
                             .read<HomeBloc>()
                             .add(RemoveSubscription(subscription.url));
                       } else if (value == 'share') {
-                        SharePlus.instance.share(
-                          ShareParams(text: subscription.url),
-                        );
+                        showSubscriptionQrCodeDialog(context, subscription.url);
                       }
                     },
                     itemBuilder: (context) => [
@@ -384,6 +383,43 @@ Future<String?> addSubscription(BuildContext context) async {
 bool isSubscriptionUrl(String value) {
   final uri = Uri.tryParse(value.trim());
   return uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty;
+}
+
+void showSubscriptionQrCodeDialog(BuildContext context, String url) {
+  showDialog(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(16),
+                child: QrImageView(data: url, size: 220),
+              ),
+            ),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: url));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Link copied')),
+                  );
+                }
+                if (dialogContext.mounted) Navigator.pop(dialogContext);
+              },
+              icon: const Icon(Icons.copy),
+              label: Text(AppLocalizations.of(context)!.copyLink),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 Future<String?> scanSubscriptionQrCode(BuildContext context) async {
