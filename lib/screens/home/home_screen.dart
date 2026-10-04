@@ -207,9 +207,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 children: List.generate(
-                  subscription.configs.length,
+                  subscription.announce != null ? subscription.configs.length + 1 : subscription.configs.length,
                   (index) {
-                    final config = subscription.configs[index];
+                    if (subscription.announce != null && index == 0) {
+                      return Text(subscription.announce!);
+                    }
+
+                    final config = subscription.configs[subscription.announce != null ? index - 1 : index];
                     final isSelected = identical(state.selectedConfig, config);
 
                     return ListTile(
