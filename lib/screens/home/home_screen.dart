@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hyper_net/screens/qr_scan_screen.dart';
 import 'package:hyper_net/models/subscription.dart';
