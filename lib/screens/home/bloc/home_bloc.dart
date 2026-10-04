@@ -14,8 +14,6 @@ part 'home_event.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeLoaded()) {
-    add(const LoadSubscriptions());
-
     on<LoadSubscriptions>((event, emit) {
       final subscriptions = LocalStorage().getSubscriptions();
 
@@ -101,6 +99,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ));
       }));
     });
+
+    add(const LoadSubscriptions());
   }
 
   late final flutterVless = FlutterVless(
