@@ -405,8 +405,15 @@ Future<String?> scanSubscriptionQrCode(BuildContext context) async {
   return null;
 }
 
-class QrScanScreen extends StatelessWidget {
+class QrScanScreen extends StatefulWidget {
   const QrScanScreen({super.key});
+
+  @override
+  State<QrScanScreen> createState() => _QrScanScreenState();
+}
+
+class _QrScanScreenState extends State<QrScanScreen> {
+  bool _done = false;
 
   @override
   Widget build(BuildContext context) {
@@ -416,11 +423,14 @@ class QrScanScreen extends StatelessWidget {
       ),
       body: MobileScanner(
         onDetect: (capture) {
+          if (_done) return;
+
           final code = capture.barcodes.isNotEmpty
               ? capture.barcodes.first.rawValue
               : null;
 
           if (code != null) {
+            _done = true;
             Navigator.pop(context, code);
           }
         },
