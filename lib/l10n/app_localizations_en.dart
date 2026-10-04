@@ -59,4 +59,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get removeSubscription => 'Remove subscription';
+
+  @override
+  String get shareSubscriptionUrl => 'Share subscription URL';
 }

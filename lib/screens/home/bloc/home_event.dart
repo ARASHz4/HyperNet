@@ -70,6 +70,15 @@ final class RefreshSubscription extends HomeEvent {
   List<Object?> get props => [url];
 }
 
+final class RemoveSubscription extends HomeEvent {
+  final String url;
+
+  const RemoveSubscription(this.url);
+
+  @override
+  List<Object?> get props => [url];
+}
+
 final class PingConfigs extends HomeEvent {
   final List<FlutterVlessURL> configs;
 

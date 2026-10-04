@@ -16,5 +16,7 @@
   "darkMode": "حالت تاریک",
   "english": "انگلیسی",
   "persian": "فارسی",
-  "settings": "تنظیمات"
+  "settings": "تنظیمات",
+  "removeSubscription": "حذف اشتراک",
+  "shareSubscriptionUrl": "اشتراک‌گذاری آدرس اشتراک"
 }

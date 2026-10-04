@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
@@ -126,13 +127,40 @@ class HomeScreen extends StatelessWidget {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
                       )
-                    : IconButton(
-                        onPressed: () {
-                          context
-                              .read<HomeBloc>()
-                              .add(RefreshSubscription(subscription.url));
-                        },
-                        icon: const Icon(Icons.refresh),
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              context
+                                  .read<HomeBloc>()
+                                  .add(RefreshSubscription(subscription.url));
+                            },
+                            icon: const Icon(Icons.refresh),
+                          ),
+                          PopupMenuButton<String>(
+                            icon: const Icon(Icons.more_vert),
+                            onSelected: (value) {
+                              if (value == 'remove') {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(RemoveSubscription(subscription.url));
+                              } else if (value == 'share') {
+                                Share.share(subscription.url);
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'remove',
+                                child: Text(AppLocalizations.of(context)!.removeSubscription),
+                              ),
+                              PopupMenuItem(
+                                value: 'share',
+                                child: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                 children: List.generate(
                   subscription.configs.length,

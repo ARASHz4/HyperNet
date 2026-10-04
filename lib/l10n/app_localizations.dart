@@ -199,6 +199,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @removeSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove subscription'**
+  String get removeSubscription;
+
+  /// No description provided for @shareSubscriptionUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Share subscription URL'**
+  String get shareSubscriptionUrl;
 }
 
 class _AppLocalizationsDelegate

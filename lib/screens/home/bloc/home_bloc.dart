@@ -47,6 +47,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _refreshSubscription(event.url);
     });
 
+    on<RemoveSubscription>((event, emit) async {
+      if (state is! HomeLoaded) return;
+
+      final currentState = state as HomeLoaded;
+
+      emit(currentState.copyWith(
+        subscriptions: currentState.subscriptions
+            .where((s) => s.url != event.url)
+            .toList(),
+      ));
+
+      await LocalStorage().deleteSubscription(event.url);
+    });
+
     on<SubscriptionRefreshed>((event, emit) {
       if (state is! HomeLoaded) return;
 
