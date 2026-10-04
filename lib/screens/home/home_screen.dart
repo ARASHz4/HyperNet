@@ -115,14 +115,23 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                leading: IconButton(
-                  onPressed: () {
-                    context
-                        .read<HomeBloc>()
-                        .add(RefreshSubscription(subscription.url));
-                  },
-                  icon: const Icon(Icons.refresh),
-                ),
+                leading: state.refreshing.contains(subscription.url)
+                    ? const Padding(
+                        padding: EdgeInsets.all(14),
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          context
+                              .read<HomeBloc>()
+                              .add(RefreshSubscription(subscription.url));
+                        },
+                        icon: const Icon(Icons.refresh),
+                      ),
                 children: List.generate(
                   subscription.configs.length,
                   (index) {

@@ -11,6 +11,7 @@ final class HomeLoaded extends HomeState {
   final VlessStatus vlessStatus;
   final List<String> pinging;
   final Map<String, int> delays;
+  final List<String> refreshing;
 
   HomeLoaded({
     this.subscriptions = const [],
@@ -18,11 +19,12 @@ final class HomeLoaded extends HomeState {
     VlessStatus? vlessStatus,
     this.pinging = const [],
     this.delays = const {},
+    this.refreshing = const [],
   }) : vlessStatus = vlessStatus ?? VlessStatus();
 
   @override
   List<Object?> get props =>
-      [subscriptions, selectedConfig, vlessStatus, pinging, delays];
+      [subscriptions, selectedConfig, vlessStatus, pinging, delays, refreshing];
 
   HomeLoaded copyWith({
     List<Subscription>? subscriptions,
@@ -30,6 +32,7 @@ final class HomeLoaded extends HomeState {
     VlessStatus? vlessStatus,
     List<String>? pinging,
     Map<String, int>? delays,
+    List<String>? refreshing,
   }) {
     return HomeLoaded(
       subscriptions: subscriptions ?? this.subscriptions,
@@ -37,6 +40,7 @@ final class HomeLoaded extends HomeState {
       vlessStatus: vlessStatus ?? this.vlessStatus,
       pinging: pinging ?? this.pinging,
       delays: delays ?? this.delays,
+      refreshing: refreshing ?? this.refreshing,
     );
   }
 }

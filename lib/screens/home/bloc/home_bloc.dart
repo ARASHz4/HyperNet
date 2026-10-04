@@ -39,18 +39,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<RefreshSubscription>((event, emit) async {
       if (state is! HomeLoaded) return;
 
-      final currentState = state as HomeLoaded;
+      var currentState = state as HomeLoaded;
+
+      emit(currentState.copyWith(
+          refreshing: [...currentState.refreshing, event.url]));
 
       final subscription = await getSubscription(event.url);
 
+      currentState = state as HomeLoaded;
+
+      emit(currentState.copyWith(
+        subscriptions: subscription == null
+            ? null
+            : currentState.subscriptions
+                .map((s) => s.url == subscription.url ? subscription : s)
+                .toList(),
+        refreshing: currentState.refreshing
+            .where((url) => url != event.url)
+            .toList(),
+      ));
+
       if (subscription != null) {
         await LocalStorage().saveSubscription(subscription);
-
-        emit(currentState.copyWith(
-          subscriptions: currentState.subscriptions
-              .map((s) => s.url == subscription.url ? subscription : s)
-              .toList(),
-        ));
       }
     });
 
