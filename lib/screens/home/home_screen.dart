@@ -6,6 +6,7 @@ import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hyper_net/screens/qr_scan_screen.dart';
 import 'package:hyper_net/models/subscription.dart';
+import 'package:flutter_vless/flutter_vless.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
 import 'package:hyper_net/screens/settings/application_languages_screen.dart';
@@ -100,8 +101,27 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          body: state.subscriptions.isEmpty
-              ? Center(
+          body: Column(
+            children: [
+              if (canStop(state.vlessStatus) &&
+                  state.vlessStatus.connectionState == VlessConnectionState.connected)
+                Container(
+                  width: double.infinity,
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    'Connected • ${_formatDuration(state.vlessStatus.duration)} • '
+                    '↑ ${_formatBytes(state.vlessStatus.upload)} • '
+                    '↓ ${_formatBytes(state.vlessStatus.download)}',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              Expanded(
+                child: state.subscriptions.isEmpty
+                    ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -260,16 +280,26 @@ class HomeScreen extends StatelessWidget {
             },
             itemCount: state.subscriptions.length,
           ),
+              ),
+            ],
+          ),
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: state.selectedConfig != null
-                ? () {
-                    if (canStop(state.vlessStatus)) {
-                      context.read<HomeBloc>().add(const Disconnect());
-                    } else {
-                      context.read<HomeBloc>().add(Connect(state.selectedConfig!));
-                    }
-                  }
-                : null,
+            onPressed: () {
+              if (state.selectedConfig == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.selectConfigToConnect),
+                  ),
+                );
+                return;
+              }
+
+              if (canStop(state.vlessStatus)) {
+                context.read<HomeBloc>().add(const Disconnect());
+              } else {
+                context.read<HomeBloc>().add(Connect(state.selectedConfig!));
+              }
+            },
             label: Text(
               canStop(state.vlessStatus)
                   ? AppLocalizations.of(context)!.disconnect
@@ -480,6 +510,18 @@ String _formatBytes(int? bytes) {
   }
 
   return '${value.toStringAsFixed(value >= 10 || index == 0 ? 0 : 1)} ${units[index]}';
+}
+
+String _formatDuration(int seconds) {
+  final h = seconds ~/ 3600;
+  final m = (seconds % 3600) ~/ 60;
+  final s = seconds % 60;
+
+  if (h > 0) {
+    return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
 }
 
 Widget? _subscriptionUsage(Subscription subscription) {

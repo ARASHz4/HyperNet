@@ -77,4 +77,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareQrCode => 'Share QR code';
+
+  @override
+  String get selectConfigToConnect => 'Select a config to connect';
 }

@@ -22,5 +22,6 @@
   "noSubscriptionsYet": "No subscriptions yet",
   "scanQrCode": "Scan QR code",
   "copyLink": "Copy link",
-  "shareQrCode": "Share QR code"
+  "shareQrCode": "Share QR code",
+  "selectConfigToConnect": "Select a config to connect"
 }

@@ -77,4 +77,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get shareQrCode => 'هم‌رسانی QR کد';
+
+  @override
+  String get selectConfigToConnect => 'برای اتصال یک کانفیگ انتخاب کنید';
 }

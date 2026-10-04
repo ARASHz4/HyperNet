@@ -235,6 +235,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share QR code'**
   String get shareQrCode;
+
+  /// No description provided for @selectConfigToConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a config to connect'**
+  String get selectConfigToConnect;
 }
 
 class _AppLocalizationsDelegate
