@@ -22,7 +22,14 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.appTitle),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset('assets/icon.png', height: 28),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.appTitle),
+              ],
+            ),
             actions: [
               PopupMenuButton<int>(
                 icon: const Icon(Icons.settings),
@@ -98,9 +105,32 @@ class HomeScreen extends StatelessWidget {
 
               return ExpansionTile(
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Flexible(
+                    state.refreshing.contains(subscription.url)
+                        ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                        : SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          context
+                              .read<HomeBloc>()
+                              .add(RefreshSubscription(subscription.url));
+                        },
+                        icon: const Icon(Icons.refresh),
+                      ),
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
                       child: Text(
                         subscription.getTitle ?? AppLocalizations.of(context)!.subscription,
                         softWrap: false,
@@ -118,60 +148,41 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 subtitle: _subscriptionUsage(subscription),
-                leading: state.refreshing.contains(subscription.url)
-                    ? const Padding(
-                        padding: EdgeInsets.all(14),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                leading: SizedBox(
+                  width: 32,
+                  child: PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (value) {
+                      if (value == 'remove') {
+                        context
+                            .read<HomeBloc>()
+                            .add(RemoveSubscription(subscription.url));
+                      } else if (value == 'share') {
+                        SharePlus.instance.share(
+                          ShareParams(text: subscription.url),
+                        );
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'remove',
+                        child: ListTile(
+                          leading: const Icon(Icons.delete_outline),
+                          title: Text(AppLocalizations.of(context)!.removeSubscription),
+                          contentPadding: EdgeInsets.zero,
                         ),
-                      )
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          PopupMenuButton<String>(
-                            icon: const Icon(Icons.more_vert),
-                            onSelected: (value) {
-                              if (value == 'remove') {
-                                context
-                                    .read<HomeBloc>()
-                                    .add(RemoveSubscription(subscription.url));
-                              } else if (value == 'share') {
-                                SharePlus.instance.share(
-                                  ShareParams(text: subscription.url),
-                                );
-                              }
-                            },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 'remove',
-                                child: ListTile(
-                                  leading: const Icon(Icons.delete_outline),
-                                  title: Text(AppLocalizations.of(context)!.removeSubscription),
-                                  contentPadding: EdgeInsets.zero,
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 'share',
-                                child: ListTile(
-                                  leading: const Icon(Icons.share),
-                                  title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
-                                  contentPadding: EdgeInsets.zero,
-                                ),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(RefreshSubscription(subscription.url));
-                            },
-                            icon: const Icon(Icons.refresh),
-                          ),
-                        ],
                       ),
+                      PopupMenuItem(
+                        value: 'share',
+                        child: ListTile(
+                          leading: const Icon(Icons.share),
+                          title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 children: List.generate(
                   subscription.configs.length,
                   (index) {
