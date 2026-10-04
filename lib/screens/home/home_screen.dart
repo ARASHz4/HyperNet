@@ -397,7 +397,16 @@ void showSubscriptionQrCodeDialog(BuildContext context, String url) {
               child: Container(
                 color: Colors.white,
                 padding: const EdgeInsets.all(16),
-                child: QrImageView(data: url, size: 220),
+                child: CustomPaint(
+                  size: const Size(220, 220),
+                  painter: QrPainter(
+                    data: url,
+                    version: QrVersions.auto,
+                    gapless: false,
+                    color: Colors.black,
+                    emptyColor: Colors.white,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
