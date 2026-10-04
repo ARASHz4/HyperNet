@@ -313,254 +313,266 @@ class HomeScreen extends StatelessWidget {
       },
     );
   }
-}
 
-Future<String?> addSubscription(BuildContext context) async {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  final subscriptionTextController = TextEditingController();
-
-  final resalt = await showModalBottomSheet(
-    isScrollControlled: true,
-    context: context,
-    builder: (builderContext) {
-      return SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 8,
-              children: [
-                Text(AppLocalizations.of(context)!.addSubscription),
-                Form(
-                  key: formKey,
-                  child: TextFormField(
-                    controller: subscriptionTextController,
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.url,
-                      border: const OutlineInputBorder(),
-                      suffixIcon: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () async {
-                              final text = await importFromClipboard();
-                              if ((text ?? "").isNotEmpty) {
-                                subscriptionTextController.text = text!;
-                              }
-                            },
-                            icon: const Icon(Icons.paste),
-                          ),
-                          IconButton(
-                            onPressed: () async {
-                              final text = await scanSubscriptionQrCode(context);
-                              if (text != null) {
-                                subscriptionTextController.text = text;
-                              }
-                            },
-                            icon: const Icon(Icons.qr_code_scanner),
-                          ),
-                        ],
-                      ),
-                    ),
-                    validator: (value) {
-                      if ((value ?? "").isEmpty) {
-                        return AppLocalizations.of(context)!.enterSubscriptionUrl;
-                      }
-
-                      return null;
-                    },
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(builderContext);
-                      },
-                      child: Text(AppLocalizations.of(context)!.cancel),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          Navigator.pop(builderContext, subscriptionTextController.text);
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!.add),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
-
-  if (resalt is String) {
-    return resalt;
+  bool canStop(VlessStatus status) {
+    return switch (status.connectionState) {
+      VlessConnectionState.connected ||
+      VlessConnectionState.connecting ||
+      VlessConnectionState.disconnecting =>
+      true,
+      VlessConnectionState.disconnected ||
+      VlessConnectionState.unknown =>
+      false,
+    };
   }
 
-  return null;
-}
+  Future<String?> addSubscription(BuildContext context) async {
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-bool isSubscriptionUrl(String value) {
-  final uri = Uri.tryParse(value.trim());
-  return uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty;
-}
+    final subscriptionTextController = TextEditingController();
 
-void showSubscriptionQrCodeDialog(BuildContext context, String url) {
-  showDialog(
-    context: context,
-    builder: (dialogContext) {
-      return AlertDialog(
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(AppLocalizations.of(context)!.shareQrCode),
-            ),
-            IconButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              icon: const Icon(Icons.close),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(16),
-                child: CustomPaint(
-                  size: const Size(220, 220),
-                  painter: QrPainter(
-                    data: url,
-                    version: QrVersions.auto,
-                    gapless: false,
-                    color: Colors.black,
-                    emptyColor: Colors.white,
+    final resalt = await showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (builderContext) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  Text(AppLocalizations.of(context)!.addSubscription),
+                  Form(
+                    key: formKey,
+                    child: TextFormField(
+                      controller: subscriptionTextController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.url,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                final text = await importFromClipboard();
+                                if ((text ?? "").isNotEmpty) {
+                                  subscriptionTextController.text = text!;
+                                }
+                              },
+                              icon: const Icon(Icons.paste),
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                final text = await scanSubscriptionQrCode(context);
+                                if (text != null) {
+                                  subscriptionTextController.text = text;
+                                }
+                              },
+                              icon: const Icon(Icons.qr_code_scanner),
+                            ),
+                          ],
+                        ),
+                      ),
+                      validator: (value) {
+                        if ((value ?? "").isEmpty) {
+                          return AppLocalizations.of(context)!.enterSubscriptionUrl;
+                        }
+
+                        return null;
+                      },
+                    ),
                   ),
-                ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(builderContext);
+                        },
+                        child: Text(AppLocalizations.of(context)!.cancel),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            Navigator.pop(builderContext, subscriptionTextController.text);
+                          }
+                        },
+                        child: Text(AppLocalizations.of(context)!.add),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: url));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Link copied')),
-                  );
-                }
-                if (dialogContext.mounted) Navigator.pop(dialogContext);
-              },
-              icon: const Icon(Icons.copy),
-              label: Text(AppLocalizations.of(context)!.copyLink),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
-Future<String?> scanSubscriptionQrCode(BuildContext context) async {
-  final result = await QrScanInput.scan(context);
-
-  if (result == null) return null;
-
-  if (isSubscriptionUrl(result)) {
-    return result;
-  }
-
-  if (context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('QR code is not a valid subscription link.')),
+          ),
+        );
+      },
     );
-  }
 
-  return null;
-}
+    if (resalt is String) {
+      return resalt;
+    }
 
-Future<String?> importFromClipboard() async {
-  if (await Clipboard.hasStrings()) {
-    return (await Clipboard.getData('text/plain'))?.text?.trim();
-  }
-
-  return null;
-}
-
-String _formatBytes(int? bytes) {
-  if (bytes == null) return '?';
-
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  var value = bytes.toDouble();
-  var index = 0;
-
-  while (value >= 1024 && index < units.length - 1) {
-    value /= 1024;
-    index++;
-  }
-
-  return '${value.toStringAsFixed(value >= 10 || index == 0 ? 0 : 1)} ${units[index]}';
-}
-
-String _formatDuration(int seconds) {
-  final h = seconds ~/ 3600;
-  final m = (seconds % 3600) ~/ 60;
-  final s = seconds % 60;
-
-  if (h > 0) {
-    return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
-  return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-}
-
-Widget? _subscriptionUsage(Subscription subscription) {
-  if (subscription.usedBytes == null &&
-      subscription.totalBytes == null &&
-      subscription.expireAt == null) {
     return null;
   }
 
-  final progress = (subscription.usedBytes != null &&
-          subscription.totalBytes != null &&
-          subscription.totalBytes! > 0)
-      ? (subscription.usedBytes! / subscription.totalBytes!).clamp(0.0, 1.0)
-      : null;
+  bool isSubscriptionUrl(String value) {
+    final uri = Uri.tryParse(value.trim());
+    return uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty;
+  }
 
-  final daysLeft = subscription.expireAt?.difference(DateTime.now()).inDays;
+  void showSubscriptionQrCodeDialog(BuildContext context, String url) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(AppLocalizations.of(context)!.shareQrCode),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(16),
+                  child: CustomPaint(
+                    size: const Size(220, 220),
+                    painter: QrPainter(
+                      data: url,
+                      version: QrVersions.auto,
+                      gapless: false,
+                      color: Colors.black,
+                      emptyColor: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: url));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Link copied')),
+                    );
+                  }
+                  if (dialogContext.mounted) Navigator.pop(dialogContext);
+                },
+                icon: const Icon(Icons.copy),
+                label: Text(AppLocalizations.of(context)!.copyLink),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      if (progress != null)
-        LinearProgressIndicator(
-          value: progress,
-          minHeight: 4,
-          borderRadius: BorderRadius.circular(2),
+  Future<String?> scanSubscriptionQrCode(BuildContext context) async {
+    final result = await QrScanInput.scan(context);
+
+    if (result == null) return null;
+
+    if (isSubscriptionUrl(result)) {
+      return result;
+    }
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('QR code is not a valid subscription link.')),
+      );
+    }
+
+    return null;
+  }
+
+  Future<String?> importFromClipboard() async {
+    if (await Clipboard.hasStrings()) {
+      return (await Clipboard.getData('text/plain'))?.text?.trim();
+    }
+
+    return null;
+  }
+
+  String _formatBytes(int? bytes) {
+    if (bytes == null) return '?';
+
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    var value = bytes.toDouble();
+    var index = 0;
+
+    while (value >= 1024 && index < units.length - 1) {
+      value /= 1024;
+      index++;
+    }
+
+    return '${value.toStringAsFixed(value >= 10 || index == 0 ? 0 : 1)} ${units[index]}';
+  }
+
+  String _formatDuration(int seconds) {
+    final h = seconds ~/ 3600;
+    final m = (seconds % 3600) ~/ 60;
+    final s = seconds % 60;
+
+    if (h > 0) {
+      return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+    }
+
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  Widget? _subscriptionUsage(Subscription subscription) {
+    if (subscription.usedBytes == null &&
+        subscription.totalBytes == null &&
+        subscription.expireAt == null) {
+      return null;
+    }
+
+    final progress = (subscription.usedBytes != null &&
+        subscription.totalBytes != null &&
+        subscription.totalBytes! > 0)
+        ? (subscription.usedBytes! / subscription.totalBytes!).clamp(0.0, 1.0)
+        : null;
+
+    final daysLeft = subscription.expireAt?.difference(DateTime.now()).inDays;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (progress != null)
+          LinearProgressIndicator(
+            value: progress,
+            minHeight: 4,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            [
+              if (subscription.usedBytes != null || subscription.totalBytes != null)
+                '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
+              if (daysLeft != null)
+                daysLeft < 0 ? 'expired' : '$daysLeft days left',
+            ].join(' • '),
+            style: const TextStyle(fontSize: 12),
+          ),
         ),
-      Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Text(
-          [
-            if (subscription.usedBytes != null || subscription.totalBytes != null)
-              '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
-            if (daysLeft != null)
-              daysLeft < 0 ? 'expired' : '$daysLeft days left',
-          ].join(' • '),
-          style: const TextStyle(fontSize: 12),
-        ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

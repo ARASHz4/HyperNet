@@ -245,6 +245,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     await flutterVless.initializeVless(
       providerBundleIdentifier: 'com.arashz4.hypernet',
       groupIdentifier: 'group.com.arashz4.hypernet',
+      notificationIconResourceName: 'ic_notification',
+      notificationIconResourceType: 'mipmap',
     );
 
     if (await flutterVless.requestPermission()) {
@@ -252,22 +254,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         remark: config.remark,
         config: config.getFullConfiguration(),
       );
-
-      final version = await flutterVless.getCoreVersion();
-
-      print("version: $version");
     }
   }
-}
-
-bool canStop(VlessStatus status) {
-  return switch (status.connectionState) {
-    VlessConnectionState.connected ||
-    VlessConnectionState.connecting ||
-    VlessConnectionState.disconnecting =>
-      true,
-    VlessConnectionState.disconnected ||
-    VlessConnectionState.unknown =>
-      false,
-  };
 }
