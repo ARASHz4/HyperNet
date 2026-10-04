@@ -19,5 +19,6 @@
   "settings": "Settings",
   "removeSubscription": "Remove",
   "shareSubscriptionUrl": "Share",
-  "noSubscriptionsYet": "No subscriptions yet"
+  "noSubscriptionsYet": "No subscriptions yet",
+  "scanQrCode": "Scan QR code"
 }

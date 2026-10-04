@@ -19,5 +19,6 @@
   "settings": "تنظیمات",
   "removeSubscription": "پاک کردن",
   "shareSubscriptionUrl": "هم‌رسانی",
-  "noSubscriptionsYet": "هنوز اشتراکی ندارید"
+  "noSubscriptionsYet": "هنوز اشتراکی ندارید",
+  "scanQrCode": "اسکن کد QR"
 }

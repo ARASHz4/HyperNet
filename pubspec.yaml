@@ -27,6 +27,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   share_plus: ^13.3.1
+  mobile_scanner: ^7.4.2
 
 dev_dependencies:
   flutter_test:

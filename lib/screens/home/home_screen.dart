@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
@@ -308,14 +309,28 @@ Future<String?> addSubscription(BuildContext context) async {
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(context)!.url,
                       border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        onPressed: () async {
-                          final text = await importFromClipboard();
-                          if ((text ?? "").isNotEmpty) {
-                            subscriptionTextController.text = text!;
-                          }
-                        },
-                        icon: const Icon(Icons.paste),
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: () async {
+                              final text = await importFromClipboard();
+                              if ((text ?? "").isNotEmpty) {
+                                subscriptionTextController.text = text!;
+                              }
+                            },
+                            icon: const Icon(Icons.paste),
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              final text = await scanSubscriptionQrCode(context);
+                              if (text != null) {
+                                subscriptionTextController.text = text;
+                              }
+                            },
+                            icon: const Icon(Icons.qr_code_scanner),
+                          ),
+                        ],
                       ),
                     ),
                     validator: (value) {
@@ -360,6 +375,58 @@ Future<String?> addSubscription(BuildContext context) async {
   }
 
   return null;
+}
+
+bool isSubscriptionUrl(String value) {
+  final uri = Uri.tryParse(value.trim());
+  return uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty;
+}
+
+Future<String?> scanSubscriptionQrCode(BuildContext context) async {
+  final result = await Navigator.push<String?>(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const QrScanScreen(),
+    ),
+  );
+
+  if (result == null) return null;
+
+  if (isSubscriptionUrl(result)) {
+    return result;
+  }
+
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('QR code is not a valid subscription link.')),
+    );
+  }
+
+  return null;
+}
+
+class QrScanScreen extends StatelessWidget {
+  const QrScanScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.scanQrCode),
+      ),
+      body: MobileScanner(
+        onDetect: (capture) {
+          final code = capture.barcodes.isNotEmpty
+              ? capture.barcodes.first.rawValue
+              : null;
+
+          if (code != null) {
+            Navigator.pop(context, code);
+          }
+        },
+      ),
+    );
+  }
 }
 
 Future<String?> importFromClipboard() async {

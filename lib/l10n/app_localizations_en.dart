@@ -68,4 +68,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSubscriptionsYet => 'No subscriptions yet';
+
+  @override
+  String get scanQrCode => 'Scan QR code';
 }

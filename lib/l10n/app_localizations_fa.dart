@@ -68,4 +68,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get noSubscriptionsYet => 'هنوز اشتراکی ندارید';
+
+  @override
+  String get scanQrCode => 'اسکن کد QR';
 }
