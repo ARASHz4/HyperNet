@@ -65,4 +65,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get shareSubscriptionUrl => 'هم‌رسانی';
+
+  @override
+  String get noSubscriptionsYet => 'هنوز اشتراکی ندارید';
 }

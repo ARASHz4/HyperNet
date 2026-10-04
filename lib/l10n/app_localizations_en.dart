@@ -65,4 +65,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareSubscriptionUrl => 'Share';
+
+  @override
+  String get noSubscriptionsYet => 'No subscriptions yet';
 }

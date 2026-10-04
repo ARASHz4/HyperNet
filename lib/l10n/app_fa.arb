@@ -18,5 +18,6 @@
   "persian": "فارسی",
   "settings": "تنظیمات",
   "removeSubscription": "پاک کردن",
-  "shareSubscriptionUrl": "هم‌رسانی"
+  "shareSubscriptionUrl": "هم‌رسانی",
+  "noSubscriptionsYet": "هنوز اشتراکی ندارید"
 }

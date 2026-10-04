@@ -18,5 +18,6 @@
   "persian": "Persian",
   "settings": "Settings",
   "removeSubscription": "Remove",
-  "shareSubscriptionUrl": "Share"
+  "shareSubscriptionUrl": "Share",
+  "noSubscriptionsYet": "No subscriptions yet"
 }

@@ -99,7 +99,29 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          body: ListView.separated(
+          body: state.subscriptions.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.cloud_off, size: 64, color: Theme.of(context).colorScheme.outline),
+                      const SizedBox(height: 16),
+                      Text(AppLocalizations.of(context)!.noSubscriptionsYet),
+                      const SizedBox(height: 24),
+                      FilledButton.icon(
+                        onPressed: () async {
+                          final url = await addSubscription(context);
+                          if (url != null) {
+                            context.read<HomeBloc>().add(AddSubscription(url));
+                          }
+                        },
+                        icon: const Icon(Icons.add),
+                        label: Text(AppLocalizations.of(context)!.addSubscription),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.separated(
             itemBuilder: (context, index) {
               final subscription = state.subscriptions[index];
 
