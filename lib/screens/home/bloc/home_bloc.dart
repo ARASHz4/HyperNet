@@ -5,9 +5,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vless/flutter_vless.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:hyper_net/models/subscription.dart';
+import 'package:hyper_net/storage/local_storage.dart';
 
 part 'home_state.dart';
 part 'home_event.dart';
@@ -17,20 +17,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(const LoadSubscriptions());
 
     on<LoadSubscriptions>((event, emit) {
-      if (!Hive.isBoxOpen('subscriptions')) return;
-
-      final box = Hive.box<String>('subscriptions');
-      final subscriptions = box.values
-          .map((value) {
-            try {
-              return Subscription.fromJson(
-                  jsonDecode(value) as Map<String, dynamic>);
-            } catch (_) {
-              return null;
-            }
-          })
-          .whereType<Subscription>()
-          .toList();
+      final subscriptions = LocalStorage().getSubscriptions();
 
       emit((state as HomeLoaded).copyWith(subscriptions: subscriptions));
     });
@@ -43,10 +30,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final subscription = await getSubscription(event.url);
 
       if (subscription != null) {
-        if (Hive.isBoxOpen('subscriptions')) {
-          Hive.box<String>('subscriptions')
-              .put(subscription.url, jsonEncode(subscription.toJson()));
-        }
+        await LocalStorage().saveSubscription(subscription);
 
         emit(currentState.copyWith(
           subscriptions: [...currentState.subscriptions, subscription],
