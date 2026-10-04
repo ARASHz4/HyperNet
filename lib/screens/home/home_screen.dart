@@ -130,14 +130,6 @@ class HomeScreen extends StatelessWidget {
                     : Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(RefreshSubscription(subscription.url));
-                            },
-                            icon: const Icon(Icons.refresh),
-                          ),
                           PopupMenuButton<String>(
                             icon: const Icon(Icons.more_vert),
                             onSelected: (value) {
@@ -152,13 +144,29 @@ class HomeScreen extends StatelessWidget {
                             itemBuilder: (context) => [
                               PopupMenuItem(
                                 value: 'remove',
-                                child: Text(AppLocalizations.of(context)!.removeSubscription),
+                                child: ListTile(
+                                  leading: const Icon(Icons.delete_outline),
+                                  title: Text(AppLocalizations.of(context)!.removeSubscription),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
                               ),
                               PopupMenuItem(
                                 value: 'share',
-                                child: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
+                                child: ListTile(
+                                  leading: const Icon(Icons.share),
+                                  title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
                               ),
                             ],
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              context
+                                  .read<HomeBloc>()
+                                  .add(RefreshSubscription(subscription.url));
+                            },
+                            icon: const Icon(Icons.refresh),
                           ),
                         ],
                       ),

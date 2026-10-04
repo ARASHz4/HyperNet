@@ -203,13 +203,13 @@ abstract class AppLocalizations {
   /// No description provided for @removeSubscription.
   ///
   /// In en, this message translates to:
-  /// **'Remove subscription'**
+  /// **'Remove'**
   String get removeSubscription;
 
   /// No description provided for @shareSubscriptionUrl.
   ///
   /// In en, this message translates to:
-  /// **'Share subscription URL'**
+  /// **'Share'**
   String get shareSubscriptionUrl;
 }
 

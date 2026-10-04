@@ -17,6 +17,6 @@
   "english": "English",
   "persian": "Persian",
   "settings": "Settings",
-  "removeSubscription": "Remove subscription",
-  "shareSubscriptionUrl": "Share subscription URL"
+  "removeSubscription": "Remove",
+  "shareSubscriptionUrl": "Share"
 }
