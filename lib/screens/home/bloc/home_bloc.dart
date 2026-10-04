@@ -80,7 +80,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       final delays = Map<String, int>.from(currentState.delays);
 
-      await Future.wait(event.configs.map((config) async {
+      for (final config in event.configs) {
         int delay = -1;
         try {
           delay = await flutterVless.getServerDelay(
@@ -97,7 +97,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           delays: Map<String, int>.from(delays),
           pinging: latest.pinging.where((url) => url != config.url).toList(),
         ));
-      }));
+      }
     });
 
     add(const LoadSubscriptions());

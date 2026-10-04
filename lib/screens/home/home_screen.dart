@@ -124,10 +124,10 @@ class HomeScreen extends StatelessWidget {
                   (index) {
                     final config = subscription.configs[index];
                     return ListTile(
-                      leading: state.pinging.contains(config.url)
+                      trailing: state.pinging.contains(config.url)
                           ? const SizedBox(
-                              width: 24,
-                              height: 24,
+                              width: 16,
+                              height: 16,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : state.delays.containsKey(config.url)
