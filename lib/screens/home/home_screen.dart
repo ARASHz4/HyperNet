@@ -123,31 +123,44 @@ class HomeScreen extends StatelessWidget {
                   subscription.configs.length,
                   (index) {
                     final config = subscription.configs[index];
+                    final isSelected = identical(state.selectedConfig, config);
+
                     return ListTile(
-                      trailing: state.pinging.contains(config.url)
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : state.delays.containsKey(config.url)
-                              ? Text(
-                                  state.delays[config.url]! < 0
-                                      ? 'timeout'
-                                      : '${state.delays[config.url]} ms',
-                                  style: TextStyle(
-                                    color: state.delays[config.url]! < 0
-                                        ? Colors.red
-                                        : Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              : null,
-                      title: Text(config.remark),
-                      subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
+                      selected: isSelected,
+                      selectedTileColor:
+                          Theme.of(context).colorScheme.primaryContainer,
                       onTap: () {
                         context.read<HomeBloc>().add(SelectConfig(config));
                       },
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (isSelected)
+                            Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary),
+                          if (state.pinging.contains(config.url))
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Text("Pinging...", style: TextStyle(fontSize: 9)),
+                            )
+                          else if (state.delays.containsKey(config.url))
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Text(
+                                state.delays[config.url]! < 0
+                                    ? 'timeout'
+                                    : '${state.delays[config.url]} ms',
+                                style: TextStyle(
+                                  color: state.delays[config.url]! < 0
+                                      ? Colors.red
+                                      : Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      title: Text(config.remark),
+                      subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
                     );
                   },
                 ),
