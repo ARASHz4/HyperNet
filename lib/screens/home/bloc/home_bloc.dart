@@ -79,12 +79,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ));
     });
 
-    on<SelectConfig>((event, emit) {
+    on<SelectConfig>((event, emit) async {
       if (state is! HomeLoaded) return;
 
       final currentState = state as HomeLoaded;
 
       emit(currentState.copyWith(selectedConfig: event.config));
+
+      switch (currentState.vlessStatus.connectionState) {
+        case VlessConnectionState.connected:
+        case VlessConnectionState.connecting:
+          await flutterVless.stopVless();
+          await connect(event.config);
+          break;
+        case VlessConnectionState.disconnecting:
+        case VlessConnectionState.disconnected:
+        case VlessConnectionState.unknown:
+          break;
+      }
     });
 
     on<VlessStatusChanged>((event, emit) {
@@ -246,7 +258,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       providerBundleIdentifier: 'com.arashz4.hypernet',
       groupIdentifier: 'group.com.arashz4.hypernet',
       notificationIconResourceName: 'ic_notification',
-      notificationIconResourceType: 'mipmap',
+      notificationIconResourceType: 'drawable',
     );
 
     if (await flutterVless.requestPermission()) {
