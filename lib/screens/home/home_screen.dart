@@ -138,7 +138,9 @@ class HomeScreen extends StatelessWidget {
                                     .read<HomeBloc>()
                                     .add(RemoveSubscription(subscription.url));
                               } else if (value == 'share') {
-                                Share.share(subscription.url);
+                                SharePlus.instance.share(
+                                  ShareParams(text: subscription.url),
+                                );
                               }
                             },
                             itemBuilder: (context) => [
