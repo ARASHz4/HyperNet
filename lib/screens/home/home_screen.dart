@@ -315,20 +315,42 @@ String _formatBytes(int? bytes) {
 }
 
 Widget? _subscriptionUsage(Subscription subscription) {
-  final parts = <String>[];
-
-  if (subscription.usedBytes != null || subscription.totalBytes != null) {
-    parts.add('${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}');
+  if (subscription.usedBytes == null &&
+      subscription.totalBytes == null &&
+      subscription.expireAt == null) {
+    return null;
   }
 
-  if (subscription.expireAt != null) {
-    final expire = subscription.expireAt!;
-    parts.add(
-      'expires ${expire.year}-${expire.month.toString().padLeft(2, '0')}-${expire.day.toString().padLeft(2, '0')}',
-    );
-  }
+  final progress = (subscription.usedBytes != null &&
+          subscription.totalBytes != null &&
+          subscription.totalBytes! > 0)
+      ? (subscription.usedBytes! / subscription.totalBytes!).clamp(0.0, 1.0)
+      : null;
 
-  if (parts.isEmpty) return null;
+  final daysLeft = subscription.expireAt?.difference(DateTime.now()).inDays;
 
-  return Text(parts.join(' • '), style: const TextStyle(fontSize: 12));
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      if (progress != null)
+        LinearProgressIndicator(
+          value: progress,
+          minHeight: 4,
+          borderRadius: BorderRadius.circular(2),
+        ),
+      Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Text(
+          [
+            if (subscription.usedBytes != null || subscription.totalBytes != null)
+              '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
+            if (daysLeft != null)
+              daysLeft < 0 ? 'expired' : '$daysLeft days left',
+          ].join(' • '),
+          style: const TextStyle(fontSize: 12),
+        ),
+      ),
+    ],
+  );
 }
