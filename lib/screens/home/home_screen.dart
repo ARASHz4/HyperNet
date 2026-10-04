@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:hyper_net/screens/qr_scan_screen.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
@@ -383,12 +383,7 @@ bool isSubscriptionUrl(String value) {
 }
 
 Future<String?> scanSubscriptionQrCode(BuildContext context) async {
-  final result = await Navigator.push<String?>(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const QrScanScreen(),
-    ),
-  );
+  final result = await QrScanInput.scan(context);
 
   if (result == null) return null;
 
@@ -403,40 +398,6 @@ Future<String?> scanSubscriptionQrCode(BuildContext context) async {
   }
 
   return null;
-}
-
-class QrScanScreen extends StatefulWidget {
-  const QrScanScreen({super.key});
-
-  @override
-  State<QrScanScreen> createState() => _QrScanScreenState();
-}
-
-class _QrScanScreenState extends State<QrScanScreen> {
-  bool _done = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.scanQrCode),
-      ),
-      body: MobileScanner(
-        onDetect: (capture) {
-          if (_done) return;
-
-          final code = capture.barcodes.isNotEmpty
-              ? capture.barcodes.first.rawValue
-              : null;
-
-          if (code != null) {
-            _done = true;
-            Navigator.pop(context, code);
-          }
-        },
-      ),
-    );
-  }
 }
 
 Future<String?> importFromClipboard() async {
