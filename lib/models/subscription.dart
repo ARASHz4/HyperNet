@@ -19,6 +19,32 @@ class Subscription {
     this.supportUrl,
   });
 
+  Map<String, dynamic> toJson() => {
+        'url': url,
+        'title': title,
+        'user': user,
+        'announce': announce,
+        'announceUrl': announceUrl,
+        'supportUrl': supportUrl,
+        'configs': configs.map((config) => config.url).toList(),
+      };
+
+  factory Subscription.fromJson(Map<String, dynamic> json) {
+    final configs = (json['configs'] as List? ?? [])
+        .map((url) => FlutterVless.parse(url as String))
+        .toList();
+
+    return Subscription(
+      url: json['url'] as String,
+      configs: configs,
+      title: json['title'] as String?,
+      user: json['user'] as String?,
+      announce: json['announce'] as String?,
+      announceUrl: json['announceUrl'] as String?,
+      supportUrl: json['supportUrl'] as String?,
+    );
+  }
+
   String? get getTitle {
     if (title != null && title!.isNotEmpty) {
       String text = title!;
