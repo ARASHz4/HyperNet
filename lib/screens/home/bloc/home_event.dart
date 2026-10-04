@@ -51,6 +51,16 @@ final class Disconnect extends HomeEvent {
   const Disconnect();
 }
 
+final class SubscriptionRefreshed extends HomeEvent {
+  final String url;
+  final Subscription? subscription;
+
+  const SubscriptionRefreshed({required this.url, required this.subscription});
+
+  @override
+  List<Object?> get props => [url, subscription];
+}
+
 final class RefreshSubscription extends HomeEvent {
   final String url;
 

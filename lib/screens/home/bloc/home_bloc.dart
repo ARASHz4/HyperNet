@@ -36,32 +36,33 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
-    on<RefreshSubscription>((event, emit) async {
+    on<RefreshSubscription>((event, emit) {
       if (state is! HomeLoaded) return;
 
-      var currentState = state as HomeLoaded;
+      final currentState = state as HomeLoaded;
 
       emit(currentState.copyWith(
           refreshing: [...currentState.refreshing, event.url]));
 
-      final subscription = await getSubscription(event.url);
+      _refreshSubscription(event.url);
+    });
 
-      currentState = state as HomeLoaded;
+    on<SubscriptionRefreshed>((event, emit) {
+      if (state is! HomeLoaded) return;
+
+      final currentState = state as HomeLoaded;
 
       emit(currentState.copyWith(
-        subscriptions: subscription == null
+        subscriptions: event.subscription == null
             ? null
             : currentState.subscriptions
-                .map((s) => s.url == subscription.url ? subscription : s)
+                .map((s) =>
+                    s.url == event.subscription!.url ? event.subscription! : s)
                 .toList(),
         refreshing: currentState.refreshing
             .where((url) => url != event.url)
             .toList(),
       ));
-
-      if (subscription != null) {
-        await LocalStorage().saveSubscription(subscription);
-      }
     });
 
     on<SelectConfig>((event, emit) {
@@ -136,6 +137,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       add(VlessStatusChanged(status));
     },
   );
+
+  Future<void> _refreshSubscription(String url) async {
+    final subscription = await getSubscription(url);
+
+    if (subscription != null) {
+      await LocalStorage().saveSubscription(subscription);
+    }
+
+    add(SubscriptionRefreshed(url: url, subscription: subscription));
+  }
 
   Future<Subscription?> getSubscription(String subscription) async {
     try {
