@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
+import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
 import 'package:hyper_net/screens/settings/application_languages_screen.dart';
@@ -115,6 +116,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                subtitle: _subscriptionUsage(subscription),
                 leading: state.refreshing.contains(subscription.url)
                     ? const Padding(
                         padding: EdgeInsets.all(14),
@@ -295,4 +297,38 @@ Future<String?> importFromClipboard() async {
   }
 
   return null;
+}
+
+String _formatBytes(int? bytes) {
+  if (bytes == null) return '?';
+
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  var value = bytes.toDouble();
+  var index = 0;
+
+  while (value >= 1024 && index < units.length - 1) {
+    value /= 1024;
+    index++;
+  }
+
+  return '${value.toStringAsFixed(value >= 10 || index == 0 ? 0 : 1)} ${units[index]}';
+}
+
+Widget? _subscriptionUsage(Subscription subscription) {
+  final parts = <String>[];
+
+  if (subscription.usedBytes != null || subscription.totalBytes != null) {
+    parts.add('${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}');
+  }
+
+  if (subscription.expireAt != null) {
+    final expire = subscription.expireAt!;
+    parts.add(
+      'expires ${expire.year}-${expire.month.toString().padLeft(2, '0')}-${expire.day.toString().padLeft(2, '0')}',
+    );
+  }
+
+  if (parts.isEmpty) return null;
+
+  return Text(parts.join(' • '), style: const TextStyle(fontSize: 12));
 }

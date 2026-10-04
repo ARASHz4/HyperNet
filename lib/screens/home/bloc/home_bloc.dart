@@ -191,7 +191,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         supportUrl = response.headers["support-url"];
 
-        return Subscription(url: subscription, configs: configs, title: title, user: user, announce: announce, announceUrl: announceUrl, supportUrl: supportUrl);
+        int? usedBytes;
+        int? totalBytes;
+        DateTime? expireAt;
+
+        final userInfo = response.headers["subscription-userinfo"];
+        if (userInfo != null) {
+          final parts = <String, String>{};
+          for (final part in userInfo.split(';')) {
+            final index = part.indexOf('=');
+            if (index > 0) {
+              parts[part.substring(0, index).trim()] =
+                  part.substring(index + 1).trim();
+            }
+          }
+
+          final upload = int.tryParse(parts['upload'] ?? '') ?? 0;
+          final download = int.tryParse(parts['download'] ?? '') ?? 0;
+          usedBytes = upload + download;
+          totalBytes = int.tryParse(parts['total'] ?? '');
+          final expire = int.tryParse(parts['expire'] ?? '');
+          if (expire != null) {
+            expireAt = DateTime.fromMillisecondsSinceEpoch(expire * 1000);
+          }
+        }
+
+        return Subscription(url: subscription, configs: configs, title: title, user: user, announce: announce, announceUrl: announceUrl, supportUrl: supportUrl, usedBytes: usedBytes, totalBytes: totalBytes, expireAt: expireAt);
       }
     } catch (ex) {
       if (kDebugMode) {

@@ -8,6 +8,9 @@ class Subscription {
   String? announce;
   String? announceUrl;
   String? supportUrl;
+  int? usedBytes;
+  int? totalBytes;
+  DateTime? expireAt;
 
   Subscription({
     required this.url,
@@ -17,6 +20,9 @@ class Subscription {
     this.announce,
     this.announceUrl,
     this.supportUrl,
+    this.usedBytes,
+    this.totalBytes,
+    this.expireAt,
   });
 
   Map<String, dynamic> toJson() => {
@@ -27,6 +33,9 @@ class Subscription {
         'announceUrl': announceUrl,
         'supportUrl': supportUrl,
         'configs': configs.map((config) => config.url).toList(),
+        'usedBytes': usedBytes,
+        'totalBytes': totalBytes,
+        'expireAt': expireAt?.toIso8601String(),
       };
 
   factory Subscription.fromJson(Map<String, dynamic> json) {
@@ -42,6 +51,11 @@ class Subscription {
       announce: json['announce'] as String?,
       announceUrl: json['announceUrl'] as String?,
       supportUrl: json['supportUrl'] as String?,
+      usedBytes: json['usedBytes'] as int?,
+      totalBytes: json['totalBytes'] as int?,
+      expireAt: json['expireAt'] == null
+          ? null
+          : DateTime.tryParse(json['expireAt'] as String),
     );
   }
 
