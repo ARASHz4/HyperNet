@@ -74,4 +74,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get copyLink => 'کپی کردن لینک';
+
+  @override
+  String get shareQrCode => 'اشتراک‌گذاری QR کد';
 }

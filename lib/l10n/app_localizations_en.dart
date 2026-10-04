@@ -74,4 +74,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copyLink => 'Copy link';
+
+  @override
+  String get shareQrCode => 'Share QR code';
 }

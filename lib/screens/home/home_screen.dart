@@ -389,6 +389,17 @@ void showSubscriptionQrCodeDialog(BuildContext context, String url) {
     context: context,
     builder: (dialogContext) {
       return AlertDialog(
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(AppLocalizations.of(context)!.shareQrCode),
+            ),
+            IconButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              icon: const Icon(Icons.close),
+            ),
+          ],
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
