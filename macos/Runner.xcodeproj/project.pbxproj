@@ -27,11 +27,10 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
-		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
-		1FD0234028C96D17EBB17CF7 /* flutter-vless-macos-tunnel-support in Frameworks */ = {isa = PBXBuildFile; productRef = F27B42D87458306D1711B212 /* flutter-vless-macos-tunnel-support */; };
-		D375397FDE58388B14ACE09A /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2076A4F61EC8D6F61F5DC016 /* NetworkExtension.framework */; };
-		8257AD800D2FAC3710C357E1 /* XrayTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 86C9DA03AE46FE166AB141CD /* XrayTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		56E3FE5CA881F0C1ACFE7666 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D0D516577B5CCA324CA4C0 /* PacketTunnelProvider.swift */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		8257AD800D2FAC3710C357E1 /* XrayTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 86C9DA03AE46FE166AB141CD /* XrayTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D375397FDE58388B14ACE09A /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2076A4F61EC8D6F61F5DC016 /* NetworkExtension.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +82,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2076A4F61EC8D6F61F5DC016 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		331C80D5294CF71000263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
@@ -99,13 +99,12 @@
 		33E51913231747F40026EE4D /* DebugProfile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DebugProfile.entitlements; sourceTree = "<group>"; };
 		33E51914231749380026EE4D /* Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
+		5E9A5AAC04C74075E3FADE57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		2076A4F61EC8D6F61F5DC016 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		86C9DA03AE46FE166AB141CD /* XrayTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = XrayTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		A3D0D516577B5CCA324CA4C0 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
-		5E9A5AAC04C74075E3FADE57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BEFD1A2F4276D77EF25ABDDD /* XrayTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XrayTunnel.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -129,7 +128,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FD0234028C96D17EBB17CF7 /* flutter-vless-macos-tunnel-support in Frameworks */,
 				D375397FDE58388B14ACE09A /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +163,7 @@
 				33CC10EE2044A3C60003C045 /* Products */,
 				D73912EC22F37F3D000D13A0 /* Frameworks */,
 				DB32C1068EF9DB931B804A84 /* XrayTunnel */,
+				5B131E7D30742E2F00223D93 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,6 +211,14 @@
 				33BA886A226E78AF003329D5 /* Configs */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		5B131E7D30742E2F00223D93 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				2076A4F61EC8D6F61F5DC016 /* NetworkExtension.framework */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		D73912EC22F37F3D000D13A0 /* Frameworks */ = {
@@ -291,7 +298,6 @@
 			);
 			name = XrayTunnel;
 			packageProductDependencies = (
-				F27B42D87458306D1711B212 /* flutter-vless-macos-tunnel-support */,
 			);
 			productName = XrayTunnel;
 			productReference = 86C9DA03AE46FE166AB141CD /* XrayTunnel.appex */;
@@ -308,10 +314,6 @@
 				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
-					7EF873D25AF751C87231638A = {
-						CreatedOnToolsVersion = 15.0;
-						ProvisioningStyle = Automatic;
-					};
 					331C80D4294CF70F00263BE5 = {
 						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 33CC10EC2044A3C60003C045;
@@ -330,6 +332,10 @@
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Manual;
 					};
+					7EF873D25AF751C87231638A = {
+						CreatedOnToolsVersion = 15.0;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 33CC10E82044A3C60003C045 /* Build configuration list for PBXProject "Runner" */;
@@ -343,7 +349,6 @@
 			mainGroup = 33CC10E42044A3C60003C045;
 			packageReferences = (
 				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
-				88FA8A9F37B663CC79CE6EEF /* XCLocalSwiftPackageReference "../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless_macos-1.1.6/macos/flutter_vless_macos" */,
 			);
 			productRefGroup = 33CC10EE2044A3C60003C045 /* Products */;
 			projectDirPath = "";
@@ -484,6 +489,34 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		2E066E56F83935080FEC4FD3 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = XrayTunnel/XrayTunnel.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = VTX738MK2Y;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = XrayTunnel/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = XrayTunnel;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.arashz4.hypernet.XrayTunnel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Profile;
+		};
 		331C80DB294CF71000263BE5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -825,35 +858,6 @@
 			};
 			name = Release;
 		};
-		EE6B0ECFC17E9FCB7E1D353B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = XrayTunnel/XrayTunnel.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = VTX738MK2Y;
-				ENABLE_APP_SANDBOX = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = XrayTunnel/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = XrayTunnel;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@executable_path/../../../../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.arashz4.hypernet.XrayTunnel;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
 		3BF20B0ABE5CB508DF5032EF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -882,7 +886,7 @@
 			};
 			name = Release;
 		};
-		2E066E56F83935080FEC4FD3 /* Profile */ = {
+		EE6B0ECFC17E9FCB7E1D353B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -906,13 +910,24 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
-			name = Profile;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0EC05813CF341263518CF35D /* Build configuration list for PBXNativeTarget "XrayTunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE6B0ECFC17E9FCB7E1D353B /* Debug */,
+				3BF20B0ABE5CB508DF5032EF /* Release */,
+				2E066E56F83935080FEC4FD3 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		331C80DE294CF71000263BE5 /* Build configuration list for PBXNativeTarget "RunnerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -953,16 +968,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0EC05813CF341263518CF35D /* Build configuration list for PBXNativeTarget "XrayTunnel" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EE6B0ECFC17E9FCB7E1D353B /* Debug */,
-				3BF20B0ABE5CB508DF5032EF /* Release */,
-				2E066E56F83935080FEC4FD3 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -970,21 +975,12 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
 		};
-		88FA8A9F37B663CC79CE6EEF /* XCLocalSwiftPackageReference "../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless_macos-1.1.6/macos/flutter_vless_macos" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless_macos-1.1.6/macos/flutter_vless_macos;
-		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlutterGeneratedPluginSwiftPackage;
-		};
-		F27B42D87458306D1711B212 /* flutter-vless-macos-tunnel-support */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88FA8A9F37B663CC79CE6EEF /* XCLocalSwiftPackageReference "../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless_macos-1.1.6/macos/flutter_vless_macos" */;
-			productName = flutter-vless-macos-tunnel-support;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

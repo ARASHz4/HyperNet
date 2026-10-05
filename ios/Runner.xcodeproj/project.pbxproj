@@ -12,7 +12,6 @@
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		5BBE42ED3071FF4C006F6B9D /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BBE42EC3071FF4C006F6B9D /* NetworkExtension.framework */; };
 		5BBE42F53071FF4C006F6B9D /* XrayTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5BBE42EA3071FF4C006F6B9D /* XrayTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5BBE4308307207B7006F6B9D /* flutter-vless-tunnel-support in Frameworks */ = {isa = PBXBuildFile; productRef = F27B42D87458306D1711B212 /* flutter-vless-tunnel-support */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
@@ -104,7 +103,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BBE4308307207B7006F6B9D /* flutter-vless-tunnel-support in Frameworks */,
 				5BBE42ED3071FF4C006F6B9D /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -224,7 +222,6 @@
 			);
 			name = XrayTunnel;
 			packageProductDependencies = (
-				F27B42D87458306D1711B212 /* flutter-vless-tunnel-support */,
 			);
 			productName = XrayTunnel;
 			productReference = 5BBE42EA3071FF4C006F6B9D /* XrayTunnel.appex */;
@@ -290,7 +287,6 @@
 			mainGroup = 97C146E51CF9000F007C117D;
 			packageReferences = (
 				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
-				88FA8A9F37B663CC79CE6EEF /* XCLocalSwiftPackageReference "../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless-1.1.5/ios/flutter_vless" */,
 			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
@@ -891,21 +887,12 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
 		};
-		88FA8A9F37B663CC79CE6EEF /* XCLocalSwiftPackageReference "../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless-1.1.5/ios/flutter_vless" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless-1.1.5/ios/flutter_vless";
-		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlutterGeneratedPluginSwiftPackage;
-		};
-		F27B42D87458306D1711B212 /* flutter-vless-tunnel-support */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88FA8A9F37B663CC79CE6EEF /* XCLocalSwiftPackageReference "../../../../../../Users/arash/.pub-cache/hosted/pub.dev/flutter_vless-1.1.5/ios/flutter_vless" */;
-			productName = "flutter-vless-tunnel-support";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
