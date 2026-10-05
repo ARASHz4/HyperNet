@@ -7,8 +7,8 @@ sealed class HomeEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class RestoreVlessState extends HomeEvent {
-  const RestoreVlessState();
+final class InitializeVless extends HomeEvent {
+  const InitializeVless();
 }
 
 final class LoadSubscriptions extends HomeEvent {
