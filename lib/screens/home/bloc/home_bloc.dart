@@ -138,6 +138,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(currentState.copyWith(vlessStatus: event.status));
     });
 
+    on<RestoreVlessState>((event, emit) async {
+      try {
+        await _initializeVless();
+
+        final delay = await flutterVless
+            .getConnectedServerDelay()
+            .timeout(const Duration(seconds: 8));
+
+        final connected = delay >= 0;
+
+        final currentState = state as HomeLoaded;
+        emit(currentState.copyWith(
+          vlessStatus: connected
+              ? VlessStatus(
+                  state: 'CONNECTED',
+                  duration: currentState.vlessStatus.duration,
+                  upload: currentState.vlessStatus.upload,
+                  download: currentState.vlessStatus.download,
+                )
+              : VlessStatus(),
+        ));
+      } catch (_) {
+        // Keep default disconnected state.
+      }
+    });
+
     on<Connect>((event, emit) async {
       await connect(event.config);
     });
@@ -182,6 +208,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     add(const LoadSubscriptions());
+    add(const RestoreVlessState());
   }
 
   late final flutterVless = FlutterVless(
@@ -279,13 +306,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     return null;
   }
 
-  Future<void> connect(FlutterVlessURL config) async {
-    await flutterVless.initializeVless(
+  Future<void> _initializeVless() {
+    return flutterVless.initializeVless(
       providerBundleIdentifier: 'com.arashz4.hypernet',
       groupIdentifier: 'group.com.arashz4.hypernet',
       notificationIconResourceName: 'ic_notification',
       notificationIconResourceType: 'drawable',
     );
+  }
+
+  Future<void> connect(FlutterVlessURL config) async {
+    await _initializeVless();
 
     if (await flutterVless.requestPermission()) {
       await flutterVless.startVless(
