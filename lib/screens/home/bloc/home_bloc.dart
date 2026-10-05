@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vless/flutter_vless.dart';
 import 'package:http/http.dart' as http;
 import 'package:hyper_net/models/subscription.dart';
+import 'package:hyper_net/preferences.dart';
 import 'package:hyper_net/storage/local_storage.dart';
 
 part 'home_state.dart';
@@ -14,10 +15,33 @@ part 'home_event.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeLoaded()) {
-    on<LoadSubscriptions>((event, emit) {
+    on<LoadSubscriptions>((event, emit) async {
       final subscriptions = LocalStorage().getSubscriptions();
+      final savedUrl = await Preferences.selectedConfigUrl();
 
-      emit((state as HomeLoaded).copyWith(subscriptions: subscriptions));
+      FlutterVlessURL? savedConfig;
+      if (savedUrl != null && savedUrl.isNotEmpty) {
+        for (final subscription in subscriptions) {
+          for (final config in subscription.configs) {
+            if (config.url == savedUrl) {
+              savedConfig = config;
+              break;
+            }
+          }
+          if (savedConfig != null) break;
+        }
+
+        try {
+          savedConfig ??= FlutterVless.parse(savedUrl);
+        } catch (_) {
+          savedConfig = null;
+        }
+      }
+
+      emit((state as HomeLoaded).copyWith(
+        subscriptions: subscriptions,
+        selectedConfig: savedConfig,
+      ));
     });
 
     on<AddSubscription>((event, emit) async {
@@ -85,6 +109,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final currentState = state as HomeLoaded;
 
       emit(currentState.copyWith(selectedConfig: event.config));
+
+      await Preferences.setSelectedConfigUrl(event.config.url);
 
       switch (currentState.vlessStatus.connectionState) {
         case VlessConnectionState.connected:

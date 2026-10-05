@@ -16,6 +16,21 @@ class Preferences {
 
   static const String _languageKey = 'LanguageId';
   static const String _appearanceKey = 'Appearance';
+  static const String _selectedConfigKey = 'SelectedConfigUrl';
+
+  static Future<void> setSelectedConfigUrl(String? url) async {
+    final preferences = await sharedPreferences;
+    if (url == null) {
+      await preferences.remove(_selectedConfigKey);
+    } else {
+      await preferences.setString(_selectedConfigKey, url);
+    }
+  }
+
+  static Future<String?> selectedConfigUrl() async {
+    final preferences = await sharedPreferences;
+    return preferences.getString(_selectedConfigKey);
+  }
 
   static Language? _applicationLanguage;
   static int? _appearance;
