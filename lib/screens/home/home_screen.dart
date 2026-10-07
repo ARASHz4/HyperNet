@@ -25,36 +25,7 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(mainAxisSize: MainAxisSize.min, children: [Image.asset('assets/icon.png', height: 28), const SizedBox(width: 8), Text(AppLocalizations.of(context)!.appTitle)]),
-                if (state.selectedConfig != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          canStop(state.vlessStatus) ? Icons.network_check : Icons.circle,
-                          size: 14,
-                          color: canStop(state.vlessStatus)
-                              ? Colors.green
-                              : Theme.of(context).colorScheme.outline,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${state.selectedConfig!.remark} · ${state.selectedConfig!.address}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+            title: Row(mainAxisSize: MainAxisSize.min, children: [Image.asset('assets/icon.png', height: 28), const SizedBox(width: 8), Text(AppLocalizations.of(context)!.appTitle)]),
             actions: [
               PopupMenuButton<int>(
                 icon: const Icon(Icons.settings),
