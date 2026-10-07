@@ -499,7 +499,7 @@ class HomeScreen extends StatelessWidget {
                           return AppLocalizations.of(context)!.enterSubscriptionUrl;
                         }
 
-                        if (!(value!.trim().toLowerCase().startsWith('vless://'))) {
+                        if (!_isSupportedConfigScheme(value)) {
                           return AppLocalizations.of(context)!.invalidConfigUrl;
                         }
 
@@ -539,7 +539,23 @@ class HomeScreen extends StatelessWidget {
     return null;
   }
 
-  bool isSubscriptionUrl(String value) {
+  bool _isSupportedConfigScheme(String? value) {
+  final trimmed = (value ?? '').trim().toLowerCase();
+
+  return _supportedConfigSchemes.any((scheme) => trimmed.startsWith(scheme));
+}
+
+const _supportedConfigSchemes = [
+  'vmess://',
+  'vless://',
+  'trojan://',
+  'ss://',
+  'socks://',
+  'hysteria2://',
+  'hy2://',
+];
+
+bool isSubscriptionUrl(String value) {
     final uri = Uri.tryParse(value.trim());
     return uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty;
   }
