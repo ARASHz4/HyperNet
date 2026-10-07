@@ -500,7 +500,7 @@ class HomeScreen extends StatelessWidget {
                         }
 
                         try {
-                          FlutterVless.parse(value);
+                          FlutterVless.parse(value!);
                         } catch (_) {
                           return AppLocalizations.of(context)!.invalidConfigUrl;
                         }
