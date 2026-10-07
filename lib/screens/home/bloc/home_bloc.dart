@@ -45,32 +45,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<AddConfig>((event, emit) async {
-      print("arashhhhhhh 4");
-
-      if (state is! HomeLoaded) return;
-
-      print("arashhhhhhh 5");
+      if (state is! HomeLoaded) {
+        return;
+      }
 
       final currentState = state as HomeLoaded;
-
-      print("arashhhhhhh 6");
 
       try {
         final config = FlutterVless.parse(event.rawUrl);
 
-        print("arashhhhhhh 7");
-
         await LocalStorage().saveSingleConfig(event.rawUrl);
-
-        print("arashhhhhhh 8");
 
         emit(currentState.copyWith(
           singleConfigs: [...currentState.singleConfigs, config],
         ));
-
-        print("arashhhhhhh 9");
       } catch (ex) {
-        print("arashhhhhhh fuck $ex");
+        if (kDebugMode) {
+          print("failed to add config $ex");
+        }
       }
     });
 
