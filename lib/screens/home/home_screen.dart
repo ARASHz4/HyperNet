@@ -533,6 +533,34 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () => Navigator.pop(builderContext),
                         child: Text(AppLocalizations.of(context)!.cancel),
                       ),
+                      IconButton(
+                        onPressed: () async {
+                          final text = (await importFromClipboard() ?? '').trim();
+                          if (text.isEmpty) return;
+
+                          try {
+                            if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
+                              context.read<HomeBloc>().add(AddSubscription(text));
+                            } else {
+                              final configs = FlutterVless.parseMany(text);
+                              for (final config in configs) {
+                                context.read<HomeBloc>().add(AddConfig(config.url));
+                              }
+                            }
+
+                            Navigator.pop(builderContext);
+                          } catch (ex) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(ex.toString()),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.paste),
+                      ),
                       TextButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
