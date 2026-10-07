@@ -85,6 +85,27 @@ class AppLocalizationsFa extends AppLocalizations {
   String get removeAction => 'حذف';
 
   @override
+  String get connectedLabel => 'متصل شده';
+
+  @override
+  String get pingingEllipsis => 'در حال تست پینگ...';
+
+  @override
+  String get timeoutLabel => 'زمان تمام شد';
+
+  @override
+  String get expiredLabel => 'منقضی شده';
+
+  @override
+  String get daysLeftLabel => '%d روز باقی مانده';
+
+  @override
+  String get linkCopied => 'لینک کپی شد';
+
+  @override
+  String get qrInvalidSubscriptionLink => 'کد QR لینک اشتراک معتبری نیست.';
+
+  @override
   String get importFromClipboard => 'وارد کردن از حافظه موقت';
 
   @override

@@ -248,6 +248,48 @@ abstract class AppLocalizations {
   /// **'Remove'**
   String get removeAction;
 
+  /// No description provided for @connectedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connectedLabel;
+
+  /// No description provided for @pingingEllipsis.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinging...'**
+  String get pingingEllipsis;
+
+  /// No description provided for @timeoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'timeout'**
+  String get timeoutLabel;
+
+  /// No description provided for @expiredLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'expired'**
+  String get expiredLabel;
+
+  /// No description provided for @daysLeftLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'%d days left'**
+  String get daysLeftLabel;
+
+  /// No description provided for @linkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get linkCopied;
+
+  /// No description provided for @qrInvalidSubscriptionLink.
+  ///
+  /// In en, this message translates to:
+  /// **'QR code is not a valid subscription link.'**
+  String get qrInvalidSubscriptionLink;
+
   /// No description provided for @importFromClipboard.
   ///
   /// In en, this message translates to:

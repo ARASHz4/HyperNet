@@ -236,7 +236,7 @@ class HomeScreen extends StatelessWidget {
       color: Theme.of(context).colorScheme.primaryContainer,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Text(
-        'Connected • ${_formatDuration(duration)} • '
+        '${AppLocalizations.of(context)!.connectedLabel} • ${_formatDuration(duration)} • '
             '↑ ${_formatBytes(upload)} • '
             '↓ ${_formatBytes(download)}',
         style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
@@ -289,7 +289,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          subtitle: _subscriptionUsage(subscription),
+          subtitle: _subscriptionUsage(subscription, context),
           leading: SizedBox(
             width: 32,
             child: PopupMenuButton<String>(
@@ -298,7 +298,7 @@ class HomeScreen extends StatelessWidget {
                 if (value == 'remove') {
                   context.read<HomeBloc>().add(RemoveSubscription(subscription.url));
                 } else if (value == 'share') {
-                  showSubscriptionQrCodeDialog(context, subscription.url);
+                  showShareQrCodeDialog(context, subscription.url);
                 }
               },
               itemBuilder: (context) =>
@@ -354,7 +354,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           SlidableAction(
             onPressed: (_) {
-              showSubscriptionQrCodeDialog(context, config.url);
+              showShareQrCodeDialog(context, config.url);
             },
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
@@ -387,7 +387,7 @@ class HomeScreen extends StatelessWidget {
             if (state.pinging.contains(config.url))
               const Padding(
                 padding: EdgeInsets.only(left: 8),
-                child: Text("Pinging...", style: TextStyle(fontSize: 9)),
+                child: Text(AppLocalizations.of(context)!.pingingEllipsis, style: TextStyle(fontSize: 9)),
               )
             else
               if (state.delays.containsKey(config.url))
@@ -395,7 +395,7 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8),
                   child: Text(
                     state.delays[config.url]! < 0
-                        ? 'timeout'
+                        ? AppLocalizations.of(context)!.timeoutLabel
                         : '${state.delays[config.url]} ms',
                     style: TextStyle(
                       color: state.delays[config.url]! < 0
@@ -597,7 +597,7 @@ class HomeScreen extends StatelessWidget {
     return uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty;
   }
 
-  void showSubscriptionQrCodeDialog(BuildContext context, String url) {
+  void showShareQrCodeDialog(BuildContext context, String url) {
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -633,8 +633,9 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: url));
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Link copied')));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.linkCopied)));
                   }
+                  
                   if (dialogContext.mounted) Navigator.pop(dialogContext);
                 },
                 icon: const Icon(Icons.copy),
@@ -657,7 +658,7 @@ class HomeScreen extends StatelessWidget {
     }
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('QR code is not a valid subscription link.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.qrInvalidSubscriptionLink)));
     }
 
     return null;
@@ -698,7 +699,7 @@ class HomeScreen extends StatelessWidget {
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
-  Widget? _subscriptionUsage(Subscription subscription) {
+  Widget? _subscriptionUsage(Subscription subscription, BuildContext context) {
     if (subscription.usedBytes == null && subscription.totalBytes == null && subscription.expireAt == null) {
       return null;
     }
@@ -715,12 +716,16 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
-            [if (subscription.usedBytes != null || subscription.totalBytes != null) '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}', if (daysLeft != null) daysLeft < 0 ? 'expired' : '$daysLeft days left'].join(' • '),
+            [if (subscription.usedBytes != null || subscription.totalBytes != null) '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}', if (daysLeft != null) daysLeft < 0 ? AppLocalizations.of(context)!.expiredLabel : _formatDaysLeft(context, daysLeft)].join(' • '),
             style: const TextStyle(fontSize: 12),
           ),
         ),
       ],
     );
+  }
+
+  String _formatDaysLeft(BuildContext context, int days) {
+    return AppLocalizations.of(context)!.daysLeftLabel.replaceAll('%d', '$days');
   }
 
   Future<void> importFromClipboardIntoApp(BuildContext context) async {

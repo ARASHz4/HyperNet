@@ -85,6 +85,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeAction => 'Remove';
 
   @override
+  String get connectedLabel => 'Connected';
+
+  @override
+  String get pingingEllipsis => 'Pinging...';
+
+  @override
+  String get timeoutLabel => 'timeout';
+
+  @override
+  String get expiredLabel => 'expired';
+
+  @override
+  String get daysLeftLabel => '%d days left';
+
+  @override
+  String get linkCopied => 'Link copied';
+
+  @override
+  String get qrInvalidSubscriptionLink =>
+      'QR code is not a valid subscription link.';
+
+  @override
   String get importFromClipboard => 'Import from clipboard';
 
   @override
