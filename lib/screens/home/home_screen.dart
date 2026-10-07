@@ -493,6 +493,23 @@ class HomeScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.url,
                         border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          onPressed: () async {
+                            final text = (await importFromClipboard() ?? '').trim();
+                            if (text.isEmpty) return;
+
+                            if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
+                              context.read<HomeBloc>().add(AddSubscription(text));
+                              return;
+                            }
+
+                            final configs = FlutterVless.parseMany(text);
+                            for (final config in configs) {
+                              context.read<HomeBloc>().add(AddConfig(config.url));
+                            }
+                          },
+                          icon: const Icon(Icons.paste),
+                        ),
                       ),
                       validator: (value) {
                         if ((value ?? "").isEmpty) {
