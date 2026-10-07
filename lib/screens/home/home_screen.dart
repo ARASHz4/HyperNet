@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                   return [
                     PopupMenuItem<int>(
                       value: 0,
-                      child: ListTile(title: Text(AppLocalizations.of(context)!.addSubscription), leading: const Icon(Icons.add), contentPadding: EdgeInsets.zero),
+                      child: ListTile(title: Text(AppLocalizations.of(context)!.addSubscription), leading: const Icon(Icons.add), contentPadding: EdgeInsets.zero,),
                       onTap: () async {
                         final url = await addSubscription(context);
                         if (url != null) {
@@ -59,10 +59,19 @@ class HomeScreen extends StatelessWidget {
                     ),
                     PopupMenuItem<int>(
                       value: 1,
-                      child: ListTile(title: Text(AppLocalizations.of(context)!.addConfig), leading: const Icon(Icons.link), contentPadding: EdgeInsets.zero),
+                      child: ListTile(
+                        title: Text(AppLocalizations.of(context)!.addConfig),
+                        leading: const Icon(Icons.link),
+                        contentPadding: EdgeInsets.zero,
+                      ),
                       onTap: () async {
+                        print("arashhhhhhh 1");
+
                         final url = await addConfigUrl(context);
+                        print("arashhhhhhh 2");
                         if (url != null) {
+                          print("arashhhhhhh 3");
+
                           print(url);
 
                           context.read<HomeBloc>().add(AddConfig(url));

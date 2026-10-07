@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hyper_net/models/subscription.dart';
 
@@ -66,7 +67,8 @@ class LocalStorage {
       Hive.isBoxOpen(_singleConfigsBox) ? Hive.box<String>(_singleConfigsBox) : null;
 
   Future<void> saveSingleConfig(String url) async {
-    await _singleConfigs?.put(url, url);
+    final key = sha1.convert(utf8.encode(url)).toString();
+    await _singleConfigs?.put(key, url);
   }
 
   List<String> getSingleConfigUrls() {
@@ -76,6 +78,7 @@ class LocalStorage {
   }
 
   Future<void> deleteSingleConfig(String url) async {
-    await _singleConfigs?.delete(url);
+    final key = sha1.convert(utf8.encode(url)).toString();
+    await _singleConfigs?.delete(key);
   }
 }
