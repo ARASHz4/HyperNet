@@ -599,7 +599,13 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: CustomPaint(
                     size: const Size(220, 220),
-                    painter: QrPainter(data: url, version: QrVersions.auto, gapless: false, color: Colors.black, emptyColor: Colors.white),
+                    painter: QrPainter(
+                      data: url,
+                      version: QrVersions.auto,
+                      gapless: false,
+                      eyeStyle: const QrEyeStyle(color: Colors.black),
+                      dataModuleStyle: const QrDataModuleStyle(color: Colors.black),
+                    ),
                   ),
                 ),
               ),

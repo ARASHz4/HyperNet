@@ -317,8 +317,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final url = Uri.parse(subscription);
       final response = await http.get(url);
 
-      print(response.statusCode);
-
       if (response.statusCode == HttpStatus.ok) {
         List<FlutterVlessURL> configs = [];
         String? title;
