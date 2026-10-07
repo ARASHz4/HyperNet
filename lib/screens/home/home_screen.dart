@@ -49,7 +49,11 @@ class HomeScreen extends StatelessWidget {
                   return [
                     PopupMenuItem<int>(
                       value: 0,
-                      child: ListTile(title: Text(AppLocalizations.of(context)!.addSubscription), leading: const Icon(Icons.add), contentPadding: EdgeInsets.zero,),
+                      child: ListTile(
+                        title: Text(AppLocalizations.of(context)!.addSubscription),
+                        leading: const Icon(Icons.add),
+                        contentPadding: EdgeInsets.zero,
+                      ),
                       onTap: () async {
                         final url = await addSubscription(context);
                         if (url != null) {
@@ -65,22 +69,19 @@ class HomeScreen extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                       ),
                       onTap: () async {
-                        print("arashhhhhhh 1");
-
                         final url = await addConfigUrl(context);
-                        print("arashhhhhhh 2");
                         if (url != null) {
-                          print("arashhhhhhh 3");
-
-                          print(url);
-
                           context.read<HomeBloc>().add(AddConfig(url));
                         }
                       },
                     ),
                     PopupMenuItem<int>(
                       value: 2,
-                      child: ListTile(title: Text(AppLocalizations.of(context)!.importFromClipboard), leading: const Icon(Icons.content_paste), contentPadding: EdgeInsets.zero),
+                      child: ListTile(
+                        title: Text(AppLocalizations.of(context)!.importFromClipboard),
+                        leading: const Icon(Icons.content_paste),
+                        contentPadding: EdgeInsets.zero,
+                      ),
                       onTap: () async {
                         await importFromClipboardIntoApp(context);
                       },
@@ -139,15 +140,42 @@ class HomeScreen extends StatelessWidget {
                                   selected: isSelected,
                                   selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
                                   title: Text(config.remark),
-                                  subtitle: Text(config.url),
+                                  subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
                                   onTap: () {
                                     context.read<HomeBloc>().add(SelectConfig(config));
                                   },
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.delete_outline),
-                                    onPressed: () {
-                                      context.read<HomeBloc>().add(RemoveConfig(config.url));
-                                    },
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (isSelected)
+                                        const Icon(Icons.check_circle, color: Colors.green),
+                                      if (state.pinging.contains(config.url))
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Text("Pinging...", style: TextStyle(fontSize: 9)),
+                                        )
+                                      else if (state.delays.containsKey(config.url))
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            state.delays[config.url]! < 0
+                                                ? 'timeout'
+                                                : '${state.delays[config.url]} ms',
+                                            style: TextStyle(
+                                              color: state.delays[config.url]! < 0
+                                                  ? Colors.red
+                                                  : Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete_outline),
+                                        onPressed: () {
+                                          context.read<HomeBloc>().add(RemoveConfig(config.url));
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 );
                               }).toList(),
