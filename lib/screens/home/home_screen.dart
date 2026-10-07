@@ -804,14 +804,16 @@ class HomeScreen extends StatelessWidget {
 String? _countryFlagEmoji(String input) {
   if (input.isEmpty) return null;
 
-  final flagRegex = RegExp(r'[\u{1F1E6}-\u{1F1FF}]{2}', unicode: true);
-  final match = flagRegex.firstMatch(input);
+  final nationalFlag = RegExp(r'[\u{1F1E6}-\u{1F1FF}]{2}', unicode: true);
+  final subdivisionFlag = RegExp(r'\u{1F3F4}(?:[\u{E0000}-\u{E007F}])+', unicode: true);
+
+  final match = nationalFlag.firstMatch(input) ?? subdivisionFlag.firstMatch(input);
 
   return match?.group(0);
 }
 
 String _stripFlag(String input) {
-  final flagRegex = RegExp(r'[\u{1F1E6}-\u{1F1FF}]{2}', unicode: true);
+  final flagRegex = RegExp(r'([\u{1F1E6}-\u{1F1FF}]{2}|\u{1F3F4}(?:[\u{E0000}-\u{E007F}])+)', unicode: true);
   return input.replaceFirst(flagRegex, '').trim();
 }
 
