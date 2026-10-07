@@ -1,54 +1,52 @@
 # hyper_net
 
-## Overview
+HyperNet is a VPN / proxy client built in Flutter on top of the `flutter_vless`
+plugin with the Xray core. It gives a single workspace for managing proxy
+subscriptions and standalone configs.
 
-HyperNet is a VPN / proxy client written in Flutter and built on the `flutter_vless` / Xray core.
-It lets you:
+## Features
 
-- Add subscriptions from a URL and parse their configs (VLESS/VMess/Trojan/SS/SOCKS/Hysteria2)
-- Add single configs directly from a link, QR code, JSON, or clipboard
-- Select a config and connect/disconnect the Xray runtime
-- Ping subscription configs for latency (`ms` / `timeout`)
-- View subscription usage (progress bar) and days until expiry
-- Multi-language UI (English / Persian) with a 3-state theme (System / Light / Dark)
+- **Subscriptions** – import subscription URLs, see used/total traffic, and
+  how many days remain until they expire
+- **Single configs** – add standalone configs manually, paste from the
+  clipboard, or scan a QR code; survive app restarts (stored locally with
+  Hive)
+- **Config list** – one `ExpansionTile` per subscription plus an "Other
+  Servers" tile for single configs; tap a row to select it as the active
+  config, or swipe left to delete a single config
+- **Ping** – probe all configs in a subscription (or the Other Servers tile)
+  and see latency in milliseconds (`timeout` when unreachable)
+- **Connect / disconnect** – one button starts or stops the Xray VPN
+  session for the currently selected config
+- **Import from clipboard** – a ⋮ menu item in the app bar parses the
+  clipboard as either a subscription URL (`http(s)`) or many bare configs
+- **UI**
+  - multi-language (English / Persian) with a language picker in Settings
+  - Dark / Light / System theme modes
 
-## Requirements
+## Architecture notes
 
-- Flutter SDK – the project uses Dart `sdk: ^3.13.5`
-- Android Studio / Android SDK (for the Android target)
-- Xcode (for iOS / macOS targets)
-- A signing team for iOS/macOS (PacketTunnel targets)
+- State is driven by `flutter_bloc` (`Bloc` + events/state) – there are
+  `HomeBloc` and `ApplicationCubit` providers
+- Subscriptions are cached with Hive (`LocalStorage`), per-setting values are
+  kept in `SharedPreferences`
+- The Xray core handshake lives inside `flutter_vless`; if you add native
+  targets remember that Android foreground-service notification uses
+  `ic_notification`
 
-## Getting Started
+## Getting started
 
 ```bash
 flutter pub get
 flutter run -d <device>
 ```
 
-## Native clones
+You can paste a single proxy link, a bunch of vless/vmess/trojan/ss/hysteria2
+URLs, a raw Xray JSON config, or a Clash YAML / sing-box JSON payload into the
+Add Config dialog or the app-bar ⋮ → Import from clipboard.
 
-The same app has been re-written natively for demonstration purposes:
-
-- `hyper_net_android` – Kotlin + Jetpack Compose Android project
-- `hyper_net_ios` – Swift + SwiftUI iOS project
-
-Build the Android Kotlin project with the bundled Gradle wrapper (Java 21):
+## Running tests
 
 ```bash
-cd ../hyper_net_android
-JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home ./gradlew assembleDebug
+flutter analyze
 ```
-
-## Notes
-
-- Ping is best-effort and sequential because the underlying Xray provider
-  serializes delay measurements.
-- Native VPN on iOS / macOS requires a `PacketTunnelProvider` and a shared App
-  Group; see the `hyper_net` iOS/macOS folder for reference.
-
----
-
-This is **HyperNet** – a lightweight client that puts server configs and
-subscription management in one screen for quickly connecting through the
-flutter_vless / Xray backend.
