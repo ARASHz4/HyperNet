@@ -407,24 +407,41 @@ class HomeScreen extends StatelessWidget {
       child: ListTile(
         selected: isSelected,
         selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-        leading: CircleAvatar(
-          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-          child: Builder(
-            builder: (_) {
-              final flag = _countryFlagEmoji(config.remark) ?? _countryFlagEmoji(config.url);
-              if (flag != null) {
-                return Text(flag);
-              }
-
-              return Text(
-                protocol.isNotEmpty ? protocol[0].toUpperCase() : '?',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSecondaryContainer,
-                  fontWeight: FontWeight.bold,
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isSelected)
+              Container(
+                width: 4,
+                height: 40,
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: state.vlessStatus.connectionState == VlessConnectionState.connected
+                      ? Colors.green
+                      : Theme.of(context).colorScheme.outline,
+                  borderRadius: BorderRadius.circular(2),
                 ),
-              );
-            },
-          ),
+              ),
+            CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+              child: Builder(
+                builder: (_) {
+                  final flag = _countryFlagEmoji(config.remark) ?? _countryFlagEmoji(config.url);
+                  if (flag != null) {
+                    return Text(flag);
+                  }
+
+                  return Text(
+                    protocol.isNotEmpty ? protocol[0].toUpperCase() : '?',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
         title: Text(_stripFlag(config.remark), softWrap: false, overflow: TextOverflow.ellipsis),
         subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
