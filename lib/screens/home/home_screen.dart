@@ -110,6 +110,17 @@ class HomeScreen extends StatelessWidget {
                         }
                       },
                     ),
+                    PopupMenuItem<int>(
+                      value: 2,
+                      child: ListTile(
+                        title: Text(AppLocalizations.of(context)!.importFromClipboard),
+                        leading: const Icon(Icons.content_paste),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      onTap: () async {
+                        await importFromClipboardIntoApp(context);
+                      },
+                    ),
                   ];
                 },
               ),
@@ -241,8 +252,6 @@ class HomeScreen extends StatelessWidget {
                                   .add(RemoveSubscription(subscription.url));
                             } else if (value == 'share') {
                               showSubscriptionQrCodeDialog(context, subscription.url);
-                            } else if (value == 'import') {
-                              importFromClipboardIntoApp(context);
                             }
                           },
                           itemBuilder: (context) =>
@@ -260,14 +269,6 @@ class HomeScreen extends StatelessWidget {
                               child: ListTile(
                                 leading: const Icon(Icons.share),
                                 title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 'import',
-                              child: ListTile(
-                                leading: const Icon(Icons.content_paste),
-                                title: Text(AppLocalizations.of(context)!.importFromClipboard),
                                 contentPadding: EdgeInsets.zero,
                               ),
                             ),
