@@ -56,9 +56,10 @@ class HomeScreen extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                       ),
                       onTap: () async {
+                        final bloc = context.read<HomeBloc>();
                         final url = await addSubscription(context);
                         if (url != null) {
-                          context.read<HomeBloc>().add(AddSubscription(url));
+                          bloc.add(AddSubscription(url));
                         }
                       },
                     ),
@@ -70,9 +71,10 @@ class HomeScreen extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                       ),
                       onTap: () async {
+                        final bloc = context.read<HomeBloc>();
                         final url = await addConfigUrl(context);
                         if (url != null) {
-                          context.read<HomeBloc>().add(AddConfig(url));
+                          bloc.add(AddConfig(url));
                         }
                       },
                     ),
@@ -217,9 +219,10 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: () async {
+              final bloc = context.read<HomeBloc>();
               final url = await addSubscription(context);
               if (url != null) {
-                context.read<HomeBloc>().add(AddSubscription(url));
+                bloc.add(AddSubscription(url));
               }
             },
             icon: const Icon(Icons.add),
@@ -712,11 +715,17 @@ class HomeScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (progress != null) LinearProgressIndicator(value: progress, minHeight: 4, borderRadius: BorderRadius.circular(2)),
+        if (progress != null)
+          LinearProgressIndicator(
+            value: progress,
+            minHeight: 4,
+            borderRadius: BorderRadius.circular(2),
+          ),
         Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
-            [if (subscription.usedBytes != null || subscription.totalBytes != null) '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}', if (daysLeft != null) daysLeft < 0 ? AppLocalizations.of(context)!.expiredLabel : _formatDaysLeft(context, daysLeft)].join(' • '),
+            [if (subscription.usedBytes != null || subscription.totalBytes != null) '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
+              if (daysLeft != null) daysLeft < 0 ? AppLocalizations.of(context)!.expiredLabel : AppLocalizations.of(context)!.daysLeft(daysLeft)].join(' • '),
             style: const TextStyle(fontSize: 12),
           ),
         ),
@@ -724,24 +733,21 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  String _formatDaysLeft(BuildContext context, int days) {
-    return AppLocalizations.of(context)!.daysLeft(days);
-  }
-
   Future<void> importFromClipboardIntoApp(BuildContext context) async {
     final text = (await Clipboard.getData('text/plain'))?.text?.trim() ?? '';
 
-    if (text.isEmpty) {
+    if (text.isEmpty || !context.mounted) {
       return;
     }
 
+    final bloc = context.read<HomeBloc>();
+
     try {
       if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
-        context.read<HomeBloc>().add(AddSubscription(text));
-      }
-      else {
+        bloc.add(AddSubscription(text));
+      } else {
         final configs = FlutterVless.parseMany(text);
-        context.read<HomeBloc>().add(AddConfigs(configs));
+        bloc.add(AddConfigs(configs));
       }
     } catch (ex) {
       if (context.mounted) {

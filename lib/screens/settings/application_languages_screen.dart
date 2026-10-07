@@ -34,32 +34,35 @@ class _ApplicationLanguageScreenState
       appBar: AppBar(
         title: Text(l10n.language),
       ),
-      body: ListView.separated(
-        itemCount: languages.length,
-        itemBuilder: (context, index) {
-          var language = languages[index];
-          return RadioListTile<int>(
-            value: index,
-            groupValue: selectedIndex,
-            title: Text(language.name == "system" ? l10n.system : language.name),
-            subtitle: language.nativeName.isNotEmpty
-                ? Text(language.nativeName)
-                : null,
-            onChanged: (index) {
-              setState(() {
-                selectedIndex = index!;
-              });
+      body: RadioGroup<int>(
+        groupValue: selectedIndex,
+        onChanged: (index) {
+          if (index == null) return;
+          setState(() {
+            selectedIndex = index;
+          });
 
-              selectLanguage(selectedIndex);
-            },
-          );
+          selectLanguage(selectedIndex);
         },
-        separatorBuilder: (context, index) {
-          return const Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(64, 0, 16, 0),
-            child: Divider(height: 1),
-          );
-        },
+        child: ListView.separated(
+          itemCount: languages.length,
+          itemBuilder: (context, index) {
+            var language = languages[index];
+            return RadioListTile<int>(
+              value: index,
+              title: Text(language.name == "system" ? l10n.system : language.name),
+              subtitle: language.nativeName.isNotEmpty
+                  ? Text(language.nativeName)
+                  : null,
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(64, 0, 16, 0),
+              child: Divider(height: 1),
+            );
+          },
+        ),
       ),
     );
   }

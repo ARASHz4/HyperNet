@@ -41,32 +41,35 @@ class _ApplicationAppearanceScreenState
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.appearance),
       ),
-      body: ListView.separated(
-        itemCount: appearances.length,
-        itemBuilder: (context, index) {
-          return RadioListTile<int>(
-            value: index,
-            groupValue: selectedIndex,
-            title: Text(appearances[index]),
-            onChanged: (index) {
-              setState(() {
-                selectedIndex = index!;
-              });
+      body: RadioGroup<int>(
+        groupValue: selectedIndex,
+        onChanged: (index) {
+          if (index == null) return;
+          setState(() {
+            selectedIndex = index;
+          });
 
-              Preferences.setAppearance(selectedIndex);
+          Preferences.setAppearance(selectedIndex);
 
-              context
-                  .read<ApplicationCubit>()
-                  .changeTheme(ThemeMode.values[selectedIndex]);
-            },
-          );
+          context
+              .read<ApplicationCubit>()
+              .changeTheme(ThemeMode.values[selectedIndex]);
         },
-        separatorBuilder: (context, index) {
-          return const Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(64, 0, 16, 0),
-            child: Divider(height: 1),
-          );
-        },
+        child: ListView.separated(
+          itemCount: appearances.length,
+          itemBuilder: (context, index) {
+            return RadioListTile<int>(
+              value: index,
+              title: Text(appearances[index]),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(64, 0, 16, 0),
+              child: Divider(height: 1),
+            );
+          },
+        ),
       ),
     );
   }

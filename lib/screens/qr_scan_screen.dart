@@ -34,7 +34,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
           ),
           ValueListenableBuilder<MobileScannerState>(
             valueListenable: _controller,
-            builder: (_, state, __) {
+            builder: (_, state, _) {
               return IconButton(
                 icon: Icon(
                   state.torchState == TorchState.on ? Icons.flash_on : Icons.flash_off,
@@ -77,6 +77,8 @@ class _QrScanScreenState extends State<QrScanScreen> {
       final code = capture != null && capture.barcodes.isNotEmpty
           ? capture.barcodes.first.rawValue
           : null;
+
+      if (!mounted) return;
 
       if (code != null) {
         Navigator.pop(context, code);
