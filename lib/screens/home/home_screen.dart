@@ -25,7 +25,36 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Row(mainAxisSize: MainAxisSize.min, children: [Image.asset('assets/icon.png', height: 28), const SizedBox(width: 8), Text(AppLocalizations.of(context)!.appTitle)]),
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(mainAxisSize: MainAxisSize.min, children: [Image.asset('assets/icon.png', height: 28), const SizedBox(width: 8), Text(AppLocalizations.of(context)!.appTitle)]),
+                if (state.selectedConfig != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          canStop(state.vlessStatus) ? Icons.network_check : Icons.circle,
+                          size: 14,
+                          color: canStop(state.vlessStatus)
+                              ? Colors.green
+                              : Theme.of(context).colorScheme.outline,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${state.selectedConfig!.remark} · ${state.selectedConfig!.address}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
             actions: [
               PopupMenuButton<int>(
                 icon: const Icon(Icons.settings),
@@ -116,39 +145,6 @@ class HomeScreen extends StatelessWidget {
                   duration: state.vlessStatus.duration,
                   upload: state.vlessStatus.upload,
                   download: state.vlessStatus.download,
-                ),
-              if (state.selectedConfig != null)
-                Card(
-                  margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.sailing,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    title: Text(state.selectedConfig!.remark),
-                    subtitle: Text(
-                      '${state.selectedConfig!.outbound1["protocol"]} ${state.selectedConfig!.address}',
-                    ),
-                    trailing: FilledButton.icon(
-                      onPressed: () {
-                        if (canStop(state.vlessStatus)) {
-                          context.read<HomeBloc>().add(const Disconnect());
-                        } else {
-                          context.read<HomeBloc>().add(Connect(state.selectedConfig!));
-                        }
-                      },
-                      icon: Icon(
-                        canStop(state.vlessStatus)
-                            ? Icons.stop
-                            : Icons.play_arrow,
-                      ),
-                      label: Text(
-                        canStop(state.vlessStatus)
-                            ? AppLocalizations.of(context)!.disconnect
-                            : AppLocalizations.of(context)!.connect,
-                      ),
-                    ),
-                  ),
                 ),
               Expanded(
                 child: state.subscriptions.isEmpty && state.singleConfigs.isEmpty
