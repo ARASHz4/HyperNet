@@ -97,7 +97,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get singleConfigs => 'Single configs';
 
   @override
-  String get otherServers => 'Other Servers';
+  String get otherServers => 'Your configs';
 
   @override
   String get invalidConfigUrl => 'Invalid config URL';

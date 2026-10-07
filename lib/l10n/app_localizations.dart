@@ -275,7 +275,7 @@ abstract class AppLocalizations {
   /// No description provided for @otherServers.
   ///
   /// In en, this message translates to:
-  /// **'Other Servers'**
+  /// **'Your configs'**
   String get otherServers;
 
   /// No description provided for @invalidConfigUrl.

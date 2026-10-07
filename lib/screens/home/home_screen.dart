@@ -166,40 +166,10 @@ class HomeScreen extends StatelessWidget {
                                 onDismissed: (_) {
                                   context.read<HomeBloc>().add(RemoveConfig(config.url));
                                 },
-                                child: ListTile(
-                                  selected: isSelected,
-                                  selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-                                  title: Text(config.remark),
-                                  subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
-                                  onTap: () {
-                                    context.read<HomeBloc>().add(SelectConfig(config));
-                                  },
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (state.pinging.contains(config.url))
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 8),
-                                          child: Text("Pinging...", style: TextStyle(fontSize: 9)),
-                                        )
-                                      else
-                                        if (state.delays.containsKey(config.url))
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 8),
-                                            child: Text(
-                                              state.delays[config.url]! < 0
-                                                  ? 'timeout'
-                                                  : '${state.delays[config.url]} ms',
-                                              style: TextStyle(
-                                                color: state.delays[config.url]! < 0
-                                                    ? Colors.red
-                                                    : Colors.green,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                    ],
-                                  ),
+                                child: buildConfig(
+                                  context,
+                                  config: config,
+                                  state: state,
                                 ),
                               );
                             }).toList(),
@@ -392,6 +362,8 @@ class HomeScreen extends StatelessWidget {
     return ListTile(
       selected: isSelected,
       selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
+      title: Text(config.remark),
+      subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
       onTap: () {
         context.read<HomeBloc>().add(SelectConfig(config));
       },
@@ -403,21 +375,24 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.only(left: 8),
               child: Text("Pinging...", style: TextStyle(fontSize: 9)),
             )
-          else if (state.delays.containsKey(config.url))
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(
-                state.delays[config.url]! < 0 ? 'timeout' : '${state.delays[config.url]} ms',
-                style: TextStyle(
-                  color: state.delays[config.url]! < 0 ? Colors.red : Colors.green,
-                  fontWeight: FontWeight.bold,
+          else
+            if (state.delays.containsKey(config.url))
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(
+                  state.delays[config.url]! < 0
+                      ? 'timeout'
+                      : '${state.delays[config.url]} ms',
+                  style: TextStyle(
+                    color: state.delays[config.url]! < 0
+                        ? Colors.red
+                        : Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
         ],
       ),
-      title: Text(config.remark),
-      subtitle: Text(protocol.toUpperCase()),
     );
   }
 
