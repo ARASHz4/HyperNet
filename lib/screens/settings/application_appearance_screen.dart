@@ -51,9 +51,7 @@ class _ApplicationAppearanceScreenState
 
           Preferences.setAppearance(selectedIndex);
 
-          context
-              .read<ApplicationCubit>()
-              .changeTheme(ThemeMode.values[selectedIndex]);
+          context.read<ApplicationCubit>().changeTheme(ThemeMode.values[selectedIndex]);
         },
         child: ListView.separated(
           itemCount: appearances.length,

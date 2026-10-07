@@ -89,6 +89,20 @@ class HomeScreen extends StatelessWidget {
                         await importFromClipboardIntoApp(context);
                       },
                     ),
+                    PopupMenuItem<int>(
+                      value: 3,
+                      child: ListTile(
+                        title: Text(AppLocalizations.of(context)!.scanQrCode),
+                        leading: const Icon(Icons.qr_code_scanner),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      onTap: () async {
+                        final text = await QrScanInput.scan(context);
+                        if (text != null && text.trim().isNotEmpty) {
+                          await addFromText(context, text.trim());
+                        }
+                      },
+                    ),
                   ];
                 },
               ),
@@ -740,19 +754,27 @@ class HomeScreen extends StatelessWidget {
       return;
     }
 
-    final bloc = context.read<HomeBloc>();
+    await addFromText(context, text);
+  }
+}
 
-    try {
-      if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
-        bloc.add(AddSubscription(text));
-      } else {
-        final configs = FlutterVless.parseMany(text);
-        bloc.add(AddConfigs(configs));
-      }
-    } catch (ex) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ex.toString())));
-      }
+Future<void> addFromText(BuildContext context, String text) async {
+  if (text.isEmpty || !context.mounted) {
+    return;
+  }
+
+  final bloc = context.read<HomeBloc>();
+
+  try {
+    if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
+      bloc.add(AddSubscription(text));
+    } else {
+      final configs = FlutterVless.parseMany(text);
+      bloc.add(AddConfigs(configs));
+    }
+  } catch (ex) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ex.toString())));
     }
   }
 }
