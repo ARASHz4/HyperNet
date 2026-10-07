@@ -407,7 +407,17 @@ class HomeScreen extends StatelessWidget {
       child: ListTile(
         selected: isSelected,
         selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-        title: Text(config.remark),
+        leading: CircleAvatar(
+          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+          child: Text(
+            protocol.isNotEmpty ? protocol[0].toUpperCase() : '?',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondaryContainer,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        title: Text(config.remark, softWrap: false, overflow: TextOverflow.ellipsis),
         subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
         onTap: () {
           context.read<HomeBloc>().add(SelectConfig(config));
@@ -415,6 +425,16 @@ class HomeScreen extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (isSelected)
+              Container(
+                margin: const EdgeInsets.only(right: 8, left: 4),
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+              ),
             if (state.pinging.contains(config.url))
               Padding(
                 padding: const EdgeInsets.only(left: 8),
