@@ -236,6 +236,18 @@ abstract class AppLocalizations {
   /// **'Share QR code'**
   String get shareQrCode;
 
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @removeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeAction;
+
   /// No description provided for @importFromClipboard.
   ///
   /// In en, this message translates to:

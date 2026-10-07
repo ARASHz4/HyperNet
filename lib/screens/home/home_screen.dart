@@ -5,6 +5,7 @@ import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hyper_net/screens/qr_scan_screen.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:flutter_vless/flutter_vless.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
@@ -150,23 +151,11 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                             children: state.singleConfigs.map((config) {
-                              return Dismissible(
-                                key: ValueKey(config.url),
-                                direction: DismissDirection.endToStart,
-                                background: Container(
-                                  color: Colors.red,
-                                  alignment: Alignment.centerRight,
-                                  padding: const EdgeInsets.only(right: 16),
-                                  child: const Icon(Icons.delete_outline, color: Colors.white),
-                                ),
-                                onDismissed: (_) {
-                                  context.read<HomeBloc>().add(RemoveConfig(config.url));
-                                },
-                                child: buildConfig(
-                                  context,
-                                  config: config,
-                                  state: state,
-                                ),
+                              return buildConfig(
+                                context,
+                                config: config,
+                                state: state,
+                                deletable: true,
                               );
                             }).toList(),
                           ),
@@ -342,7 +331,11 @@ class HomeScreen extends StatelessWidget {
 
               final config = subscription.configs[subscription.announce != null ? index - 1 : index];
 
-              return buildConfig(context, config: config, state: state);
+              return buildConfig(context,
+                config: config,
+                state: state,
+                deletable: false,
+              );
             },
           ),
         ),
@@ -350,44 +343,70 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget buildConfig(BuildContext context, {required FlutterVlessURL config, required HomeLoaded state}) {
+  Widget buildConfig(BuildContext context, {required FlutterVlessURL config, required HomeLoaded state, bool deletable = false}) {
     final isSelected = identical(state.selectedConfig, config);
 
     final protocol = config.outbound1["protocol"] as String;
 
-    return ListTile(
-      selected: isSelected,
-      selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-      title: Text(config.remark),
-      subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
-      onTap: () {
-        context.read<HomeBloc>().add(SelectConfig(config));
-      },
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+    return Slidable(
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
         children: [
-          if (state.pinging.contains(config.url))
-            const Padding(
-              padding: EdgeInsets.only(left: 8),
-              child: Text("Pinging...", style: TextStyle(fontSize: 9)),
-            )
-          else
-            if (state.delays.containsKey(config.url))
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Text(
-                  state.delays[config.url]! < 0
-                      ? 'timeout'
-                      : '${state.delays[config.url]} ms',
-                  style: TextStyle(
-                    color: state.delays[config.url]! < 0
-                        ? Colors.red
-                        : Colors.green,
-                    fontWeight: FontWeight.bold,
+          SlidableAction(
+            onPressed: (_) {
+              showSubscriptionQrCodeDialog(context, config.url);
+            },
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            icon: Icons.share,
+            label: AppLocalizations.of(context)!.share,
+          ),
+          if (deletable)
+            SlidableAction(
+              onPressed: (_) {
+                context.read<HomeBloc>().add(RemoveConfig(config.url));
+              },
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              icon: Icons.delete_outline,
+              label: AppLocalizations.of(context)!.removeAction,
+            ),
+        ],
+      ),
+      child: ListTile(
+        selected: isSelected,
+        selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
+        title: Text(config.remark),
+        subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
+        onTap: () {
+          context.read<HomeBloc>().add(SelectConfig(config));
+        },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (state.pinging.contains(config.url))
+              const Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: Text("Pinging...", style: TextStyle(fontSize: 9)),
+              )
+            else
+              if (state.delays.containsKey(config.url))
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    state.delays[config.url]! < 0
+                        ? 'timeout'
+                        : '${state.delays[config.url]} ms',
+                    style: TextStyle(
+                      color: state.delays[config.url]! < 0
+                          ? Colors.red
+                          : Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-        ],
+          ],
+        ),
       ),
     );
   }

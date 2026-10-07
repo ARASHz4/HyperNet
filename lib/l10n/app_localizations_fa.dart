@@ -79,6 +79,12 @@ class AppLocalizationsFa extends AppLocalizations {
   String get shareQrCode => 'هم‌رسانی QR کد';
 
   @override
+  String get share => 'هم‌رسانی';
+
+  @override
+  String get removeAction => 'حذف';
+
+  @override
   String get importFromClipboard => 'وارد کردن از حافظه موقت';
 
   @override

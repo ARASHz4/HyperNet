@@ -79,6 +79,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareQrCode => 'Share QR code';
 
   @override
+  String get share => 'Share';
+
+  @override
+  String get removeAction => 'Remove';
+
+  @override
   String get importFromClipboard => 'Import from clipboard';
 
   @override

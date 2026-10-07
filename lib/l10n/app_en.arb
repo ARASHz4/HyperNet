@@ -23,6 +23,8 @@
   "scanQrCode": "Scan QR code",
   "copyLink": "Copy link",
   "shareQrCode": "Share QR code",
+  "share": "Share",
+  "removeAction": "Remove",
   "importFromClipboard": "Import from clipboard",
   "pingAll": "Ping all",
   "removeAllConfigs": "Remove all configs",
