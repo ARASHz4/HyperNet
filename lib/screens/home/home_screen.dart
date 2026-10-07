@@ -385,9 +385,9 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (state.pinging.contains(config.url))
-              const Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Text(AppLocalizations.of(context)!.pingingEllipsis, style: TextStyle(fontSize: 9)),
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(AppLocalizations.of(context)!.pingingEllipsis, style: const TextStyle(fontSize: 9)),
               )
             else
               if (state.delays.containsKey(config.url))
