@@ -80,4 +80,13 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get selectConfigToConnect => 'برای اتصال یک کانفیگ انتخاب کنید';
+
+  @override
+  String get addConfig => 'افزودن کانفیگ';
+
+  @override
+  String get singleConfigs => 'کانفیگ‌های تکی';
+
+  @override
+  String get invalidConfigUrl => 'آدرس کانفیگ نامعتبر است';
 }

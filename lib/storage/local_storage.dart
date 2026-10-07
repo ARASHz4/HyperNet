@@ -5,10 +5,12 @@ import 'package:hyper_net/models/subscription.dart';
 
 class LocalStorage {
   static const String _subscriptionsBox = 'subscriptions';
+  static const String _singleConfigsBox = 'single_configs';
 
   static Future<void> init() async {
     await Hive.initFlutter();
     await Hive.openBox<String>(_subscriptionsBox);
+    await Hive.openBox<String>(_singleConfigsBox);
   }
 
   // ---------- Subscription ----------
@@ -56,5 +58,24 @@ class LocalStorage {
 
   Future<void> clearSubscriptions() async {
     await _subscriptions?.clear();
+  }
+
+  // ---------- Single configs ----------
+
+  Box<String>? get _singleConfigs =>
+      Hive.isBoxOpen(_singleConfigsBox) ? Hive.box<String>(_singleConfigsBox) : null;
+
+  Future<void> saveSingleConfig(String url) async {
+    await _singleConfigs?.put(url, url);
+  }
+
+  List<String> getSingleConfigUrls() {
+    final box = _singleConfigs;
+    if (box == null) return [];
+    return box.values.toList();
+  }
+
+  Future<void> deleteSingleConfig(String url) async {
+    await _singleConfigs?.delete(url);
   }
 }

@@ -44,6 +44,58 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ));
     });
 
+    on<AddConfig>((event, emit) async {
+      if (state is! HomeLoaded) return;
+
+      final currentState = state as HomeLoaded;
+
+      try {
+        final config = FlutterVless.parse(event.rawUrl);
+        await LocalStorage().saveSingleConfig(event.rawUrl);
+
+        emit(currentState.copyWith(
+          singleConfigs: [...currentState.singleConfigs, config],
+        ));
+      } catch (_) {
+        // invalid config URL, ignore
+      }
+    });
+
+    on<RemoveConfig>((event, emit) async {
+      if (state is! HomeLoaded) return;
+
+      final currentState = state as HomeLoaded;
+
+      await LocalStorage().deleteSingleConfig(event.rawUrl);
+
+      emit(currentState.copyWith(
+        singleConfigs: currentState.singleConfigs
+            .where((c) => c.url != event.rawUrl)
+            .toList(),
+        selectedConfig: identical(currentState.selectedConfig?.url, event.rawUrl) && currentState.selectedConfig != null
+            ? null
+            : currentState.selectedConfig,
+      ));
+    });
+
+    on<LoadConfigs>((event, emit) {
+      if (state is! HomeLoaded) return;
+
+      final urls = LocalStorage().getSingleConfigUrls();
+      final configs = urls
+          .map((url) {
+            try {
+              return FlutterVless.parse(url);
+            } catch (_) {
+              return null;
+            }
+          })
+          .whereType<FlutterVlessURL>()
+          .toList();
+
+      emit((state as HomeLoaded).copyWith(singleConfigs: configs));
+    });
+
     on<AddSubscription>((event, emit) async {
       if (state is! HomeLoaded) return;
 
@@ -186,6 +238,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     add(const LoadSubscriptions());
+    add(const LoadConfigs());
     add(const InitializeVless());
   }
 

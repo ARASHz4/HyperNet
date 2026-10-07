@@ -23,5 +23,8 @@
   "scanQrCode": "اسکن کد QR",
   "copyLink": "کپی کردن لینک",
   "shareQrCode": "هم‌رسانی QR کد",
-  "selectConfigToConnect": "برای اتصال یک کانفیگ انتخاب کنید"
+  "selectConfigToConnect": "برای اتصال یک کانفیگ انتخاب کنید",
+  "addConfig": "افزودن کانفیگ",
+  "singleConfigs": "کانفیگ‌های تکی",
+  "invalidConfigUrl": "آدرس کانفیگ نامعتبر است"
 }

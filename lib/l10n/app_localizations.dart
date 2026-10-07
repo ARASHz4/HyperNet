@@ -241,6 +241,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select a config to connect'**
   String get selectConfigToConnect;
+
+  /// No description provided for @addConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Add config'**
+  String get addConfig;
+
+  /// No description provided for @singleConfigs.
+  ///
+  /// In en, this message translates to:
+  /// **'Single configs'**
+  String get singleConfigs;
+
+  /// No description provided for @invalidConfigUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid config URL'**
+  String get invalidConfigUrl;
 }
 
 class _AppLocalizationsDelegate

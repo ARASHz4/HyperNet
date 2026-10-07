@@ -80,4 +80,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectConfigToConnect => 'Select a config to connect';
+
+  @override
+  String get addConfig => 'Add config';
+
+  @override
+  String get singleConfigs => 'Single configs';
+
+  @override
+  String get invalidConfigUrl => 'Invalid config URL';
 }

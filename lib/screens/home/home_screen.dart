@@ -96,6 +96,20 @@ class HomeScreen extends StatelessWidget {
                         }
                       },
                     ),
+                    PopupMenuItem<int>(
+                      value: 1,
+                      child: ListTile(
+                        title: Text(AppLocalizations.of(context)!.addConfig),
+                        leading: const Icon(Icons.link),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      onTap: () async {
+                        final url = await addConfigUrl(context);
+                        if (url != null) {
+                          context.read<HomeBloc>().add(AddConfig(url));
+                        }
+                      },
+                    ),
                   ];
                 },
               ),
@@ -120,7 +134,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               Expanded(
-                child: state.subscriptions.isEmpty
+                child: state.subscriptions.isEmpty && state.singleConfigs.isEmpty
                     ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -142,144 +156,177 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 )
-              : ListView.separated(
-            itemBuilder: (context, index) {
-              final subscription = state.subscriptions[index];
+                    : ListView.separated(
+                  itemBuilder: (context, index) {
+                    if (index == state.subscriptions.length) {
+                      return ExpansionTile(
+                        title: Text(AppLocalizations.of(context)!.singleConfigs),
+                        children: state.singleConfigs.map((config) {
+                          final isSelected = identical(state.selectedConfig, config);
 
-              return ExpansionTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    state.refreshing.contains(subscription.url)
-                        ? SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    )
-                        : SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          context
-                              .read<HomeBloc>()
-                              .add(RefreshSubscription(subscription.url));
-                        },
-                        icon: const Icon(Icons.refresh),
-                      ),
-                    ),
-                    SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        subscription.getTitle ?? AppLocalizations.of(context)!.subscription,
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        context
-                            .read<HomeBloc>()
-                            .add(PingConfigs(subscription.configs));
-                      },
-                      icon: const Icon(Icons.speed),
-                    ),
-                  ],
-                ),
-                subtitle: _subscriptionUsage(subscription),
-                leading: SizedBox(
-                  width: 32,
-                  child: PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert),
-                    onSelected: (value) {
-                      if (value == 'remove') {
-                        context
-                            .read<HomeBloc>()
-                            .add(RemoveSubscription(subscription.url));
-                      } else if (value == 'share') {
-                        showSubscriptionQrCodeDialog(context, subscription.url);
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'remove',
-                        child: ListTile(
-                          leading: const Icon(Icons.delete_outline),
-                          title: Text(AppLocalizations.of(context)!.removeSubscription),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'share',
-                        child: ListTile(
-                          leading: const Icon(Icons.share),
-                          title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                children: List.generate(
-                  subscription.announce != null ? subscription.configs.length + 1 : subscription.configs.length,
-                  (index) {
-                    if (subscription.announce != null && index == 0) {
-                      return Text(subscription.announce!);
+                          return ListTile(
+                            selected: isSelected,
+                            selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
+                            title: Text(config.remark),
+                            subtitle: Text(config.url),
+                            onTap: () {
+                              context.read<HomeBloc>().add(SelectConfig(config));
+                            },
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () {
+                                context.read<HomeBloc>().add(RemoveConfig(config.url));
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      );
                     }
 
-                    final config = subscription.configs[subscription.announce != null ? index - 1 : index];
-                    final isSelected = identical(state.selectedConfig, config);
+                    final subscription = state.subscriptions[index];
 
-                    return ListTile(
-                      selected: isSelected,
-                      selectedTileColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                      onTap: () {
-                        context.read<HomeBloc>().add(SelectConfig(config));
-                      },
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
+                    return ExpansionTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          if (isSelected)
-                            Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary),
-                          if (state.pinging.contains(config.url))
-                            const Padding(
-                              padding: EdgeInsets.only(left: 8),
-                              child: Text("Pinging...", style: TextStyle(fontSize: 9)),
-                            )
-                          else if (state.delays.containsKey(config.url))
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Text(
-                                state.delays[config.url]! < 0
-                                    ? 'timeout'
-                                    : '${state.delays[config.url]} ms',
-                                style: TextStyle(
-                                  color: state.delays[config.url]! < 0
-                                      ? Colors.red
-                                      : Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          state.refreshing.contains(subscription.url)
+                              ? SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: CircularProgressIndicator(strokeWidth: 2),
                             ),
+                          )
+                              : SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(RefreshSubscription(subscription.url));
+                              },
+                              icon: const Icon(Icons.refresh),
+                            ),
+                          ),
+                          SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              subscription.getTitle ?? AppLocalizations.of(context)!.subscription,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              context
+                                  .read<HomeBloc>()
+                                  .add(PingConfigs(subscription.configs));
+                            },
+                            icon: const Icon(Icons.speed),
+                          ),
                         ],
                       ),
-                      title: Text(config.remark),
-                      subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
+                      subtitle: _subscriptionUsage(subscription),
+                      leading: SizedBox(
+                        width: 32,
+                        child: PopupMenuButton<String>(
+                          icon: const Icon(Icons.more_vert),
+                          onSelected: (value) {
+                            if (value == 'remove') {
+                              context
+                                  .read<HomeBloc>()
+                                  .add(RemoveSubscription(subscription.url));
+                            } else if (value == 'share') {
+                              showSubscriptionQrCodeDialog(context, subscription.url);
+                            }
+                          },
+                          itemBuilder: (context) =>
+                          [
+                            PopupMenuItem(
+                              value: 'remove',
+                              child: ListTile(
+                                leading: const Icon(Icons.delete_outline),
+                                title: Text(AppLocalizations.of(context)!.removeSubscription),
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 'share',
+                              child: ListTile(
+                                leading: const Icon(Icons.share),
+                                title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      children: List.generate(
+                        subscription.announce != null ? subscription.configs.length + 1 : subscription.configs.length,
+                            (index) {
+                          if (subscription.announce != null && index == 0) {
+                            return Text(subscription.announce!);
+                          }
+
+                          final config = subscription.configs[subscription.announce != null ? index - 1 : index];
+                          final isSelected = identical(state.selectedConfig, config);
+
+                          return ListTile(
+                            selected: isSelected,
+                            selectedTileColor:
+                            Theme
+                                .of(context)
+                                .colorScheme
+                                .primaryContainer,
+                            onTap: () {
+                              context.read<HomeBloc>().add(SelectConfig(config));
+                            },
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isSelected)
+                                  Icon(Icons.check_circle, color: Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .primary),
+                                if (state.pinging.contains(config.url))
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: Text("Pinging...", style: TextStyle(fontSize: 9)),
+                                  )
+                                else
+                                  if (state.delays.containsKey(config.url))
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Text(
+                                        state.delays[config.url]! < 0
+                                            ? 'timeout'
+                                            : '${state.delays[config.url]} ms',
+                                        style: TextStyle(
+                                          color: state.delays[config.url]! < 0
+                                              ? Colors.red
+                                              : Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                              ],
+                            ),
+                            title: Text(config.remark),
+                            subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
+                          );
+                        },
+                      ),
                     );
                   },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(height: 16);
+                  },
+                  itemCount: state.subscriptions.length + (state.singleConfigs.isNotEmpty ? 1 : 0),
                 ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 16);
-            },
-            itemCount: state.subscriptions.length,
-          ),
               ),
             ],
           ),
@@ -399,6 +446,78 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             Navigator.pop(builderContext, subscriptionTextController.text);
+                          }
+                        },
+                        child: Text(AppLocalizations.of(context)!.add),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (resalt is String) {
+      return resalt;
+    }
+
+    return null;
+  }
+
+  Future<String?> addConfigUrl(BuildContext context) async {
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    final configTextController = TextEditingController();
+
+    final resalt = await showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (builderContext) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  Text(AppLocalizations.of(context)!.addConfig),
+                  Form(
+                    key: formKey,
+                    child: TextFormField(
+                      controller: configTextController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.url,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if ((value ?? "").isEmpty) {
+                          return AppLocalizations.of(context)!.enterSubscriptionUrl;
+                        }
+
+                        if (!(value!.trim().toLowerCase().startsWith('vless://'))) {
+                          return AppLocalizations.of(context)!.invalidConfigUrl;
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(builderContext),
+                        child: Text(AppLocalizations.of(context)!.cancel),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            Navigator.pop(builderContext, configTextController.text);
                           }
                         },
                         child: Text(AppLocalizations.of(context)!.add),

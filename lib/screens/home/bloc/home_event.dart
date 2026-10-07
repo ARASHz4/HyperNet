@@ -11,6 +11,28 @@ final class InitializeVless extends HomeEvent {
   const InitializeVless();
 }
 
+final class LoadConfigs extends HomeEvent {
+  const LoadConfigs();
+}
+
+final class AddConfig extends HomeEvent {
+  final String rawUrl;
+
+  const AddConfig(this.rawUrl);
+
+  @override
+  List<Object?> get props => [rawUrl];
+}
+
+final class RemoveConfig extends HomeEvent {
+  final String rawUrl;
+
+  const RemoveConfig(this.rawUrl);
+
+  @override
+  List<Object?> get props => [rawUrl];
+}
+
 final class LoadSubscriptions extends HomeEvent {
   const LoadSubscriptions();
 }

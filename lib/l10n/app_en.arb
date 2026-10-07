@@ -23,5 +23,8 @@
   "scanQrCode": "Scan QR code",
   "copyLink": "Copy link",
   "shareQrCode": "Share QR code",
-  "selectConfigToConnect": "Select a config to connect"
+  "selectConfigToConnect": "Select a config to connect",
+  "addConfig": "Add config",
+  "singleConfigs": "Single configs",
+  "invalidConfigUrl": "Invalid config URL"
 }
