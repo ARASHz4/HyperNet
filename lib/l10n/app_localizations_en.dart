@@ -73,6 +73,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanQrCode => 'Scan QR code';
 
   @override
+  String get switchCamera => 'Switch';
+
+  @override
+  String get flash => 'Flash';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get noQrFoundInPhoto => 'No QR code found in that photo.';
+
+  @override
   String get copyLink => 'Copy link';
 
   @override

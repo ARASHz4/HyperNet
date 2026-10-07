@@ -27,43 +27,95 @@ class _QrScanScreenState extends State<QrScanScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.scanQrCode),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.cameraswitch),
-            onPressed: () => _controller.switchCamera(),
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: MobileScanner(
+              controller: _controller,
+              onDetect: (capture) {
+                if (_done) return;
+
+                final code = capture.barcodes.isNotEmpty
+                    ? capture.barcodes.first.rawValue
+                    : null;
+
+                if (code != null) {
+                  _done = true;
+                  Navigator.pop(context, code);
+                }
+              },
+            ),
           ),
-          ValueListenableBuilder<MobileScannerState>(
-            valueListenable: _controller,
-            builder: (_, state, _) {
-              return IconButton(
-                icon: Icon(
-                  state.torchState == TorchState.on ? Icons.flash_on : Icons.flash_off,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 24,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _circleButton(
+                      icon: Icons.cameraswitch_outlined,
+                      label: l10n.switchCamera,
+                      onPressed: () => _controller.switchCamera(),
+                    ),
+                    ValueListenableBuilder<MobileScannerState>(
+                      valueListenable: _controller,
+                      builder: (_, state, _) {
+                        return _circleButton(
+                          icon: state.torchState == TorchState.on
+                              ? Icons.flash_on
+                              : Icons.flash_off,
+                          label: l10n.flash,
+                          onPressed: () => _controller.toggleTorch(),
+                        );
+                      },
+                    ),
+                    _circleButton(
+                      icon: Icons.photo_library_outlined,
+                      label: l10n.gallery,
+                      onPressed: _pickAndScanImage,
+                    ),
+                  ],
                 ),
-                onPressed: () => _controller.toggleTorch(),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.photo_library_outlined),
-            onPressed: _pickAndScanImage,
+              ),
+            ),
           ),
         ],
       ),
-      body: MobileScanner(
-        controller: _controller,
-        onDetect: (capture) {
-          if (_done) return;
+    );
+  }
 
-          final code = capture.barcodes.isNotEmpty
-              ? capture.barcodes.first.rawValue
-              : null;
-
-          if (code != null) {
-            _done = true;
-            Navigator.pop(context, code);
-          }
-        },
-      ),
+  Widget _circleButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.5),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ],
     );
   }
 
@@ -87,8 +139,9 @@ class _QrScanScreenState extends State<QrScanScreen> {
     } catch (_) {}
 
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No QR code found in that photo.')),
+        SnackBar(content: Text(l10n.noQrFoundInPhoto)),
       );
     }
   }

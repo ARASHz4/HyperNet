@@ -224,6 +224,30 @@ abstract class AppLocalizations {
   /// **'Scan QR code'**
   String get scanQrCode;
 
+  /// No description provided for @switchCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch'**
+  String get switchCamera;
+
+  /// No description provided for @flash.
+  ///
+  /// In en, this message translates to:
+  /// **'Flash'**
+  String get flash;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @noQrFoundInPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'No QR code found in that photo.'**
+  String get noQrFoundInPhoto;
+
   /// No description provided for @copyLink.
   ///
   /// In en, this message translates to:

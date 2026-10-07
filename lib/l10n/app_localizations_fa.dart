@@ -73,6 +73,18 @@ class AppLocalizationsFa extends AppLocalizations {
   String get scanQrCode => 'اسکن کد QR';
 
   @override
+  String get switchCamera => 'تبديل دوربين';
+
+  @override
+  String get flash => 'نور';
+
+  @override
+  String get gallery => 'گالری';
+
+  @override
+  String get noQrFoundInPhoto => 'کد QR در آن عکس پیدا نشد.';
+
+  @override
   String get copyLink => 'کپی کردن لینک';
 
   @override
