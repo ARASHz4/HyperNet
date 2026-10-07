@@ -272,11 +272,11 @@ abstract class AppLocalizations {
   /// **'expired'**
   String get expiredLabel;
 
-  /// No description provided for @daysLeftLabel.
+  /// No description provided for @daysLeft.
   ///
   /// In en, this message translates to:
-  /// **'%d days left'**
-  String get daysLeftLabel;
+  /// **'{count} days left'**
+  String daysLeft(int count);
 
   /// No description provided for @linkCopied.
   ///

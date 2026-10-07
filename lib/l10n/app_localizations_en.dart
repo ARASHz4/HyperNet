@@ -97,7 +97,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expiredLabel => 'expired';
 
   @override
-  String get daysLeftLabel => '%d days left';
+  String daysLeft(int count) {
+    return '$count days left';
+  }
 
   @override
   String get linkCopied => 'Link copied';

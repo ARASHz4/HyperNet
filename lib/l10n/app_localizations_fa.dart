@@ -97,7 +97,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get expiredLabel => 'منقضی شده';
 
   @override
-  String get daysLeftLabel => '%d روز باقی مانده';
+  String daysLeft(int count) {
+    return '$count روز باقی مانده';
+  }
 
   @override
   String get linkCopied => 'لینک کپی شد';

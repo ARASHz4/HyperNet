@@ -725,7 +725,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   String _formatDaysLeft(BuildContext context, int days) {
-    return AppLocalizations.of(context)!.daysLeftLabel.replaceAll('%d', '$days');
+    return AppLocalizations.of(context)!.daysLeft(days);
   }
 
   Future<void> importFromClipboardIntoApp(BuildContext context) async {

@@ -29,7 +29,14 @@
   "pingingEllipsis": "Pinging...",
   "timeoutLabel": "timeout",
   "expiredLabel": "expired",
-  "daysLeftLabel": "%d days left",
+  "daysLeft": "{count} days left",
+  "@daysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "linkCopied": "Link copied",
   "qrInvalidSubscriptionLink": "QR code is not a valid subscription link.",
   "importFromClipboard": "Import from clipboard",
