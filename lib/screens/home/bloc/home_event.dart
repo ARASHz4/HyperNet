@@ -28,6 +28,16 @@ final class AddConfig extends HomeEvent {
   List<Object?> get props => [rawUrl];
 }
 
+final class AddConfigs extends HomeEvent {
+  final List<FlutterVlessURL> configs;
+
+  const AddConfigs(this.configs);
+
+  @override
+  List<Object?> get props => [configs];
+}
+
+
 final class RemoveConfig extends HomeEvent {
   final String rawUrl;
 

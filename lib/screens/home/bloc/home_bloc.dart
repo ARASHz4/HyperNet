@@ -66,6 +66,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
+    on<AddConfigs>((event, emit) async {
+      if (state is! HomeLoaded) {
+        return;
+      }
+
+      final currentState = state as HomeLoaded;
+
+      try {
+        for (final config in event.configs) {
+          await LocalStorage().saveSingleConfig(config.url);
+        }
+
+        emit(currentState.copyWith(
+          singleConfigs: [...currentState.singleConfigs, ...event.configs],
+        ));
+      } catch (ex) {
+        if (kDebugMode) {
+          print("failed to add configs $ex");
+        }
+      }
+    });
+
     on<RemoveConfig>((event, emit) async {
       if (state is! HomeLoaded) return;
 

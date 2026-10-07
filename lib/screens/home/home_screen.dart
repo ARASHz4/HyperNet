@@ -104,130 +104,142 @@ class HomeScreen extends StatelessWidget {
                 child: state.subscriptions.isEmpty && state.singleConfigs.isEmpty
                     ? buildEmptyView(context)
                     : ListView.separated(
-                        itemBuilder: (context, index) {
-                          final otherIndex = (state.singleConfigs.isNotEmpty) ? 0 : -1;
+                  padding: EdgeInsets.only(bottom: 100),
+                  itemBuilder: (context, index) {
+                    final otherIndex = (state.singleConfigs.isNotEmpty) ? 0 : -1;
 
-                          if (index == otherIndex) {
-                            return ExpansionTile(
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(AppLocalizations.of(context)!.otherServers),
-                                  IconButton(
-                                    onPressed: () {
-                                      context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
-                                    },
-                                    icon: const Icon(Icons.speed),
+                    if (index == otherIndex) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        child: Card(
+                          child: ExpansionTile(
+                            collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(AppLocalizations.of(context)!.otherServers),
+                                IconButton(
+                                  onPressed: () {
+                                    context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
+                                  },
+                                  icon: const Icon(Icons.speed),
+                                ),
+                              ],
+                            ),
+                            leading: SizedBox(
+                              width: 32,
+                              child: PopupMenuButton<String>(
+                                icon: const Icon(Icons.more_vert),
+                                onSelected: (value) {
+                                  if (value == 'removeAll') {
+                                    context.read<HomeBloc>().add(const RemoveAllConfigs());
+                                  }
+                                },
+                                itemBuilder: (context) =>
+                                [
+                                  PopupMenuItem(
+                                    value: 'removeAll',
+                                    child: ListTile(
+                                      leading: const Icon(Icons.delete_sweep_outlined),
+                                      title: Text(AppLocalizations.of(context)!.removeAllConfigs),
+                                      contentPadding: EdgeInsets.zero,
+                                    ),
                                   ),
                                 ],
                               ),
-                              leading: SizedBox(
-                                width: 32,
-                                child: PopupMenuButton<String>(
-                                  icon: const Icon(Icons.more_vert),
-                                  onSelected: (value) {
-                                    if (value == 'removeAll') {
-                                      context.read<HomeBloc>().add(const RemoveAllConfigs());
-                                    } else if (value == 'pingAll') {
-                                      context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
-                                    }
-                                  },
-                                  itemBuilder: (context) => [
-                                    PopupMenuItem(
-                                      value: 'pingAll',
-                                      child: ListTile(
-                                        leading: const Icon(Icons.speed),
-                                        title: Text(AppLocalizations.of(context)!.pingAll),
-                                        contentPadding: EdgeInsets.zero,
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'removeAll',
-                                      child: ListTile(
-                                        leading: const Icon(Icons.delete_sweep_outlined),
-                                        title: Text(AppLocalizations.of(context)!.removeAllConfigs),
-                                        contentPadding: EdgeInsets.zero,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              children: state.singleConfigs.map((config) {
-                                final isSelected = identical(state.selectedConfig, config);
+                            ),
+                            children: state.singleConfigs.map((config) {
+                              final isSelected = identical(state.selectedConfig, config);
 
-                                return ListTile(
+                              final protocol = config.outbound1["protocol"] as String;
+
+                              return Dismissible(
+                                key: ValueKey(config.url),
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  color: Colors.red,
+                                  alignment: Alignment.centerRight,
+                                  padding: const EdgeInsets.only(right: 16),
+                                  child: const Icon(Icons.delete_outline, color: Colors.white),
+                                ),
+                                onDismissed: (_) {
+                                  context.read<HomeBloc>().add(RemoveConfig(config.url));
+                                },
+                                child: ListTile(
                                   selected: isSelected,
                                   selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
                                   title: Text(config.remark),
-                                  subtitle: Text("${config.network} ${config.outbound1["protocol"]}"),
+                                  subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
                                   onTap: () {
                                     context.read<HomeBloc>().add(SelectConfig(config));
                                   },
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      if (isSelected)
-                                        const Icon(Icons.check_circle, color: Colors.green),
                                       if (state.pinging.contains(config.url))
                                         const Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text("Pinging...", style: TextStyle(fontSize: 9)),
                                         )
-                                      else if (state.delays.containsKey(config.url))
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 8),
-                                          child: Text(
-                                            state.delays[config.url]! < 0
-                                                ? 'timeout'
-                                                : '${state.delays[config.url]} ms',
-                                            style: TextStyle(
-                                              color: state.delays[config.url]! < 0
-                                                  ? Colors.red
-                                                  : Colors.green,
-                                              fontWeight: FontWeight.bold,
+                                      else
+                                        if (state.delays.containsKey(config.url))
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 8),
+                                            child: Text(
+                                              state.delays[config.url]! < 0
+                                                  ? 'timeout'
+                                                  : '${state.delays[config.url]} ms',
+                                              style: TextStyle(
+                                                color: state.delays[config.url]! < 0
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete_outline),
-                                        onPressed: () {
-                                          context.read<HomeBloc>().add(RemoveConfig(config.url));
-                                        },
-                                      ),
                                     ],
                                   ),
-                                );
-                              }).toList(),
-                            );
-                        }
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      );
+                    }
 
-                        final subscriptionIndex = index - ((state.singleConfigs.isNotEmpty) ? 1 : 0);
-                        final subscription = state.subscriptions[subscriptionIndex];
+                    final subscriptionIndex = index - ((state.singleConfigs.isNotEmpty) ? 1 : 0);
+                    final subscription = state.subscriptions[subscriptionIndex];
 
-                        return buildSubscriptionExpansionTile(
-                          context,
-                          subscription: subscription,
-                          state: state,
-                        );
-                      },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 16);
-                        },
-                        itemCount: state.subscriptions.length + (state.singleConfigs.isNotEmpty ? 1 : 0),
-                      ),
+                    return buildSubscriptionExpansionTile(
+                      context,
+                      subscription: subscription,
+                      state: state,
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(height: 0);
+                  },
+                  itemCount: state.subscriptions.length + (state.singleConfigs.isNotEmpty ? 1 : 0),
+                ),
               ),
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
               if (state.selectedConfig == null) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.selectConfigToConnect)));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.selectConfigToConnect),
+                  ),
+                );
                 return;
               }
 
               if (canStop(state.vlessStatus)) {
                 context.read<HomeBloc>().add(const Disconnect());
-              } else {
+              }
+              else {
                 context.read<HomeBloc>().add(Connect(state.selectedConfig!));
               }
             },
@@ -278,89 +290,96 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget buildSubscriptionExpansionTile(BuildContext context, {required Subscription subscription, required HomeLoaded state}) {
-    return ExpansionTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          state.refreshing.contains(subscription.url)
-              ? SizedBox(
-            width: 24,
-            height: 24,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          )
-              : SizedBox(
-            width: 24,
-            height: 24,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                context.read<HomeBloc>().add(RefreshSubscription(subscription.url));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Card(
+        child: ExpansionTile(
+          collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              state.refreshing.contains(subscription.url)
+                  ? SizedBox(
+                width: 24,
+                height: 24,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              )
+                  : SizedBox(
+                width: 24,
+                height: 24,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    context.read<HomeBloc>().add(RefreshSubscription(subscription.url));
+                  },
+                  icon: const Icon(Icons.refresh),
+                ),
+              ),
+              SizedBox(width: 6),
+              Expanded(
+                child: Text(subscription.getTitle ?? AppLocalizations.of(context)!.subscription,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  context.read<HomeBloc>().add(PingConfigs(subscription.configs));
+                },
+                icon: const Icon(Icons.speed),
+              ),
+            ],
+          ),
+          subtitle: _subscriptionUsage(subscription),
+          leading: SizedBox(
+            width: 32,
+            child: PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                if (value == 'remove') {
+                  context.read<HomeBloc>().add(RemoveSubscription(subscription.url));
+                } else if (value == 'share') {
+                  showSubscriptionQrCodeDialog(context, subscription.url);
+                }
               },
-              icon: const Icon(Icons.refresh),
+              itemBuilder: (context) =>
+              [
+                PopupMenuItem(
+                  value: 'remove',
+                  child: ListTile(
+                    leading: const Icon(Icons.delete_outline),
+                    title: Text(AppLocalizations.of(context)!.removeSubscription),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'share',
+                  child: ListTile(
+                    leading: const Icon(Icons.share),
+                    title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl,),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(width: 6),
-          Expanded(
-            child: Text(subscription.getTitle ?? AppLocalizations.of(context)!.subscription,
-              softWrap: false,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              context.read<HomeBloc>().add(PingConfigs(subscription.configs));
+          children: List.generate(
+            subscription.announce != null ? subscription.configs.length + 1 : subscription.configs.length,
+                (index) {
+              if (subscription.announce != null && index == 0) {
+                return Text(subscription.announce!);
+              }
+
+              final config = subscription.configs[subscription.announce != null ? index - 1 : index];
+
+              return buildConfig(context, config: config, state: state);
             },
-            icon: const Icon(Icons.speed),
           ),
-        ],
-      ),
-      subtitle: _subscriptionUsage(subscription),
-      leading: SizedBox(
-        width: 32,
-        child: PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert),
-          onSelected: (value) {
-            if (value == 'remove') {
-              context.read<HomeBloc>().add(RemoveSubscription(subscription.url));
-            } else if (value == 'share') {
-              showSubscriptionQrCodeDialog(context, subscription.url);
-            }
-          },
-          itemBuilder: (context) =>
-          [
-            PopupMenuItem(
-              value: 'remove',
-              child: ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: Text(AppLocalizations.of(context)!.removeSubscription),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-            PopupMenuItem(
-              value: 'share',
-              child: ListTile(
-                leading: const Icon(Icons.share),
-                title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl,),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ],
         ),
-      ),
-      children: List.generate(
-        subscription.announce != null ? subscription.configs.length + 1 : subscription.configs.length,
-            (index) {
-          if (subscription.announce != null && index == 0) {
-            return Text(subscription.announce!);
-          }
-
-          final config = subscription.configs[subscription.announce != null ? index - 1 : index];
-
-          return buildConfig(context, config: config, state: state);
-        },
       ),
     );
   }
@@ -379,11 +398,6 @@ class HomeScreen extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (isSelected)
-            Icon(
-              Icons.check_circle,
-              color: Theme.of(context).colorScheme.primary,
-            ),
           if (state.pinging.contains(config.url))
             const Padding(
               padding: EdgeInsets.only(left: 8),
@@ -716,17 +730,17 @@ class HomeScreen extends StatelessWidget {
   Future<void> importFromClipboardIntoApp(BuildContext context) async {
     final text = (await Clipboard.getData('text/plain'))?.text?.trim() ?? '';
 
-    if (text.isEmpty) return;
+    if (text.isEmpty) {
+      return;
+    }
 
     try {
       if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
         context.read<HomeBloc>().add(AddSubscription(text));
-      } else {
+      }
+      else {
         final configs = FlutterVless.parseMany(text);
-
-        for (final config in configs) {
-          context.read<HomeBloc>().add(AddConfig(config.url));
-        }
+        context.read<HomeBloc>().add(AddConfigs(configs));
       }
     } catch (ex) {
       if (context.mounted) {
