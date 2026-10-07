@@ -409,12 +409,21 @@ class HomeScreen extends StatelessWidget {
         selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
         leading: CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-          child: Text(
-            protocol.isNotEmpty ? protocol[0].toUpperCase() : '?',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Builder(
+            builder: (_) {
+              final flag = _countryFlagEmoji(config.remark) ?? _countryFlagEmoji(config.url);
+              if (flag != null) {
+                return Text(flag);
+              }
+
+              return Text(
+                protocol.isNotEmpty ? protocol[0].toUpperCase() : '?',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
           ),
         ),
         title: Text(config.remark, softWrap: false, overflow: TextOverflow.ellipsis),
@@ -431,7 +440,9 @@ class HomeScreen extends StatelessWidget {
                 width: 12,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: state.vlessStatus.connectionState == VlessConnectionState.connected
+                      ? Colors.green
+                      : Theme.of(context).colorScheme.outline,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -790,6 +801,15 @@ class HomeScreen extends StatelessWidget {
 
     await addFromText(context, text);
   }
+}
+
+String? _countryFlagEmoji(String input) {
+  if (input.isEmpty) return null;
+
+  final flagRegex = RegExp(r'[\u{1F1E6}-\u{1F1FF}]{2}', unicode: true);
+  final match = flagRegex.firstMatch(input);
+
+  return match?.group(0);
 }
 
 Future<void> addFromText(BuildContext context, String text) async {
