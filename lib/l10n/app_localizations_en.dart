@@ -82,6 +82,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importFromClipboard => 'Import from clipboard';
 
   @override
+  String get pingAll => 'Ping all';
+
+  @override
+  String get removeAllConfigs => 'Remove all configs';
+
+  @override
   String get selectConfigToConnect => 'Select a config to connect';
 
   @override

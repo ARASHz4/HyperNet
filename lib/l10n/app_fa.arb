@@ -24,6 +24,8 @@
   "copyLink": "کپی کردن لینک",
   "shareQrCode": "هم‌رسانی QR کد",
   "importFromClipboard": "وارد کردن از حافظه موقت",
+  "pingAll": "پینگ همه",
+  "removeAllConfigs": "حذف همه کانفیگ‌ها",
   "selectConfigToConnect": "برای اتصال یک کانفیگ انتخاب کنید",
   "addConfig": "افزودن کانفیگ",
   "singleConfigs": "کانفیگ‌های تکی",

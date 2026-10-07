@@ -105,7 +105,9 @@ class HomeScreen extends StatelessWidget {
                     ? buildEmptyView(context)
                     : ListView.separated(
                         itemBuilder: (context, index) {
-                          if (index == state.subscriptions.length) {
+                          final otherIndex = (state.singleConfigs.isNotEmpty) ? 0 : -1;
+
+                          if (index == otherIndex) {
                             return ExpansionTile(
                               title: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                                   Text(AppLocalizations.of(context)!.otherServers),
                                   IconButton(
                                     onPressed: () {
-
+                                      context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
                                     },
                                     icon: const Icon(Icons.speed),
                                   ),
@@ -124,28 +126,26 @@ class HomeScreen extends StatelessWidget {
                                 child: PopupMenuButton<String>(
                                   icon: const Icon(Icons.more_vert),
                                   onSelected: (value) {
-                                    if (value == 'remove') {
-
-                                    }
-                                    else if (value == 'share') {
-
+                                    if (value == 'removeAll') {
+                                      context.read<HomeBloc>().add(const RemoveAllConfigs());
+                                    } else if (value == 'pingAll') {
+                                      context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
                                     }
                                   },
-                                  itemBuilder: (context) =>
-                                  [
+                                  itemBuilder: (context) => [
                                     PopupMenuItem(
-                                      value: 'remove',
+                                      value: 'pingAll',
                                       child: ListTile(
-                                        leading: const Icon(Icons.delete_outline),
-                                        title: Text(AppLocalizations.of(context)!.removeSubscription),
+                                        leading: const Icon(Icons.speed),
+                                        title: Text(AppLocalizations.of(context)!.pingAll),
                                         contentPadding: EdgeInsets.zero,
                                       ),
                                     ),
                                     PopupMenuItem(
-                                      value: 'share',
+                                      value: 'removeAll',
                                       child: ListTile(
-                                        leading: const Icon(Icons.share),
-                                        title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl,),
+                                        leading: const Icon(Icons.delete_sweep_outlined),
+                                        title: Text(AppLocalizations.of(context)!.removeAllConfigs),
                                         contentPadding: EdgeInsets.zero,
                                       ),
                                     ),
@@ -199,16 +199,17 @@ class HomeScreen extends StatelessWidget {
                                 );
                               }).toList(),
                             );
-                          }
+                        }
 
-                          final subscription = state.subscriptions[index];
+                        final subscriptionIndex = index - ((state.singleConfigs.isNotEmpty) ? 1 : 0);
+                        final subscription = state.subscriptions[subscriptionIndex];
 
-                          return buildSubscriptionExpansionTile(
-                            context,
-                            subscription: subscription,
-                            state: state,
-                          );
-                        },
+                        return buildSubscriptionExpansionTile(
+                          context,
+                          subscription: subscription,
+                          state: state,
+                        );
+                      },
                         separatorBuilder: (context, index) {
                           return const SizedBox(height: 16);
                         },

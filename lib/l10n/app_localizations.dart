@@ -242,6 +242,18 @@ abstract class AppLocalizations {
   /// **'Import from clipboard'**
   String get importFromClipboard;
 
+  /// No description provided for @pingAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Ping all'**
+  String get pingAll;
+
+  /// No description provided for @removeAllConfigs.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove all configs'**
+  String get removeAllConfigs;
+
   /// No description provided for @selectConfigToConnect.
   ///
   /// In en, this message translates to:

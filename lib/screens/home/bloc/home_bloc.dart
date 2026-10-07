@@ -83,6 +83,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ));
     });
 
+    on<RemoveAllConfigs>((event, emit) async {
+      if (state is! HomeLoaded) return;
+
+      final currentState = state as HomeLoaded;
+
+      final urls = currentState.singleConfigs.map((c) => c.url).toList();
+      for (final url in urls) {
+        await LocalStorage().deleteSingleConfig(url);
+      }
+
+      emit(currentState.copyWith(
+        singleConfigs: [],
+        selectedConfig: currentState.selectedConfig != null && currentState.singleConfigs.any((c) => identical(c, currentState.selectedConfig))
+            ? null
+            : currentState.selectedConfig,
+      ));
+    });
+
     on<LoadConfigs>((event, emit) {
       if (state is! HomeLoaded) return;
 

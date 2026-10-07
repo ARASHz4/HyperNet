@@ -15,6 +15,10 @@ final class LoadConfigs extends HomeEvent {
   const LoadConfigs();
 }
 
+final class RemoveAllConfigs extends HomeEvent {
+  const RemoveAllConfigs();
+}
+
 final class AddConfig extends HomeEvent {
   final String rawUrl;
 

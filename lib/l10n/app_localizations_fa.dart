@@ -82,6 +82,12 @@ class AppLocalizationsFa extends AppLocalizations {
   String get importFromClipboard => 'وارد کردن از حافظه موقت';
 
   @override
+  String get pingAll => 'پینگ همه';
+
+  @override
+  String get removeAllConfigs => 'حذف همه کانفیگ‌ها';
+
+  @override
   String get selectConfigToConnect => 'برای اتصال یک کانفیگ انتخاب کنید';
 
   @override
