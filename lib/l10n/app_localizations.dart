@@ -326,6 +326,12 @@ abstract class AppLocalizations {
   /// **'Ping all'**
   String get pingAll;
 
+  /// No description provided for @refreshLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refreshLabel;
+
   /// No description provided for @removeAllConfigs.
   ///
   /// In en, this message translates to:

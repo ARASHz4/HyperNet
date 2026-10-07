@@ -126,6 +126,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get pingAll => 'پینگ همه';
 
   @override
+  String get refreshLabel => 'تازه کردن';
+
+  @override
   String get removeAllConfigs => 'حذف همه کانفیگ‌ها';
 
   @override

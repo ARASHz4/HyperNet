@@ -45,6 +45,7 @@
   "qrInvalidSubscriptionLink": "QR code is not a valid subscription link.",
   "importFromClipboard": "Import from clipboard",
   "pingAll": "Ping all",
+  "refreshLabel": "Refresh",
   "removeAllConfigs": "Remove all configs",
   "selectConfigToConnect": "Select a config to connect",
   "addConfig": "Add config",

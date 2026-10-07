@@ -137,6 +137,7 @@ class HomeScreen extends StatelessWidget {
                               children: [
                                 Text(AppLocalizations.of(context)!.otherServers),
                                 IconButton(
+                                  tooltip: AppLocalizations.of(context)!.pingAll,
                                   onPressed: () {
                                     context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
                                   },
@@ -285,6 +286,7 @@ class HomeScreen extends StatelessWidget {
                 height: 24,
                 child: IconButton(
                   padding: EdgeInsets.zero,
+                  tooltip: AppLocalizations.of(context)!.refreshLabel,
                   onPressed: () {
                     context.read<HomeBloc>().add(RefreshSubscription(subscription.url));
                   },
@@ -299,6 +301,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               IconButton(
+                tooltip: AppLocalizations.of(context)!.pingAll,
                 onPressed: () {
                   context.read<HomeBloc>().add(PingConfigs(subscription.configs));
                 },

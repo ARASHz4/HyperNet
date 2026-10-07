@@ -127,6 +127,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pingAll => 'Ping all';
 
   @override
+  String get refreshLabel => 'Refresh';
+
+  @override
   String get removeAllConfigs => 'Remove all configs';
 
   @override

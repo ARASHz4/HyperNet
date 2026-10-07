@@ -104,7 +104,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withAlpha(127),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: Colors.white),
