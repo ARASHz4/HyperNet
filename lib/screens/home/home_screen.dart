@@ -46,6 +46,7 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               PopupMenuButton<int>(
+                icon: const Icon(Icons.add),
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<int>(
@@ -413,62 +414,51 @@ class HomeScreen extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
               child: Builder(
                 builder: (_) {
-                  final flag = _countryFlagEmoji(config.remark) ?? _countryFlagEmoji(config.url);
-                  if (flag != null) {
-                    return Text(flag);
-                  }
-
-              return Text(
-                protocol.isNotEmpty ? protocol[0].toUpperCase() : '?',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSecondaryContainer,
-                  fontWeight: FontWeight.bold,
-                ),
-              );
-            },
-          ),
-        ),
-        title: Text(_stripFlag(config.remark), softWrap: false, overflow: TextOverflow.ellipsis),
-        subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
-        onTap: () {
-          context.read<HomeBloc>().add(SelectConfig(config));
-        },
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isSelected && state.vlessStatus.connectionState == VlessConnectionState.connected)
-              Container(
-                margin: const EdgeInsets.only(right: 8, left: 4),
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            if (state.pinging.contains(config.url))
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Text(AppLocalizations.of(context)!.pingingEllipsis, style: const TextStyle(fontSize: 9)),
-              )
-            else
-              if (state.delays.containsKey(config.url))
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Text(
-                    state.delays[config.url]! < 0
-                        ? AppLocalizations.of(context)!.timeoutLabel
-                        : '${state.delays[config.url]} ms',
+                  return Text(
+                    _countryFlagEmoji(config.remark) ?? (protocol.isNotEmpty ? protocol[0].toUpperCase() : '?'),
                     style: TextStyle(
-                      color: state.delays[config.url]! < 0
-                          ? Colors.red
-                          : Colors.green,
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
                       fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
-                  ),
-                ),
-          ],
-        ),
+                  );
+                },
+              ),
+            ),
+            title: Text(_stripFlag(config.remark), softWrap: false, overflow: TextOverflow.ellipsis),
+            subtitle: Text("${protocol.toUpperCase()} • ${config.address}"),
+            onTap: () {
+              context.read<HomeBloc>().add(SelectConfig(config));
+            },
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (state.pinging.contains(config.url))
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      AppLocalizations.of(context)!.pingingEllipsis,
+                      style: const TextStyle(fontSize: 9),
+                    ),
+                  )
+                else
+                  if (state.delays.containsKey(config.url))
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        state.delays[config.url]! < 0
+                            ? AppLocalizations.of(context)!.timeoutLabel
+                            : '${state.delays[config.url]} ms',
+                        style: TextStyle(
+                          color: state.delays[config.url]! < 0
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+              ],
+            ),
           ),
           if (isSelected)
             Positioned(
