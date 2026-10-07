@@ -122,7 +122,7 @@ class HomeScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           if (index == state.subscriptions.length) {
                             return ExpansionTile(
-                              title: Text(AppLocalizations.of(context)!.singleConfigs),
+                              title: Text(AppLocalizations.of(context)!.otherServers),
                               children: state.singleConfigs.map((config) {
                                 final isSelected = identical(state.selectedConfig, config);
 

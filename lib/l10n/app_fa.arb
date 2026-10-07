@@ -27,5 +27,6 @@
   "selectConfigToConnect": "برای اتصال یک کانفیگ انتخاب کنید",
   "addConfig": "افزودن کانفیگ",
   "singleConfigs": "کانفیگ‌های تکی",
+  "otherServers": "دیگر سرورها",
   "invalidConfigUrl": "آدرس کانفیگ نامعتبر است"
 }

@@ -27,5 +27,6 @@
   "selectConfigToConnect": "Select a config to connect",
   "addConfig": "Add config",
   "singleConfigs": "Single configs",
+  "otherServers": "Other Servers",
   "invalidConfigUrl": "Invalid config URL"
 }
