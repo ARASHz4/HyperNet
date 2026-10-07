@@ -50,6 +50,6 @@
   "selectConfigToConnect": "برای اتصال یک کانفیگ انتخاب کنید",
   "addConfig": "افزودن کانفیگ",
   "singleConfigs": "کانفیگ‌های تکی",
-  "otherServers": "کانفیگ‌های شما",
+  "yourConfigs": "کانفیگ‌های شما",
   "invalidConfigUrl": "آدرس کانفیگ نامعتبر است"
 }

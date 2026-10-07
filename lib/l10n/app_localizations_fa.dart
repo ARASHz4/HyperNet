@@ -141,7 +141,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get singleConfigs => 'کانفیگ‌های تکی';
 
   @override
-  String get otherServers => 'کانفیگ‌های شما';
+  String get yourConfigs => 'کانفیگ‌های شما';
 
   @override
   String get invalidConfigUrl => 'آدرس کانفیگ نامعتبر است';

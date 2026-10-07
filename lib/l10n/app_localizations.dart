@@ -356,11 +356,11 @@ abstract class AppLocalizations {
   /// **'Single configs'**
   String get singleConfigs;
 
-  /// No description provided for @otherServers.
+  /// No description provided for @yourConfigs.
   ///
   /// In en, this message translates to:
-  /// **'Your configs'**
-  String get otherServers;
+  /// **'Your Configs'**
+  String get yourConfigs;
 
   /// No description provided for @invalidConfigUrl.
   ///

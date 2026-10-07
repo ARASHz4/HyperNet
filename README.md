@@ -1,4 +1,4 @@
-# hyper_net
+# HyperNet
 
 HyperNet is a VPN / proxy client built in Flutter on top of the `flutter_vless`
 plugin with the Xray core. It gives a single workspace for managing proxy

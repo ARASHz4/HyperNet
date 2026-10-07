@@ -50,6 +50,6 @@
   "selectConfigToConnect": "Select a config to connect",
   "addConfig": "Add config",
   "singleConfigs": "Single configs",
-  "otherServers": "Your configs",
+  "yourConfigs": "Your Configs",
   "invalidConfigUrl": "Invalid config URL"
 }

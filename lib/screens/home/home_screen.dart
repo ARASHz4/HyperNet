@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:glassmorphism_ui/glassmorphism_ui.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -22,6 +23,8 @@ class HomeScreen extends StatelessWidget {
         if (state is! HomeLoaded) {
           return const SizedBox.shrink();
         }
+
+        final showConnectionStatus = canStop(state.vlessStatus) && state.vlessStatus.connectionState == VlessConnectionState.connected;
 
         return Scaffold(
           appBar: AppBar(
@@ -109,93 +112,43 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          body: Column(
+          body: Stack(
             children: [
-              if (canStop(state.vlessStatus) && state.vlessStatus.connectionState == VlessConnectionState.connected)
+              state.subscriptions.isEmpty && state.singleConfigs.isEmpty
+                  ? buildEmptyView(context)
+                  : ListView.separated(
+                padding: EdgeInsets.only(
+                  top: showConnectionStatus ? 64 : 0,
+                  bottom: 100,
+                ),
+                itemBuilder: (context, index) {
+                  final otherIndex = (state.singleConfigs.isNotEmpty) ? 0 : -1;
+
+                  if (index == otherIndex) {
+                    return buildYourConfigsExpansionTile(context, state: state);
+                  }
+
+                  final subscriptionIndex = index - ((state.singleConfigs.isNotEmpty) ? 1 : 0);
+                  final subscription = state.subscriptions[subscriptionIndex];
+
+                  return buildSubscriptionExpansionTile(
+                    context,
+                    subscription: subscription,
+                    state: state,
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 0);
+                },
+                itemCount: state.subscriptions.length + (state.singleConfigs.isNotEmpty ? 1 : 0),
+              ),
+              if (showConnectionStatus)
                 buildConnectionStatus(
                   context,
                   duration: state.vlessStatus.duration,
                   upload: state.vlessStatus.upload,
                   download: state.vlessStatus.download,
                 ),
-              Expanded(
-                child: state.subscriptions.isEmpty && state.singleConfigs.isEmpty
-                    ? buildEmptyView(context)
-                    : ListView.separated(
-                  padding: EdgeInsets.only(bottom: 100),
-                  itemBuilder: (context, index) {
-                    final otherIndex = (state.singleConfigs.isNotEmpty) ? 0 : -1;
-
-                    if (index == otherIndex) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                        child: Card(
-                          child: ExpansionTile(
-                            collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(AppLocalizations.of(context)!.otherServers),
-                                IconButton(
-                                  tooltip: AppLocalizations.of(context)!.pingAll,
-                                  onPressed: () {
-                                    context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
-                                  },
-                                  icon: const Icon(Icons.speed),
-                                ),
-                              ],
-                            ),
-                            leading: SizedBox(
-                              width: 32,
-                              child: PopupMenuButton<String>(
-                                icon: const Icon(Icons.more_vert),
-                                onSelected: (value) {
-                                  if (value == 'removeAll') {
-                                    context.read<HomeBloc>().add(const RemoveAllConfigs());
-                                  }
-                                },
-                                itemBuilder: (context) =>
-                                [
-                                  PopupMenuItem(
-                                    value: 'removeAll',
-                                    child: ListTile(
-                                      leading: const Icon(Icons.delete_sweep_outlined),
-                                      title: Text(AppLocalizations.of(context)!.removeAllConfigs),
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            children: state.singleConfigs.map((config) {
-                              return buildConfig(
-                                context,
-                                config: config,
-                                state: state,
-                                deletable: true,
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      );
-                    }
-
-                    final subscriptionIndex = index - ((state.singleConfigs.isNotEmpty) ? 1 : 0);
-                    final subscription = state.subscriptions[subscriptionIndex];
-
-                    return buildSubscriptionExpansionTile(
-                      context,
-                      subscription: subscription,
-                      state: state,
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(height: 0);
-                  },
-                  itemCount: state.subscriptions.length + (state.singleConfigs.isNotEmpty ? 1 : 0),
-                ),
-              ),
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
@@ -250,25 +203,94 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget buildConnectionStatus(BuildContext context, {required int duration, required int upload, required int download}) {
-    return Card(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      color: Theme.of(context).colorScheme.primaryContainer,
+    return GlassContainer(
+      borderRadius: BorderRadius.circular(0),
+      color: Colors.transparent,
+      border: Border.all(width: 0, color: Colors.transparent),
+      blur: 6,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            Icon(Icons.bolt, color: Theme.of(context).colorScheme.onPrimaryContainer),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                '${AppLocalizations.of(context)!.connectedLabel} • ${_formatDuration(duration)} • '
-                    '↑ ${_formatBytes(upload)} • '
-                    '↓ ${_formatBytes(download)}',
-                style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        child: Card(
+          margin: EdgeInsets.zero,
+          color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                Icon(Icons.bolt, color: Theme.of(context).colorScheme.onPrimaryContainer),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '${AppLocalizations.of(context)!.connectedLabel} • '
+                        '${_formatDuration(duration)} • '
+                        '↑ ${_formatBytes(upload)} • '
+                        '↓ ${_formatBytes(download)}',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildYourConfigsExpansionTile(BuildContext context, {required HomeLoaded state}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: ExpansionTile(
+          collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(AppLocalizations.of(context)!.yourConfigs),
+              IconButton(
+                tooltip: AppLocalizations.of(context)!.pingAll,
+                onPressed: () {
+                  context.read<HomeBloc>().add(PingConfigs(state.singleConfigs));
+                },
+                icon: const Icon(Icons.speed),
+              ),
+            ],
+          ),
+          leading: SizedBox(
+            width: 32,
+            child: PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                if (value == 'removeAll') {
+                  context.read<HomeBloc>().add(const RemoveAllConfigs());
+                }
+              },
+              itemBuilder: (context) =>
+              [
+                PopupMenuItem(
+                  value: 'removeAll',
+                  child: ListTile(
+                    leading: const Icon(Icons.delete_sweep_outlined),
+                    title: Text(AppLocalizations.of(context)!.removeAllConfigs),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          children: state.singleConfigs.map((config) {
+            return buildConfig(
+              context,
+              config: config,
+              state: state,
+              deletable: true,
+            );
+          }).toList(),
         ),
       ),
     );
@@ -278,6 +300,7 @@ class HomeScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Card(
+        margin: EdgeInsets.zero,
         child: ExpansionTile(
           collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
@@ -805,41 +828,41 @@ class HomeScreen extends StatelessWidget {
 
     await addFromText(context, text);
   }
-}
 
-String? _countryFlagEmoji(String input) {
-  if (input.isEmpty) return null;
+  String? _countryFlagEmoji(String input) {
+    if (input.isEmpty) return null;
 
-  final nationalFlag = RegExp(r'[\u{1F1E6}-\u{1F1FF}]{2}', unicode: true);
-  final subdivisionFlag = RegExp(r'\u{1F3F4}(?:[\u{E0000}-\u{E007F}])+', unicode: true);
+    final nationalFlag = RegExp(r'[\u{1F1E6}-\u{1F1FF}]{2}', unicode: true);
+    final subdivisionFlag = RegExp(r'\u{1F3F4}(?:[\u{E0000}-\u{E007F}])+', unicode: true);
 
-  final match = nationalFlag.firstMatch(input) ?? subdivisionFlag.firstMatch(input);
+    final match = nationalFlag.firstMatch(input) ?? subdivisionFlag.firstMatch(input);
 
-  return match?.group(0);
-}
-
-String _stripFlag(String input) {
-  final flagRegex = RegExp(r'([\u{1F1E6}-\u{1F1FF}]{2}|\u{1F3F4}(?:[\u{E0000}-\u{E007F}])+)', unicode: true);
-  return input.replaceFirst(flagRegex, '').trim();
-}
-
-Future<void> addFromText(BuildContext context, String text) async {
-  if (text.isEmpty || !context.mounted) {
-    return;
+    return match?.group(0);
   }
 
-  final bloc = context.read<HomeBloc>();
+  String _stripFlag(String input) {
+    final flagRegex = RegExp(r'([\u{1F1E6}-\u{1F1FF}]{2}|\u{1F3F4}(?:[\u{E0000}-\u{E007F}])+)', unicode: true);
+    return input.replaceFirst(flagRegex, '').trim();
+  }
 
-  try {
-    if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
-      bloc.add(AddSubscription(text));
-    } else {
-      final configs = FlutterVless.parseMany(text);
-      bloc.add(AddConfigs(configs));
+  Future<void> addFromText(BuildContext context, String text) async {
+    if (text.isEmpty || !context.mounted) {
+      return;
     }
-  } catch (ex) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ex.toString())));
+
+    final bloc = context.read<HomeBloc>();
+
+    try {
+      if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
+        bloc.add(AddSubscription(text));
+      } else {
+        final configs = FlutterVless.parseMany(text);
+        bloc.add(AddConfigs(configs));
+      }
+    } catch (ex) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ex.toString())));
+      }
     }
   }
 }
