@@ -79,6 +79,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get shareQrCode => 'هم‌رسانی QR کد';
 
   @override
+  String get importFromClipboard => 'وارد کردن از حافظه موقت';
+
+  @override
   String get selectConfigToConnect => 'برای اتصال یک کانفیگ انتخاب کنید';
 
   @override

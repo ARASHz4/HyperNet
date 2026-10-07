@@ -241,6 +241,8 @@ class HomeScreen extends StatelessWidget {
                                   .add(RemoveSubscription(subscription.url));
                             } else if (value == 'share') {
                               showSubscriptionQrCodeDialog(context, subscription.url);
+                            } else if (value == 'import') {
+                              importFromClipboardIntoApp(context);
                             }
                           },
                           itemBuilder: (context) =>
@@ -258,6 +260,14 @@ class HomeScreen extends StatelessWidget {
                               child: ListTile(
                                 leading: const Icon(Icons.share),
                                 title: Text(AppLocalizations.of(context)!.shareSubscriptionUrl),
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 'import',
+                              child: ListTile(
+                                leading: const Icon(Icons.content_paste),
+                                title: Text(AppLocalizations.of(context)!.importFromClipboard),
                                 contentPadding: EdgeInsets.zero,
                               ),
                             ),
@@ -533,34 +543,6 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () => Navigator.pop(builderContext),
                         child: Text(AppLocalizations.of(context)!.cancel),
                       ),
-                      IconButton(
-                        onPressed: () async {
-                          final text = (await importFromClipboard() ?? '').trim();
-                          if (text.isEmpty) return;
-
-                          try {
-                            if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
-                              context.read<HomeBloc>().add(AddSubscription(text));
-                            } else {
-                              final configs = FlutterVless.parseMany(text);
-                              for (final config in configs) {
-                                context.read<HomeBloc>().add(AddConfig(config.url));
-                              }
-                            }
-
-                            Navigator.pop(builderContext);
-                          } catch (ex) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(ex.toString()),
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        icon: const Icon(Icons.paste),
-                      ),
                       TextButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
@@ -740,5 +722,29 @@ class HomeScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+Future<void> importFromClipboardIntoApp(BuildContext context) async {
+  final text = (await Clipboard.getData('text/plain'))?.text?.trim() ?? '';
+
+  if (text.isEmpty) return;
+
+  try {
+    if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
+      context.read<HomeBloc>().add(AddSubscription(text));
+    } else {
+      final configs = FlutterVless.parseMany(text);
+
+      for (final config in configs) {
+        context.read<HomeBloc>().add(AddConfig(config.url));
+      }
+    }
+  } catch (ex) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ex.toString())),
+      );
+    }
   }
 }

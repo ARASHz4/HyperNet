@@ -23,6 +23,7 @@
   "scanQrCode": "اسکن کد QR",
   "copyLink": "کپی کردن لینک",
   "shareQrCode": "هم‌رسانی QR کد",
+  "importFromClipboard": "وارد کردن از حافظه موقت",
   "selectConfigToConnect": "برای اتصال یک کانفیگ انتخاب کنید",
   "addConfig": "افزودن کانفیگ",
   "singleConfigs": "کانفیگ‌های تکی",

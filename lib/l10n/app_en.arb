@@ -23,6 +23,7 @@
   "scanQrCode": "Scan QR code",
   "copyLink": "Copy link",
   "shareQrCode": "Share QR code",
+  "importFromClipboard": "Import from clipboard",
   "selectConfigToConnect": "Select a config to connect",
   "addConfig": "Add config",
   "singleConfigs": "Single configs",

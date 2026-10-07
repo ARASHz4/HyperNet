@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// **'Share QR code'**
   String get shareQrCode;
 
+  /// No description provided for @importFromClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from clipboard'**
+  String get importFromClipboard;
+
   /// No description provided for @selectConfigToConnect.
   ///
   /// In en, this message translates to:
