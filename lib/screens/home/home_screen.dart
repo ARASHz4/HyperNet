@@ -150,10 +150,6 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                             children: state.singleConfigs.map((config) {
-                              final isSelected = identical(state.selectedConfig, config);
-
-                              final protocol = config.outbound1["protocol"] as String;
-
                               return Dismissible(
                                 key: ValueKey(config.url),
                                 direction: DismissDirection.endToStart,
