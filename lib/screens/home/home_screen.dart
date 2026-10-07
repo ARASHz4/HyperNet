@@ -117,6 +117,39 @@ class HomeScreen extends StatelessWidget {
                   upload: state.vlessStatus.upload,
                   download: state.vlessStatus.download,
                 ),
+              if (state.selectedConfig != null)
+                Card(
+                  margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.sailing,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    title: Text(state.selectedConfig!.remark),
+                    subtitle: Text(
+                      '${state.selectedConfig!.outbound1["protocol"]} ${state.selectedConfig!.address}',
+                    ),
+                    trailing: FilledButton.icon(
+                      onPressed: () {
+                        if (canStop(state.vlessStatus)) {
+                          context.read<HomeBloc>().add(const Disconnect());
+                        } else {
+                          context.read<HomeBloc>().add(Connect(state.selectedConfig!));
+                        }
+                      },
+                      icon: Icon(
+                        canStop(state.vlessStatus)
+                            ? Icons.stop
+                            : Icons.play_arrow,
+                      ),
+                      label: Text(
+                        canStop(state.vlessStatus)
+                            ? AppLocalizations.of(context)!.disconnect
+                            : AppLocalizations.of(context)!.connect,
+                      ),
+                    ),
+                  ),
+                ),
               Expanded(
                 child: state.subscriptions.isEmpty && state.singleConfigs.isEmpty
                     ? buildEmptyView(context)
@@ -249,15 +282,26 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget buildConnectionStatus(BuildContext context, {required int duration, required int upload, required int download}) {
-    return Container(
-      width: double.infinity,
+    return Card(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       color: Theme.of(context).colorScheme.primaryContainer,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Text(
-        '${AppLocalizations.of(context)!.connectedLabel} • ${_formatDuration(duration)} • '
-            '↑ ${_formatBytes(upload)} • '
-            '↓ ${_formatBytes(download)}',
-        style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Icon(Icons.bolt, color: Theme.of(context).colorScheme.onPrimaryContainer),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '${AppLocalizations.of(context)!.connectedLabel} • ${_formatDuration(duration)} • '
+                    '↑ ${_formatBytes(upload)} • '
+                    '↓ ${_formatBytes(download)}',
+                style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
