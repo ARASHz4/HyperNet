@@ -426,7 +426,7 @@ class HomeScreen extends StatelessWidget {
             },
           ),
         ),
-        title: Text(config.remark, softWrap: false, overflow: TextOverflow.ellipsis),
+        title: Text(_stripFlag(config.remark), softWrap: false, overflow: TextOverflow.ellipsis),
         subtitle: Text("${protocol.toUpperCase()} ${config.address}"),
         onTap: () {
           context.read<HomeBloc>().add(SelectConfig(config));
@@ -434,15 +434,13 @@ class HomeScreen extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (isSelected)
+            if (isSelected && state.vlessStatus.connectionState == VlessConnectionState.connected)
               Container(
                 margin: const EdgeInsets.only(right: 8, left: 4),
                 width: 12,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: state.vlessStatus.connectionState == VlessConnectionState.connected
-                      ? Colors.green
-                      : Theme.of(context).colorScheme.outline,
+                  color: Colors.green,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -810,6 +808,11 @@ String? _countryFlagEmoji(String input) {
   final match = flagRegex.firstMatch(input);
 
   return match?.group(0);
+}
+
+String _stripFlag(String input) {
+  final flagRegex = RegExp(r'[\u{1F1E6}-\u{1F1FF}]{2}', unicode: true);
+  return input.replaceFirst(flagRegex, '').trim();
 }
 
 Future<void> addFromText(BuildContext context, String text) async {
