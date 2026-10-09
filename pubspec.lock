@@ -220,10 +220,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_vless
-      sha256: db242f7fe007d35b4d51c5bd5b895d816f141e4d4afc7038c3b6228c1c66dfb5
+      sha256: ccda63e67218c99f134a338d904264b9772bf289966fafb5067801d547b27f51
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.5"
+    version: "1.1.6"
   flutter_vless_android:
     dependency: transitive
     description:
