@@ -12,6 +12,7 @@ import 'package:flutter_vless/flutter_vless.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
 import 'package:hyper_net/screens/settings/application_languages_screen.dart';
+import 'package:hyper_net/screens/settings/routing_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -34,7 +35,11 @@ class HomeScreen extends StatelessWidget {
                 icon: const Icon(Icons.settings),
                 itemBuilder: (context) {
                   final l10n = AppLocalizations.of(context)!;
-                  return [PopupMenuItem<int>(value: 1, child: Text(l10n.language)), PopupMenuItem<int>(value: 2, child: Text(l10n.appearance))];
+                  return [
+                    PopupMenuItem<int>(value: 1, child: Text(l10n.language)),
+                    PopupMenuItem<int>(value: 2, child: Text(l10n.appearance)),
+                    PopupMenuItem<int>(value: 3, child: Text(l10n.routing)),
+                  ];
                 },
                 onSelected: (value) async {
                   final cubit = context.read<ApplicationCubit>();
@@ -45,6 +50,8 @@ class HomeScreen extends StatelessWidget {
                     await Navigator.push(context, MaterialPageRoute(builder: (_) => ApplicationLanguageScreen(language: current)));
                   } else if (value == 2) {
                     await Navigator.push(context, MaterialPageRoute(builder: (_) => ApplicationAppearanceScreen(appearance: ThemeMode.values.indexOf(localeTheme.$2))));
+                  } else if (value == 3) {
+                    await Navigator.push(context, MaterialPageRoute(builder: (_) => const RoutingScreen()));
                   }
                 },
               ),

@@ -17,6 +17,8 @@ class Preferences {
   static const String _languageKey = 'LanguageId';
   static const String _appearanceKey = 'Appearance';
   static const String _selectedConfigKey = 'SelectedConfigUrl';
+  static const String _bypassDomainsKey = 'BypassDomains';
+  static const String _bypassAppsKey = 'BypassApps';
 
   static Future<void> setSelectedConfigUrl(String? url) async {
     final preferences = await sharedPreferences;
@@ -25,6 +27,26 @@ class Preferences {
     } else {
       await preferences.setString(_selectedConfigKey, url);
     }
+  }
+
+  static Future<List<String>> bypassDomains() async {
+    final preferences = await sharedPreferences;
+    return preferences.getStringList(_bypassDomainsKey) ?? [];
+  }
+
+  static Future<void> setBypassDomains(List<String> domains) async {
+    final preferences = await sharedPreferences;
+    await preferences.setStringList(_bypassDomainsKey, domains);
+  }
+
+  static Future<List<String>> bypassApps() async {
+    final preferences = await sharedPreferences;
+    return preferences.getStringList(_bypassAppsKey) ?? [];
+  }
+
+  static Future<void> setBypassApps(List<String> apps) async {
+    final preferences = await sharedPreferences;
+    await preferences.setStringList(_bypassAppsKey, apps);
   }
 
   static Future<String?> selectedConfigUrl() async {

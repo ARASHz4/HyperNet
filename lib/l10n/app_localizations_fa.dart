@@ -145,4 +145,29 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get invalidConfigUrl => 'آدرس کانفیگ نامعتبر است';
+
+  @override
+  String get routing => 'مسیریابی';
+
+  @override
+  String get routingTitle => 'مسیریابی — دور زدن VPN';
+
+  @override
+  String get bypassDomains => 'دامنه‌های دور زده (هر کدام در یک خط)';
+
+  @override
+  String get bypassApps => 'برنامه‌های دور زده (نام بسته، هر کدام در یک خط)';
+
+  @override
+  String get applyRules => 'اعمال قوانین';
+
+  @override
+  String get clear => 'پاک کردن';
+
+  @override
+  String get routingRulesSaved =>
+      'قوانین مسیریابی ذخیره شد. برای اعمال، VPN را دوباره متصل کنید.';
+
+  @override
+  String get invalidDomainEntry => 'ورودی دامنه نامعتبر است.';
 }

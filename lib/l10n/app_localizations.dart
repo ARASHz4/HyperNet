@@ -367,6 +367,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid config URL'**
   String get invalidConfigUrl;
+
+  /// No description provided for @routing.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing'**
+  String get routing;
+
+  /// No description provided for @routingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing — Bypass VPN'**
+  String get routingTitle;
+
+  /// No description provided for @bypassDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Bypass domains (one per line)'**
+  String get bypassDomains;
+
+  /// No description provided for @bypassApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Bypass apps (package names, one per line)'**
+  String get bypassApps;
+
+  /// No description provided for @applyRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply rules'**
+  String get applyRules;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
+  /// No description provided for @routingRulesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing rules saved. Reconnect VPN to apply.'**
+  String get routingRulesSaved;
+
+  /// No description provided for @invalidDomainEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid domain entry.'**
+  String get invalidDomainEntry;
 }
 
 class _AppLocalizationsDelegate

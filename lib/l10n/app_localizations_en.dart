@@ -146,4 +146,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidConfigUrl => 'Invalid config URL';
+
+  @override
+  String get routing => 'Routing';
+
+  @override
+  String get routingTitle => 'Routing — Bypass VPN';
+
+  @override
+  String get bypassDomains => 'Bypass domains (one per line)';
+
+  @override
+  String get bypassApps => 'Bypass apps (package names, one per line)';
+
+  @override
+  String get applyRules => 'Apply rules';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get routingRulesSaved =>
+      'Routing rules saved. Reconnect VPN to apply.';
+
+  @override
+  String get invalidDomainEntry => 'Invalid domain entry.';
 }

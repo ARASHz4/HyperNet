@@ -51,5 +51,13 @@
   "addConfig": "Add config",
   "singleConfigs": "Single configs",
   "yourConfigs": "Your Configs",
-  "invalidConfigUrl": "Invalid config URL"
+  "invalidConfigUrl": "Invalid config URL",
+  "routing": "Routing",
+  "routingTitle": "Routing — Bypass VPN",
+  "bypassDomains": "Bypass domains (one per line)",
+  "bypassApps": "Bypass apps (package names, one per line)",
+  "applyRules": "Apply rules",
+  "clear": "Clear",
+  "routingRulesSaved": "Routing rules saved. Reconnect VPN to apply.",
+  "invalidDomainEntry": "Invalid domain entry."
 }
