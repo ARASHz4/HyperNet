@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:hyper_net/models/language.dart';
@@ -73,6 +74,7 @@ class ApplicationView extends StatelessWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           locale: localeTheme.$1,
           themeMode: localeTheme.$2,
+          builder: EasyLoading.init(),
           theme: ThemeData(
             colorScheme: .fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,

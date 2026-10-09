@@ -106,6 +106,9 @@ class Preferences {
     }
   }
 
+  /// Currently selected language, defaults to system when not loaded yet.
+  static Language get currentLanguage => _applicationLanguage ?? languages[0];
+
   static Future<int> appearance() async {
     if (_appearance != null) {
       return _appearance!;

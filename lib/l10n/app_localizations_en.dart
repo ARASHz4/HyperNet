@@ -186,4 +186,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get xrayCoreVersion => 'Xray Core Version';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get day => 'day';
+
+  @override
+  String get days => 'days';
+
+  @override
+  String get h => 'h';
+
+  @override
+  String get min => 'min';
+
+  @override
+  String get sec => 'sec';
+
+  @override
+  String get warning => 'Warning';
+
+  @override
+  String get error => 'Error';
 }

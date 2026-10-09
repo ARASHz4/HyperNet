@@ -64,5 +64,14 @@
   "about": "درباره",
   "versionLabel": "ویرایش",
   "aboutDescription": "یک کلاینت Xray VPN",
-  "xrayCoreVersion": "وبرایش هسته Xray"
+  "xrayCoreVersion": "وبرایش هسته Xray",
+  "today": "امروز",
+  "yesterday": "دیروز",
+  "day": "روز",
+  "days": "روز",
+  "h": "ساعت",
+  "min": "دقیقه",
+  "sec": "ثانیه",
+  "warning": "هشدار",
+  "error": "خطا"
 }

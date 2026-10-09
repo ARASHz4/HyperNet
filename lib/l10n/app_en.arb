@@ -64,5 +64,14 @@
   "about": "About",
   "versionLabel": "Version",
   "aboutDescription": "A Xray VPN client",
-  "xrayCoreVersion": "Xray Core Version"
+  "xrayCoreVersion": "Xray Core Version",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "day": "day",
+  "days": "days",
+  "h": "h",
+  "min": "min",
+  "sec": "sec",
+  "warning": "Warning",
+  "error": "Error"
 }

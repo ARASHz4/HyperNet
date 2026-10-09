@@ -185,4 +185,31 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get xrayCoreVersion => 'وبرایش هسته Xray';
+
+  @override
+  String get today => 'امروز';
+
+  @override
+  String get yesterday => 'دیروز';
+
+  @override
+  String get day => 'روز';
+
+  @override
+  String get days => 'روز';
+
+  @override
+  String get h => 'ساعت';
+
+  @override
+  String get min => 'دقیقه';
+
+  @override
+  String get sec => 'ثانیه';
+
+  @override
+  String get warning => 'هشدار';
+
+  @override
+  String get error => 'خطا';
 }

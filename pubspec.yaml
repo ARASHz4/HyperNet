@@ -33,6 +33,10 @@ dependencies:
   flutter_slidable: ^4.0.3
   glassmorphism_ui: ^0.3.0
   package_info_plus: ^10.2.2
+  shamsi_date: ^1.1.1
+  url_launcher: ^6.3.3
+  awesome_snackbar_content: ^0.1.8
+  flutter_easyloading: ^4.0.2
 
 dev_dependencies:
   flutter_test:
