@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:hyper_net/extensions.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 
 class QrScanScreen extends StatefulWidget {
@@ -139,10 +140,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
     } catch (_) {}
 
     if (mounted) {
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.noQrFoundInPhoto)),
-      );
+      context.showSnackBar(message: AppLocalizations.of(context)!.noQrFoundInPhoto);
     }
   }
 }

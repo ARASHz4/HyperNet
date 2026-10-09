@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hyper_net/extensions.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:hyper_net/preferences.dart';
 import 'package:hyper_net/screens/settings/routing_config.dart';
@@ -64,8 +65,7 @@ class _RoutingScreenState extends State<RoutingScreen> {
       }
     } on FormatException catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!.invalidDomainEntry)));
+      context.showSnackBar(message: AppLocalizations.of(context)!.invalidDomainEntry);
       return;
     }
 
@@ -78,8 +78,7 @@ class _RoutingScreenState extends State<RoutingScreen> {
     Preferences.setBypassApps(apps);
 
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.routingRulesSaved)));
+    context.showSnackBar(message: AppLocalizations.of(context)!.routingRulesSaved);
   }
 
   void _clearRouting() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
+import 'package:hyper_net/extensions.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hyper_net/screens/qr_scan_screen.dart';
@@ -143,11 +144,7 @@ class HomeScreen extends StatelessWidget {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
               if (state.selectedConfig == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(AppLocalizations.of(context)!.selectConfigToConnect),
-                  ),
-                );
+                context.showSnackBar(message: AppLocalizations.of(context)!.selectConfigToConnect);
                 return;
               }
 
@@ -211,7 +208,7 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: Text(
                     '${AppLocalizations.of(context)!.connectedLabel} • '
-                        '${_formatDuration(duration)} • '
+                        '${Duration(seconds: duration).format(context)} • '
                         '↑ ${_formatBytes(upload)} • '
                         '↓ ${_formatBytes(download)}',
                     style: TextStyle(
@@ -460,7 +457,7 @@ class HomeScreen extends StatelessWidget {
                       child: Text(
                         state.delays[config.url]! < 0
                             ? AppLocalizations.of(context)!.timeoutLabel
-                            : '${state.delays[config.url]} ms',
+                            : '${state.delays[config.url]!.formatToString(context)} ms',
                         style: TextStyle(
                           color: state.delays[config.url]! < 0
                               ? Colors.red
@@ -711,7 +708,7 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: url));
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.linkCopied)));
+                    context.showSnackBar(message: AppLocalizations.of(context)!.linkCopied);
                   }
                   
                   if (dialogContext.mounted) Navigator.pop(dialogContext);
@@ -736,7 +733,7 @@ class HomeScreen extends StatelessWidget {
     }
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.qrInvalidSubscriptionLink)));
+      context.showSnackBar(message: AppLocalizations.of(context)!.qrInvalidSubscriptionLink);
     }
 
     return null;
@@ -765,18 +762,6 @@ class HomeScreen extends StatelessWidget {
     return '${value.toStringAsFixed(value >= 10 || index == 0 ? 0 : 1)} ${units[index]}';
   }
 
-  String _formatDuration(int seconds) {
-    final h = seconds ~/ 3600;
-    final m = (seconds % 3600) ~/ 60;
-    final s = seconds % 60;
-
-    if (h > 0) {
-      return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-    }
-
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
   Widget? _subscriptionUsage(Subscription subscription, BuildContext context) {
     if (subscription.usedBytes == null && subscription.totalBytes == null && subscription.expireAt == null) {
       return null;
@@ -785,6 +770,15 @@ class HomeScreen extends StatelessWidget {
     final progress = (subscription.usedBytes != null && subscription.totalBytes != null && subscription.totalBytes! > 0) ? (subscription.usedBytes! / subscription.totalBytes!).clamp(0.0, 1.0) : null;
 
     final daysLeft = subscription.expireAt?.difference(DateTime.now()).inDays;
+
+    final parts = <String>[
+      if (subscription.usedBytes != null || subscription.totalBytes != null)
+        '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
+      if (daysLeft != null)
+        daysLeft < 0 ? AppLocalizations.of(context)!.expiredLabel : AppLocalizations.of(context)!.daysLeft(daysLeft),
+      if (subscription.expireAt != null)
+        subscription.expireAt!.dateToYMMMd(context),
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -799,8 +793,7 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
-            [if (subscription.usedBytes != null || subscription.totalBytes != null) '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
-              if (daysLeft != null) daysLeft < 0 ? AppLocalizations.of(context)!.expiredLabel : AppLocalizations.of(context)!.daysLeft(daysLeft)].join(' • '),
+            parts.join(' • '),
             style: const TextStyle(fontSize: 12),
           ),
         ),
@@ -850,7 +843,7 @@ class HomeScreen extends StatelessWidget {
       }
     } catch (ex) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ex.toString())));
+        context.showSnackBar(message: ex.toString());
       }
     }
   }

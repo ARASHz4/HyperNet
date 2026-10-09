@@ -179,7 +179,7 @@ extension BuildContextExtension on BuildContext {
 
   Future<dynamic> navigatorPush({required Widget screen, bool fullscreenDialog = false}) async {
     return await Navigator.of(this).push(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         fullscreenDialog: fullscreenDialog,
         builder: (context) => screen,
       ),
