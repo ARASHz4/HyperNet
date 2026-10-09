@@ -304,14 +304,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  Future<String> getXrayCoreVersion() async {
-    try {
-      return await flutterVless.getCoreVersion();
-    } catch (_) {
-      return '';
-    }
-  }
-
   Future<void> _refreshSubscription(String url) async {
     final subscription = await getSubscription(url);
 
