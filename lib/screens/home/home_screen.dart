@@ -102,9 +102,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                       onTap: () async {
                         final text = await QrScanInput.scan(context);
-                        if (text != null && text.trim().isNotEmpty) {
-                          await addFromText(context, text.trim());
+                        if (text == null || text.trim().isEmpty || !context.mounted) {
+                          return;
                         }
+
+                        await addFromText(context, text.trim());
                       },
                     ),
                   ];
