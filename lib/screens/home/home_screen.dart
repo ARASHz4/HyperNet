@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glassmorphism_ui/glassmorphism_ui.dart';
-import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hyper_net/screens/qr_scan_screen.dart';
@@ -10,9 +9,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:flutter_vless/flutter_vless.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
-import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
-import 'package:hyper_net/screens/settings/application_languages_screen.dart';
-import 'package:hyper_net/screens/settings/routing_screen.dart';
+import 'package:hyper_net/screens/settings/settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -31,28 +28,11 @@ class HomeScreen extends StatelessWidget {
           appBar: AppBar(
             title: Row(mainAxisSize: MainAxisSize.min, children: [Image.asset('assets/icon.png', height: 28), const SizedBox(width: 8), Text(AppLocalizations.of(context)!.appTitle)]),
             actions: [
-              PopupMenuButton<int>(
+              IconButton(
                 icon: const Icon(Icons.settings),
-                itemBuilder: (context) {
-                  final l10n = AppLocalizations.of(context)!;
-                  return [
-                    PopupMenuItem<int>(value: 1, child: Text(l10n.language)),
-                    PopupMenuItem<int>(value: 2, child: Text(l10n.appearance)),
-                    PopupMenuItem<int>(value: 3, child: Text(l10n.routing)),
-                  ];
-                },
-                onSelected: (value) async {
-                  final cubit = context.read<ApplicationCubit>();
-                  final localeTheme = cubit.state;
-
-                  if (value == 1) {
-                    final current = localeTheme.$1 == null ? languages[0] : languages.firstWhere((element) => element.code == localeTheme.$1!.languageCode, orElse: () => languages[0]);
-                    await Navigator.push(context, MaterialPageRoute(builder: (_) => ApplicationLanguageScreen(language: current)));
-                  } else if (value == 2) {
-                    await Navigator.push(context, MaterialPageRoute(builder: (_) => ApplicationAppearanceScreen(appearance: ThemeMode.values.indexOf(localeTheme.$2))));
-                  } else if (value == 3) {
-                    await Navigator.push(context, MaterialPageRoute(builder: (_) => const RoutingScreen()));
-                  }
+                tooltip: AppLocalizations.of(context)!.settings,
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
                 },
               ),
               PopupMenuButton<int>(

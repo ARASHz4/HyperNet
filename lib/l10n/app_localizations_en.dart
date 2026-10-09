@@ -171,4 +171,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidDomainEntry => 'Invalid domain entry.';
+
+  @override
+  String get routingSubtitle => 'Bypass domains and apps';
 }

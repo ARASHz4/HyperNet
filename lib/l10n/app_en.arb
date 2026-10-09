@@ -59,5 +59,6 @@
   "applyRules": "Apply rules",
   "clear": "Clear",
   "routingRulesSaved": "Routing rules saved. Reconnect VPN to apply.",
-  "invalidDomainEntry": "Invalid domain entry."
+  "invalidDomainEntry": "Invalid domain entry.",
+  "routingSubtitle": "Bypass domains and apps"
 }

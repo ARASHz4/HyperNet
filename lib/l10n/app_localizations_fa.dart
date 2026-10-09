@@ -170,4 +170,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get invalidDomainEntry => 'ورودی دامنه نامعتبر است.';
+
+  @override
+  String get routingSubtitle => 'دامنه‌ها و برنامه‌های دور زده';
 }

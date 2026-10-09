@@ -59,5 +59,6 @@
   "applyRules": "اعمال قوانین",
   "clear": "پاک کردن",
   "routingRulesSaved": "قوانین مسیریابی ذخیره شد. برای اعمال، VPN را دوباره متصل کنید.",
-  "invalidDomainEntry": "ورودی دامنه نامعتبر است."
+  "invalidDomainEntry": "ورودی دامنه نامعتبر است.",
+  "routingSubtitle": "دامنه‌ها و برنامه‌های دور زده"
 }

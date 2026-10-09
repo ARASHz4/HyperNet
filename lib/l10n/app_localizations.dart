@@ -415,6 +415,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid domain entry.'**
   String get invalidDomainEntry;
+
+  /// No description provided for @routingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bypass domains and apps'**
+  String get routingSubtitle;
 }
 
 class _AppLocalizationsDelegate
