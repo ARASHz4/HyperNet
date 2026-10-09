@@ -146,10 +146,8 @@ class _QrScanScreenState extends State<QrScanScreen> {
 }
 
 class QrScanInput {
-  static Future<String?> scan(BuildContext context) {
-    return Navigator.push<String?>(
-      context,
-      MaterialPageRoute(builder: (_) => const QrScanScreen()),
-    );
+  static Future<String?> scan(BuildContext context) async {
+    final result = await context.navigatorPush(screen: const QrScanScreen());
+    return result as String?;
   }
 }

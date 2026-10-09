@@ -1,5 +1,4 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
@@ -188,7 +187,7 @@ extension BuildContextExtension on BuildContext {
 
   Future<dynamic> navigatorPushReplacement({required Widget screen, bool fullscreenDialog = false}) async {
     return await Navigator.of(this).pushReplacement(
-      CupertinoPageRoute(
+      MaterialPageRoute(
         fullscreenDialog: fullscreenDialog,
         builder: (context) => screen,
       ),

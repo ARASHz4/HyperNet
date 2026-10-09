@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                 icon: const Icon(Icons.settings),
                 tooltip: AppLocalizations.of(context)!.settings,
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+                  context.navigatorPush(screen: const SettingsScreen());
                 },
               ),
               PopupMenuButton<int>(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
+import 'package:hyper_net/extensions.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:hyper_net/screens/settings/about_screen.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
@@ -24,12 +25,9 @@ class SettingsScreen extends StatelessWidget {
             title: Text(l10n.appearance),
             subtitle: Text(_appearanceLabel(localeTheme.$2, l10n)),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ApplicationAppearanceScreen(
-                  appearance: ThemeMode.values.indexOf(localeTheme.$2),
-                ),
+            onTap: () => context.navigatorPush(
+              screen: ApplicationAppearanceScreen(
+                appearance: ThemeMode.values.indexOf(localeTheme.$2),
               ),
             ),
           ),
@@ -39,17 +37,14 @@ class SettingsScreen extends StatelessWidget {
             title: Text(l10n.language),
             subtitle: Text(_languageLabel(localeTheme.$1, l10n)),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ApplicationLanguageScreen(
-                  language: localeTheme.$1 == null
-                      ? languages[0]
-                      : languages.firstWhere(
-                          (element) => element.code == localeTheme.$1!.languageCode,
-                          orElse: () => languages[0],
-                        ),
-                ),
+            onTap: () => context.navigatorPush(
+              screen: ApplicationLanguageScreen(
+                language: localeTheme.$1 == null
+                    ? languages[0]
+                    : languages.firstWhere(
+                        (element) => element.code == localeTheme.$1!.languageCode,
+                        orElse: () => languages[0],
+                      ),
               ),
             ),
           ),
@@ -59,20 +54,14 @@ class SettingsScreen extends StatelessWidget {
             title: Text(l10n.routing),
             subtitle: Text(l10n.routingSubtitle),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const RoutingScreen()),
-            ),
+            onTap: () => context.navigatorPush(screen: const RoutingScreen()),
           ),
           const Divider(height: 1, indent: 64),
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: Text(l10n.about),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const AboutScreen()),
-            ),
+            onTap: () => context.navigatorPush(screen: const AboutScreen()),
           ),
         ],
       ),
