@@ -173,4 +173,17 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get routingSubtitle => 'دامنه‌ها و برنامه‌های دور زده';
+
+  @override
+  String get about => 'درباره';
+
+  @override
+  String get versionLabel => 'نسخه';
+
+  @override
+  String get aboutDescription =>
+      'یک کلاینت VPN با پروتکل VLESS و هسته Xray برای اندروید و iOS.';
+
+  @override
+  String get aboutCore => 'هسته';
 }

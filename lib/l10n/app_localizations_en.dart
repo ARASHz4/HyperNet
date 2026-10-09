@@ -174,4 +174,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routingSubtitle => 'Bypass domains and apps';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get versionLabel => 'Version';
+
+  @override
+  String get aboutDescription =>
+      'A VLESS / Xray VPN client for Android and iOS.';
+
+  @override
+  String get aboutCore => 'Core';
 }

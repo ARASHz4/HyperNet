@@ -421,6 +421,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bypass domains and apps'**
   String get routingSubtitle;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get versionLabel;
+
+  /// No description provided for @aboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A VLESS / Xray VPN client for Android and iOS.'**
+  String get aboutDescription;
+
+  /// No description provided for @aboutCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Core'**
+  String get aboutCore;
 }
 
 class _AppLocalizationsDelegate

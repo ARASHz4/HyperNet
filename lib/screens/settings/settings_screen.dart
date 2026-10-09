@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
+import 'package:hyper_net/screens/settings/about_screen.dart';
 import 'package:hyper_net/screens/settings/application_appearance_screen.dart';
 import 'package:hyper_net/screens/settings/application_languages_screen.dart';
 import 'package:hyper_net/screens/settings/routing_screen.dart';
@@ -61,6 +62,16 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const RoutingScreen()),
+            ),
+          ),
+          const Divider(height: 1, indent: 64),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(l10n.about),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AboutScreen()),
             ),
           ),
         ],
