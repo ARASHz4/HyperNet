@@ -419,6 +419,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<String> getXrayCoreVersion() async {
-    return await flutterVless.getCoreVersion();
+    final version = await flutterVless.getCoreVersion();
+
+    // The core returns a full build string like:
+    // "Xray 26.9.9 (Xray, Penetrates Everything.) v26.9.9 (go1.27.0 android/arm64)"
+    // Keep only the version number.
+    final match = RegExp(r'\d+\.\d+(?:\.\d+)*').firstMatch(version);
+
+    return match?.group(0) ?? version;
   }
 }

@@ -28,19 +28,25 @@ class AboutScreen extends StatelessWidget {
                 const SizedBox(height: 4),
                 FutureBuilder<String>(
                   future: getAppVersion(), builder: (context, snapshot) {
-                    final version = snapshot.data;
-                    return Text(version == null || version.isEmpty
-                        ? l10n.versionLabel
-                        : '${l10n.versionLabel} $version');
+                    final version = snapshot.data ?? "";
+
+                    if (version.isNotEmpty) {
+                      return Text('${l10n.versionLabel} $version');
+                    }
+
+                    return const SizedBox.shrink();
                   },
                 ),
                 FutureBuilder<String>(
                   future: context.read<HomeBloc>().getXrayCoreVersion(),
                   builder: (context, snapshot) {
-                    final version = snapshot.data;
-                    return Text(version == null || version.isEmpty
-                        ? l10n.xrayCoreVersion
-                        : '${l10n.xrayCoreVersion} $version');
+                    final xrayCoreVersion = snapshot.data ?? "";
+
+                    if (xrayCoreVersion.isNotEmpty) {
+                      return Text('${l10n.xrayCoreVersion} $xrayCoreVersion');
+                    }
+
+                    return const SizedBox.shrink();
                   },
                 ),
                 const SizedBox(height: 24),
