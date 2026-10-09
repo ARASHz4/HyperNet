@@ -16,6 +16,10 @@ part 'home_event.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeLoaded()) {
+    on<InitializeVless>((event, emit) async {
+      await _initializeVless();
+    });
+
     on<LoadSubscriptions>((event, emit) async {
       final subscriptions = LocalStorage().getSubscriptions();
       final savedUrl = await Preferences.selectedConfigUrl();
@@ -43,6 +47,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         subscriptions: subscriptions,
         selectedConfig: savedConfig,
       ));
+    });
+
+    on<LoadConfigs>((event, emit) {
+      if (state is! HomeLoaded) return;
+
+      final urls = LocalStorage().getSingleConfigUrls();
+      final configs = urls
+          .map((url) {
+        try {
+          return FlutterVless.parse(url);
+        } catch (_) {
+          return null;
+        }
+      })
+          .whereType<FlutterVlessURL>()
+          .toList();
+
+      emit((state as HomeLoaded).copyWith(singleConfigs: configs));
     });
 
     on<AddConfig>((event, emit) async {
@@ -122,24 +144,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ? null
             : currentState.selectedConfig,
       ));
-    });
-
-    on<LoadConfigs>((event, emit) {
-      if (state is! HomeLoaded) return;
-
-      final urls = LocalStorage().getSingleConfigUrls();
-      final configs = urls
-          .map((url) {
-            try {
-              return FlutterVless.parse(url);
-            } catch (_) {
-              return null;
-            }
-          })
-          .whereType<FlutterVlessURL>()
-          .toList();
-
-      emit((state as HomeLoaded).copyWith(singleConfigs: configs));
     });
 
     on<AddSubscription>((event, emit) async {
@@ -236,10 +240,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(currentState.copyWith(vlessStatus: event.status));
     });
 
-    on<InitializeVless>((event, emit) async {
-      await _initializeVless();
-    });
-
     on<Connect>((event, emit) async {
       await connect(event.config);
     });
@@ -283,9 +283,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
+    add(const InitializeVless());
+
     add(const LoadSubscriptions());
     add(const LoadConfigs());
-    add(const InitializeVless());
   }
 
   late final flutterVless = FlutterVless(
@@ -301,6 +302,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       notificationIconResourceName: 'ic_notification',
       notificationIconResourceType: 'drawable',
     );
+  }
+
+  Future<String> getXrayCoreVersion() async {
+    try {
+      return await flutterVless.getCoreVersion();
+    } catch (_) {
+      return '';
+    }
   }
 
   Future<void> _refreshSubscription(String url) async {
@@ -415,5 +424,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         blockedApps: await Preferences.bypassApps(),
       );
     }
+  }
+
+  Future<String> getXrayCoreVersion() async {
+    return await flutterVless.getCoreVersion();
   }
 }

@@ -1,31 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
+import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-class AboutScreen extends StatefulWidget {
+class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
-
-  @override
-  State<AboutScreen> createState() => _AboutScreenState();
-}
-
-class _AboutScreenState extends State<AboutScreen> {
-  String _version = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadVersion();
-  }
-
-  Future<void> _loadVersion() async {
-    final info = await PackageInfo.fromPlatform();
-    if (!mounted) return;
-
-    setState(() {
-      _version = info.version;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +19,30 @@ class _AboutScreenState extends State<AboutScreen> {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                Image.asset('assets/icon.png', height: 96),
+                Image.asset('assets/icon.png', height: 196),
                 const SizedBox(height: 16),
                 Text(
                   l10n.appTitle,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                if (_version.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text('${l10n.versionLabel} $_version'),
-                ],
+                const SizedBox(height: 4),
+                FutureBuilder<String>(
+                  future: getAppVersion(), builder: (context, snapshot) {
+                    final version = snapshot.data;
+                    return Text(version == null || version.isEmpty
+                        ? l10n.versionLabel
+                        : '${l10n.versionLabel} $version');
+                  },
+                ),
+                FutureBuilder<String>(
+                  future: context.read<HomeBloc>().getXrayCoreVersion(),
+                  builder: (context, snapshot) {
+                    final version = snapshot.data;
+                    return Text(version == null || version.isEmpty
+                        ? l10n.xrayCoreVersion
+                        : '${l10n.xrayCoreVersion} $version');
+                  },
+                ),
                 const SizedBox(height: 24),
                 Text(
                   l10n.aboutDescription,
@@ -57,13 +51,14 @@ class _AboutScreenState extends State<AboutScreen> {
               ],
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.dns_outlined),
-            title: Text(l10n.aboutCore),
-            subtitle: const Text('Xray'),
-          ),
         ],
       ),
     );
+  }
+
+  Future<String> getAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+
+    return info.version;
   }
 }

@@ -437,14 +437,14 @@ abstract class AppLocalizations {
   /// No description provided for @aboutDescription.
   ///
   /// In en, this message translates to:
-  /// **'A VLESS / Xray VPN client for Android and iOS.'**
+  /// **'A Xray VPN client'**
   String get aboutDescription;
 
-  /// No description provided for @aboutCore.
+  /// No description provided for @xrayCoreVersion.
   ///
   /// In en, this message translates to:
-  /// **'Core'**
-  String get aboutCore;
+  /// **'Xray Core Version'**
+  String get xrayCoreVersion;
 }
 
 class _AppLocalizationsDelegate

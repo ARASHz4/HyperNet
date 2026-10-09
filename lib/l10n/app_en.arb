@@ -63,6 +63,6 @@
   "routingSubtitle": "Bypass domains and apps",
   "about": "About",
   "versionLabel": "Version",
-  "aboutDescription": "A VLESS / Xray VPN client for Android and iOS.",
-  "aboutCore": "Core"
+  "aboutDescription": "A Xray VPN client",
+  "xrayCoreVersion": "Xray Core Version"
 }

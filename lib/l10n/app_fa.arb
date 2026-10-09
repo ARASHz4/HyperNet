@@ -62,7 +62,7 @@
   "invalidDomainEntry": "ورودی دامنه نامعتبر است.",
   "routingSubtitle": "دامنه‌ها و برنامه‌های دور زده",
   "about": "درباره",
-  "versionLabel": "نسخه",
-  "aboutDescription": "یک کلاینت VPN با پروتکل VLESS و هسته Xray برای اندروید و iOS.",
-  "aboutCore": "هسته"
+  "versionLabel": "ویرایش",
+  "aboutDescription": "یک کلاینت Xray VPN",
+  "xrayCoreVersion": "وبرایش هسته Xray"
 }

@@ -178,12 +178,11 @@ class AppLocalizationsFa extends AppLocalizations {
   String get about => 'درباره';
 
   @override
-  String get versionLabel => 'نسخه';
+  String get versionLabel => 'ویرایش';
 
   @override
-  String get aboutDescription =>
-      'یک کلاینت VPN با پروتکل VLESS و هسته Xray برای اندروید و iOS.';
+  String get aboutDescription => 'یک کلاینت Xray VPN';
 
   @override
-  String get aboutCore => 'هسته';
+  String get xrayCoreVersion => 'وبرایش هسته Xray';
 }

@@ -182,9 +182,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get versionLabel => 'Version';
 
   @override
-  String get aboutDescription =>
-      'A VLESS / Xray VPN client for Android and iOS.';
+  String get aboutDescription => 'A Xray VPN client';
 
   @override
-  String get aboutCore => 'Core';
+  String get xrayCoreVersion => 'Xray Core Version';
 }
