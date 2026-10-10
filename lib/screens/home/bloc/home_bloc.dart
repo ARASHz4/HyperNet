@@ -170,7 +170,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             }
 
             final context = navigatorKey.currentContext;
-            if (context != null) {
+            if (context != null && context.mounted) {
               context.showError(message: error.displayMessage());
             }
           },
@@ -181,7 +181,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
 
         final context = navigatorKey.currentContext;
-        if (context != null) {
+        if (context != null && context.mounted) {
           context.showError(message: S.current.cannotConnectToServer);
         }
       } finally {
