@@ -150,9 +150,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (state is! HomeLoaded) return;
 
       final currentState = state as HomeLoaded;
-      final context = navigatorKey.currentContext;
 
-      context?.showLoading();
+      navigatorKey.currentContext?.showLoading();
 
       try {
         final response = await HttpSubscription().getSubscription(subscriptionUrl: event.url);
@@ -170,6 +169,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               print("add subscription failed $error");
             }
 
+            final context = navigatorKey.currentContext;
             if (context != null) {
               context.showError(message: error.displayMessage());
             }
@@ -180,11 +180,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           print("add subscription exception $e");
         }
 
+        final context = navigatorKey.currentContext;
         if (context != null) {
           context.showError(message: S.current.cannotConnectToServer);
         }
       } finally {
-        context?.dismissLoading();
+        navigatorKey.currentContext?.dismissLoading();
       }
     });
 
