@@ -30,16 +30,16 @@
   "refreshLabel": "تازه کردن",
   "removeAllConfigs": "حذف همه کانفیگ‌ها",
   "share": "هم‌رسانی",
-  "removeAction": "حذف",
-  "connectedLabel": "وصل شده",
+  "remove": "حذف",
+  "connected": "وصل شده",
   "pingingEllipsis": "در حال تست پینگ...",
-  "timeoutLabel": "زمان تمام شد",
-  "expiredLabel": "منقضی شده",
+  "timeout": "زمان تمام شد",
+  "expired": "منقضی شده",
   "daysLeft": "{count} روز باقی مانده",
   "@daysLeft": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -72,5 +72,11 @@
   "warning": "هشدار",
   "error": "خطا",
   "cannotConnectToServer": "نمی‌توان با سرور ارتباط برقرار کرد",
-  "incorrectData": "داده نارست"
+  "incorrectData": "داده نارست",
+  "byte": "بایت",
+  "kb":  "کیلوبایت",
+  "mb": "مگ",
+  "gb": "گیگ",
+  "tb" : "ترا",
+  "ofLabel": "از"
 }

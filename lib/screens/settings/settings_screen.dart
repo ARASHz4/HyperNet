@@ -77,12 +77,15 @@ class SettingsScreen extends StatelessWidget {
   }
 
   String _languageLabel(Locale? locale, AppLocalizations l10n) {
-    if (locale == null) return l10n.system;
+    if (locale == null) {
+      return l10n.system;
+    }
 
     final language = languages.firstWhere(
       (element) => element.code == locale.languageCode,
       orElse: () => languages[0],
     );
-    return language.name == 'system' ? l10n.system : language.name;
+
+    return language.name == 'system' ? l10n.system : language.nativeName;
   }
 }

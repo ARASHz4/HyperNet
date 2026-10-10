@@ -254,17 +254,17 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get share;
 
-  /// No description provided for @removeAction.
+  /// No description provided for @remove.
   ///
   /// In en, this message translates to:
   /// **'Remove'**
-  String get removeAction;
+  String get remove;
 
-  /// No description provided for @connectedLabel.
+  /// No description provided for @connected.
   ///
   /// In en, this message translates to:
   /// **'Connected'**
-  String get connectedLabel;
+  String get connected;
 
   /// No description provided for @pingingEllipsis.
   ///
@@ -272,23 +272,23 @@ abstract class AppLocalizations {
   /// **'Pinging...'**
   String get pingingEllipsis;
 
-  /// No description provided for @timeoutLabel.
+  /// No description provided for @timeout.
   ///
   /// In en, this message translates to:
   /// **'timeout'**
-  String get timeoutLabel;
+  String get timeout;
 
-  /// No description provided for @expiredLabel.
+  /// No description provided for @expired.
   ///
   /// In en, this message translates to:
-  /// **'expired'**
-  String get expiredLabel;
+  /// **'Expired'**
+  String get expired;
 
   /// No description provided for @daysLeft.
   ///
   /// In en, this message translates to:
   /// **'{count} days left'**
-  String daysLeft(int count);
+  String daysLeft(String count);
 
   /// No description provided for @linkCopied.
   ///
@@ -493,6 +493,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Incorrect data'**
   String get incorrectData;
+
+  /// No description provided for @byte.
+  ///
+  /// In en, this message translates to:
+  /// **'Byte'**
+  String get byte;
+
+  /// No description provided for @kb.
+  ///
+  /// In en, this message translates to:
+  /// **'KB'**
+  String get kb;
+
+  /// No description provided for @mb.
+  ///
+  /// In en, this message translates to:
+  /// **'MB'**
+  String get mb;
+
+  /// No description provided for @gb.
+  ///
+  /// In en, this message translates to:
+  /// **'GB'**
+  String get gb;
+
+  /// No description provided for @tb.
+  ///
+  /// In en, this message translates to:
+  /// **'TB'**
+  String get tb;
+
+  /// No description provided for @ofLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get ofLabel;
 }
 
 class _AppLocalizationsDelegate

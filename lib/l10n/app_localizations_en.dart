@@ -88,22 +88,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get share => 'Share';
 
   @override
-  String get removeAction => 'Remove';
+  String get remove => 'Remove';
 
   @override
-  String get connectedLabel => 'Connected';
+  String get connected => 'Connected';
 
   @override
   String get pingingEllipsis => 'Pinging...';
 
   @override
-  String get timeoutLabel => 'timeout';
+  String get timeout => 'timeout';
 
   @override
-  String get expiredLabel => 'expired';
+  String get expired => 'Expired';
 
   @override
-  String daysLeft(int count) {
+  String daysLeft(String count) {
     return '$count days left';
   }
 
@@ -210,4 +210,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get incorrectData => 'Incorrect data';
+
+  @override
+  String get byte => 'Byte';
+
+  @override
+  String get kb => 'KB';
+
+  @override
+  String get mb => 'MB';
+
+  @override
+  String get gb => 'GB';
+
+  @override
+  String get tb => 'TB';
+
+  @override
+  String get ofLabel => 'of';
 }

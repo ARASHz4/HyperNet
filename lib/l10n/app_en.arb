@@ -26,16 +26,16 @@
   "copyLink": "Copy link",
   "shareQrCode": "Share QR code",
   "share": "Share",
-  "removeAction": "Remove",
-  "connectedLabel": "Connected",
+  "remove": "Remove",
+  "connected": "Connected",
   "pingingEllipsis": "Pinging...",
-  "timeoutLabel": "timeout",
-  "expiredLabel": "expired",
+  "timeout": "timeout",
+  "expired": "Expired",
   "daysLeft": "{count} days left",
   "@daysLeft": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -72,5 +72,11 @@
   "warning": "Warning",
   "error": "Error",
   "cannotConnectToServer": "Cannot Connect to the Server",
-  "incorrectData": "Incorrect data"
+  "incorrectData": "Incorrect data",
+  "byte": "Byte",
+  "kb":  "KB",
+  "mb": "MB",
+  "gb": "GB",
+  "tb" : "TB",
+  "ofLabel": "of"
 }

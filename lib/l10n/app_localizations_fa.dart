@@ -88,22 +88,22 @@ class AppLocalizationsFa extends AppLocalizations {
   String get share => 'هم‌رسانی';
 
   @override
-  String get removeAction => 'حذف';
+  String get remove => 'حذف';
 
   @override
-  String get connectedLabel => 'وصل شده';
+  String get connected => 'وصل شده';
 
   @override
   String get pingingEllipsis => 'در حال تست پینگ...';
 
   @override
-  String get timeoutLabel => 'زمان تمام شد';
+  String get timeout => 'زمان تمام شد';
 
   @override
-  String get expiredLabel => 'منقضی شده';
+  String get expired => 'منقضی شده';
 
   @override
-  String daysLeft(int count) {
+  String daysLeft(String count) {
     return '$count روز باقی مانده';
   }
 
@@ -209,4 +209,22 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get incorrectData => 'داده نارست';
+
+  @override
+  String get byte => 'بایت';
+
+  @override
+  String get kb => 'کیلوبایت';
+
+  @override
+  String get mb => 'مگ';
+
+  @override
+  String get gb => 'گیگ';
+
+  @override
+  String get tb => 'ترا';
+
+  @override
+  String get ofLabel => 'از';
 }

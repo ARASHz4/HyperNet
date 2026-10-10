@@ -67,6 +67,7 @@ class ApplicationView extends StatelessWidget {
         return MaterialApp(
           title: 'HyperNet',
           navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner: false,
           home: const HomeScreen(),
           localizationsDelegates: const [
             AppLocalizations.delegate,

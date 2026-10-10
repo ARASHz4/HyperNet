@@ -9,7 +9,6 @@ import 'package:hyper_net/http/models/http_error.dart';
 import 'package:hyper_net/l10n/s.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/preferences.dart';
-import 'package:hyper_net/screens/settings/routing_config.dart';
 import 'package:hyper_net/storage/local_storage.dart';
 
 part 'home_state.dart';
@@ -350,25 +349,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     await _initializeVless();
 
     if (await flutterVless.requestPermission()) {
-      var configuration = config.getFullConfiguration();
-      final bypassDomains = await Preferences.bypassDomains();
-
-      if (bypassDomains.isNotEmpty) {
-        try {
-          configuration = routingConfig(
-            config: configuration,
-            selectedSites: bypassDomains,
-          );
-        } catch (_) {
-          // The config has no direct outbound to route around the VPN;
-          // connect without domain bypass rules.
-        }
-      }
-
       await flutterVless.startVless(
         remark: config.remark,
-        config: configuration,
+        config: config.getFullConfiguration(),
+        bypassSubnets: await Preferences.bypassDomains(),
         blockedApps: await Preferences.bypassApps(),
+        notificationDisconnectButtonName: S.current.disconnect,
       );
     }
   }

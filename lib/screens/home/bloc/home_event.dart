@@ -37,7 +37,6 @@ final class AddConfigs extends HomeEvent {
   List<Object?> get props => [configs];
 }
 
-
 final class RemoveConfig extends HomeEvent {
   final String rawUrl;
 

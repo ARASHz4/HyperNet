@@ -43,77 +43,14 @@ class HomeScreen extends StatelessWidget {
                   context.navigatorPush(screen: const SettingsScreen());
                 },
               ),
-              PopupMenuButton<int>(
-                icon: const Icon(Icons.add),
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem<int>(
-                      value: 0,
-                      child: ListTile(
-                        title: Text(AppLocalizations.of(context)!.addSubscription),
-                        leading: const Icon(Icons.add),
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      onTap: () async {
-                        final bloc = context.read<HomeBloc>();
-                        final url = await addSubscription(context);
-                        if (url != null) {
-                          bloc.add(AddSubscription(url));
-                        }
-                      },
-                    ),
-                    PopupMenuItem<int>(
-                      value: 1,
-                      child: ListTile(
-                        title: Text(AppLocalizations.of(context)!.addConfig),
-                        leading: const Icon(Icons.link),
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      onTap: () async {
-                        final bloc = context.read<HomeBloc>();
-                        final url = await addConfigUrl(context);
-                        if (url != null) {
-                          bloc.add(AddConfig(url));
-                        }
-                      },
-                    ),
-                    PopupMenuItem<int>(
-                      value: 2,
-                      child: ListTile(
-                        title: Text(AppLocalizations.of(context)!.importFromClipboard),
-                        leading: const Icon(Icons.content_paste),
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      onTap: () async {
-                        await importFromClipboardIntoApp(context);
-                      },
-                    ),
-                    PopupMenuItem<int>(
-                      value: 3,
-                      child: ListTile(
-                        title: Text(AppLocalizations.of(context)!.scanQrCode),
-                        leading: const Icon(Icons.qr_code_scanner),
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      onTap: () async {
-                        final text = await QrScanInput.scan(context);
-                        if (text == null || text.trim().isEmpty || !context.mounted) {
-                          return;
-                        }
-
-                        await addFromText(context, text.trim());
-                      },
-                    ),
-                  ];
-                },
-              ),
+              buildAddMenu(),
             ],
           ),
           body: Stack(
             children: [
               state.subscriptions.isEmpty && state.singleConfigs.isEmpty
                   ? buildEmptyView(context)
-                  : ListView.separated(
+                  : ListView.builder(
                 padding: EdgeInsets.only(
                   top: showConnectionStatus ? 64 : 0,
                   bottom: 100,
@@ -133,9 +70,6 @@ class HomeScreen extends StatelessWidget {
                     subscription: subscription,
                     state: state,
                   );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 0);
                 },
                 itemCount: state.subscriptions.length + (state.singleConfigs.isNotEmpty ? 1 : 0),
               ),
@@ -170,12 +104,83 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget buildAddMenu() {
+    return PopupMenuButton<int>(
+      icon: const Icon(Icons.add),
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<int>(
+            value: 0,
+            child: ListTile(
+              title: Text(AppLocalizations.of(context)!.addSubscription),
+              leading: const Icon(Icons.add),
+              contentPadding: EdgeInsets.zero,
+            ),
+            onTap: () async {
+              final bloc = context.read<HomeBloc>();
+              final url = await addSubscription(context);
+              if (url != null) {
+                bloc.add(AddSubscription(url));
+              }
+            },
+          ),
+          PopupMenuItem<int>(
+            value: 1,
+            child: ListTile(
+              title: Text(AppLocalizations.of(context)!.addConfig),
+              leading: const Icon(Icons.link),
+              contentPadding: EdgeInsets.zero,
+            ),
+            onTap: () async {
+              final bloc = context.read<HomeBloc>();
+              final url = await addConfigUrl(context);
+              if (url != null) {
+                bloc.add(AddConfig(url));
+              }
+            },
+          ),
+          PopupMenuItem<int>(
+            value: 2,
+            child: ListTile(
+              title: Text(AppLocalizations.of(context)!.importFromClipboard),
+              leading: const Icon(Icons.content_paste),
+              contentPadding: EdgeInsets.zero,
+            ),
+            onTap: () async {
+              await importFromClipboardIntoApp(context);
+            },
+          ),
+          PopupMenuItem<int>(
+            value: 3,
+            child: ListTile(
+              title: Text(AppLocalizations.of(context)!.scanQrCode),
+              leading: const Icon(Icons.qr_code_scanner),
+              contentPadding: EdgeInsets.zero,
+            ),
+            onTap: () async {
+              final text = await QrScanInput.scan(context);
+              if (text == null || text.trim().isEmpty || !context.mounted) {
+                return;
+              }
+
+              await addFromText(context, text.trim());
+            },
+          ),
+        ];
+      },
+    );
+  }
+
   Widget buildEmptyView(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.cloud_off, size: 64, color: Theme.of(context).colorScheme.outline),
+          Icon(
+            Icons.cloud_off,
+            size: 64,
+            color: Theme.of(context).colorScheme.outline,
+          ),
           const SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.noSubscriptionsYet),
           const SizedBox(height: 24),
@@ -207,25 +212,57 @@ class HomeScreen extends StatelessWidget {
           margin: EdgeInsets.zero,
           color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.8),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                Icon(Icons.bolt, color: Theme.of(context).colorScheme.onPrimaryContainer),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    '${AppLocalizations.of(context)!.connectedLabel} • '
-                        '${Duration(seconds: duration).format(context)} • '
-                        '↑ ${_formatBytes(upload)} • '
-                        '↓ ${_formatBytes(download)}',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+            child: Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.bolt,
+                              size: 20,
+                            ),
+                          ),
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.connected,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(text: '  •  '),
+                        ],
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(Duration(seconds: duration).format(context)),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: '  •  '),
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.arrow_upward,
+                            size: 16,
+                          ),
+                        ),
+                        TextSpan(text: _formatBytes(context, bytes: upload)),
+                        TextSpan(text: '  •  '),
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.arrow_downward,
+                            size: 16,
+                          ),
+                        ),
+                        TextSpan(text: _formatBytes(context, bytes: download)),
+                      ],
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -337,7 +374,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          subtitle: _subscriptionUsage(subscription, context),
+          subtitle: buildSubscriptionUsage(context, subscription: subscription),
           leading: SizedBox(
             width: 32,
             child: PopupMenuButton<String>(
@@ -374,7 +411,32 @@ class HomeScreen extends StatelessWidget {
             subscription.announce != null ? subscription.configs.length + 1 : subscription.configs.length,
                 (index) {
               if (subscription.announce != null && index == 0) {
-                return Text(subscription.announce!);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          subscription.announce!,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      if (subscription.announceUrl != null)
+                        SizedBox(
+                          height: 34,
+                          width: 34,
+                          child: IconButton(
+                            iconSize: 18,
+                            onPressed: () {
+                              context.urlLauncher(subscription.announceUrl!);
+                            },
+                            icon: const Icon(Icons.info_outline),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
               }
 
               final config = subscription.configs[subscription.announce != null ? index - 1 : index];
@@ -417,7 +479,7 @@ class HomeScreen extends StatelessWidget {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               icon: Icons.delete_outline,
-              label: AppLocalizations.of(context)!.removeAction,
+              label: AppLocalizations.of(context)!.remove,
             ),
         ],
       ),
@@ -463,7 +525,7 @@ class HomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         state.delays[config.url]! < 0
-                            ? AppLocalizations.of(context)!.timeoutLabel
+                            ? AppLocalizations.of(context)!.timeout
                             : '${state.delays[config.url]!.formatToString(context)} ms',
                         style: TextStyle(
                           color: state.delays[config.url]! < 0
@@ -490,6 +552,67 @@ class HomeScreen extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+
+  Widget? buildSubscriptionUsage(BuildContext context, {required Subscription subscription}) {
+    if (subscription.usedBytes == null && subscription.totalBytes == null && subscription.expireAt == null) {
+      return null;
+    }
+
+    final progress = (subscription.usedBytes != null && subscription.totalBytes != null && subscription.totalBytes! > 0) ? (subscription.usedBytes! / subscription.totalBytes!).clamp(0.0, 1.0) : null;
+
+    final daysLeft = subscription.expireAt?.difference(DateTime.now()).inDays;
+    bool isExpired = (daysLeft != null && daysLeft < 0);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (progress != null)
+          LinearProgressIndicator(
+            value: progress,
+            minHeight: 4,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text.rich(
+            TextSpan(
+              style: Theme.of(context).textTheme.labelMedium,
+              children: [
+                if (subscription.usedBytes != null || subscription.totalBytes != null) ...[
+                  TextSpan(
+                    text: '${
+                        _formatBytes(context, bytes: subscription.usedBytes!)} '
+                        '${AppLocalizations.of(context)?.ofLabel} '
+                        '${_formatBytes(context, bytes: subscription.totalBytes!)
+                    }',
+                    style: TextStyle(
+                      color: subscription.usedBytes! >= subscription.totalBytes! ? Colors.red : null,
+                    ),
+                  ),
+                  TextSpan(text: '  •  '),
+                ],
+                if (daysLeft != null) ...[
+                  TextSpan(
+                    text: isExpired ?
+                    AppLocalizations.of(context)!.expired :
+                    AppLocalizations.of(context)!.daysLeft(daysLeft.formatToString(context)),
+                    style: TextStyle(color: isExpired ? Colors.red : null),
+                  ),
+                ],
+                TextSpan(text: '  •  '),
+                if (subscription.expireAt != null)
+                  TextSpan(
+                    text: subscription.expireAt!.dateToMMMd(context),
+                    style: TextStyle(color: isExpired ? Colors.red : null),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -717,7 +840,7 @@ class HomeScreen extends StatelessWidget {
                   if (context.mounted) {
                     context.showSnackBar(message: AppLocalizations.of(context)!.linkCopied);
                   }
-                  
+
                   if (dialogContext.mounted) Navigator.pop(dialogContext);
                 },
                 icon: const Icon(Icons.copy),
@@ -754,58 +877,24 @@ class HomeScreen extends StatelessWidget {
     return null;
   }
 
-  String _formatBytes(int? bytes) {
-    if (bytes == null) return '?';
-
-    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-    var value = bytes.toDouble();
-    var index = 0;
-
-    while (value >= 1024 && index < units.length - 1) {
-      value /= 1024;
-      index++;
-    }
-
-    return '${value.toStringAsFixed(value >= 10 || index == 0 ? 0 : 1)} ${units[index]}';
-  }
-
-  Widget? _subscriptionUsage(Subscription subscription, BuildContext context) {
-    if (subscription.usedBytes == null && subscription.totalBytes == null && subscription.expireAt == null) {
-      return null;
-    }
-
-    final progress = (subscription.usedBytes != null && subscription.totalBytes != null && subscription.totalBytes! > 0) ? (subscription.usedBytes! / subscription.totalBytes!).clamp(0.0, 1.0) : null;
-
-    final daysLeft = subscription.expireAt?.difference(DateTime.now()).inDays;
-
-    final parts = [
-      if (subscription.usedBytes != null || subscription.totalBytes != null)
-        '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
-      if (daysLeft != null)
-        daysLeft < 0 ? AppLocalizations.of(context)!.expiredLabel : AppLocalizations.of(context)!.daysLeft(daysLeft),
-      if (subscription.expireAt != null)
-        subscription.expireAt!.dateToYMMMd(context,),
+  String _formatBytes(BuildContext context, {required int bytes}) {
+    final units = [
+      AppLocalizations.of(context)!.byte,
+      AppLocalizations.of(context)!.kb,
+      AppLocalizations.of(context)!.mb,
+      AppLocalizations.of(context)!.gb,
+      AppLocalizations.of(context)!.tb,
     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (progress != null)
-          LinearProgressIndicator(
-            value: progress,
-            minHeight: 4,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Text(
-            parts.join(' • '),
-            style: const TextStyle(fontSize: 12),
-          ),
-        ),
-      ],
-    );
+    double value = bytes.toDouble();
+    int unitIndex = 0;
+
+    while (value >= 1024 && unitIndex < units.length - 1) {
+      value /= 1024;
+      unitIndex++;
+    }
+
+    return '${value.formatToString(context, maximumFractionDigits: value >= 10 || unitIndex == 0 ? 0 : 1)} ${units[unitIndex]}';
   }
 
   Future<void> importFromClipboardIntoApp(BuildContext context) async {
@@ -816,6 +905,28 @@ class HomeScreen extends StatelessWidget {
     }
 
     await addFromText(context, text);
+  }
+
+  Future<void> addFromText(BuildContext context, String text) async {
+    if (text.isEmpty || !context.mounted) {
+      return;
+    }
+
+    final bloc = context.read<HomeBloc>();
+
+    try {
+      if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
+        bloc.add(AddSubscription(text));
+      }
+      else {
+        final configs = FlutterVless.parseMany(text);
+        bloc.add(AddConfigs(configs));
+      }
+    } catch (ex) {
+      if (context.mounted) {
+        context.showSnackBar(message: ex.toString());
+      }
+    }
   }
 
   String? _countryFlagEmoji(String input) {
@@ -832,26 +943,5 @@ class HomeScreen extends StatelessWidget {
   String _stripFlag(String input) {
     final flagRegex = RegExp(r'([\u{1F1E6}-\u{1F1FF}]{2}|\u{1F3F4}(?:[\u{E0000}-\u{E007F}])+)', unicode: true);
     return input.replaceFirst(flagRegex, '').trim();
-  }
-
-  Future<void> addFromText(BuildContext context, String text) async {
-    if (text.isEmpty || !context.mounted) {
-      return;
-    }
-
-    final bloc = context.read<HomeBloc>();
-
-    try {
-      if (text.toLowerCase().startsWith('http://') || text.toLowerCase().startsWith('https://')) {
-        bloc.add(AddSubscription(text));
-      } else {
-        final configs = FlutterVless.parseMany(text);
-        bloc.add(AddConfigs(configs));
-      }
-    } catch (ex) {
-      if (context.mounted) {
-        context.showSnackBar(message: ex.toString());
-      }
-    }
   }
 }
