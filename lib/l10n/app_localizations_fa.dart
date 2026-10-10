@@ -212,4 +212,10 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get error => 'خطا';
+
+  @override
+  String get cannotConnectToServer => 'نمی‌توان با سرور ارتباط برقرار کرد';
+
+  @override
+  String get incorrectData => 'داده نارست';
 }

@@ -499,6 +499,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @cannotConnectToServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot Connect to the Server'**
+  String get cannotConnectToServer;
+
+  /// No description provided for @incorrectData.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect data'**
+  String get incorrectData;
 }
 
 class _AppLocalizationsDelegate

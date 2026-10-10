@@ -27,7 +27,14 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Row(mainAxisSize: MainAxisSize.min, children: [Image.asset('assets/icon.png', height: 28), const SizedBox(width: 8), Text(AppLocalizations.of(context)!.appTitle)]),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset('assets/icon.png', height: 28),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.appTitle),
+              ],
+            ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings),

@@ -213,4 +213,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get cannotConnectToServer => 'Cannot Connect to the Server';
+
+  @override
+  String get incorrectData => 'Incorrect data';
 }

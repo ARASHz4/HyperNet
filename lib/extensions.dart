@@ -112,20 +112,6 @@ extension AppDate on DateTime {
   }
 }
 
-extension Time on TimeOfDay {
-  String timeToString(BuildContext context) {
-    return MaterialLocalizations.of(context).formatTimeOfDay(this);
-  }
-
-  String timeToString24h(BuildContext context) {
-    final zero = 0.formatToString(context);
-    final hourString = hour.formatToString(context).padLeft(2, zero);
-    final minuteString = minute.formatToString(context).padLeft(2, zero);
-
-    return '$hourString:$minuteString';
-  }
-}
-
 extension IntFormat on int {
   String formatToString(BuildContext context) {
     return intl.NumberFormat(
@@ -209,17 +195,6 @@ extension BuildContextExtension on BuildContext {
 
   void showSnackBar({required String message}) {
     ScaffoldMessenger.of(this).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  Future<TimeOfDay?> timePicker({TimeOfDay? initialTime}) async {
-    return await showDialog(
-      context: this,
-      builder: (builderContext) {
-        return TimePickerDialog(
-          initialTime: initialTime ?? TimeOfDay.now(),
-        );
-      },
-    );
   }
 
   Future<void> urlLauncher(String url, {LaunchMode launchMode = LaunchMode.externalApplication}) async {

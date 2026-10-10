@@ -73,5 +73,7 @@
   "min": "دقیقه",
   "sec": "ثانیه",
   "warning": "هشدار",
-  "error": "خطا"
+  "error": "خطا",
+  "cannotConnectToServer": "نمی‌توان با سرور ارتباط برقرار کرد",
+  "incorrectData": "داده نارست"
 }

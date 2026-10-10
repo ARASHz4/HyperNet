@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
+import 'package:hyper_net/l10n/s.dart';
 import 'package:hyper_net/models/language.dart';
 import 'package:hyper_net/preferences.dart';
 import 'package:hyper_net/screens/home/home_screen.dart';
@@ -64,6 +65,7 @@ class ApplicationView extends StatelessWidget {
       builder: (_, localeTheme) {
         return MaterialApp(
           title: 'HyperNet',
+          navigatorKey: navigatorKey,
           home: const HomeScreen(),
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -76,11 +78,11 @@ class ApplicationView extends StatelessWidget {
           themeMode: localeTheme.$2,
           builder: EasyLoading.init(),
           theme: ThemeData(
-            colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
-            colorScheme: .fromSeed(
+            colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.deepPurple,
               brightness: Brightness.dark,
             ),

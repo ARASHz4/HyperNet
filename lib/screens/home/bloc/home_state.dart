@@ -26,7 +26,15 @@ final class HomeLoaded extends HomeState {
 
   @override
   List<Object?> get props =>
-      [subscriptions, selectedConfig, vlessStatus, pinging, delays, refreshing, singleConfigs];
+      [
+        subscriptions,
+        selectedConfig,
+        vlessStatus,
+        pinging,
+        delays,
+        refreshing,
+        singleConfigs,
+      ];
 
   HomeLoaded copyWith({
     List<Subscription>? subscriptions,
@@ -47,4 +55,10 @@ final class HomeLoaded extends HomeState {
       singleConfigs: singleConfigs ?? this.singleConfigs,
     );
   }
+}
+
+final class HomeError extends HomeLoaded {
+  final HttpError error;
+
+  HomeError({required this.error});
 }

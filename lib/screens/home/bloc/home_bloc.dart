@@ -1,11 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vless/flutter_vless.dart';
-import 'package:http/http.dart' as http;
+import 'package:hyper_net/http/http_subscription.dart';
+import 'package:hyper_net/http/models/http_error.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/preferences.dart';
 import 'package:hyper_net/screens/settings/routing_config.dart';
@@ -151,15 +149,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       final currentState = state as HomeLoaded;
 
-      final subscription = await getSubscription(event.url);
+      final response = await HttpSubscription().getSubscription(subscriptionUrl: event.url);
 
-      if (subscription != null) {
-        await LocalStorage().saveSubscription(subscription);
+      response.when(
+        success: (subscription) async {
+          await LocalStorage().saveSubscription(subscription);
 
-        emit(currentState.copyWith(
-          subscriptions: [...currentState.subscriptions, subscription],
-        ));
-      }
+          emit(currentState.copyWith(
+            subscriptions: [...currentState.subscriptions, subscription],
+          ));
+        },
+        failure: (error) {
+          if (kDebugMode) {
+            print("add subscription failed $error");
+          }
+        },
+      );
     });
 
     on<RefreshSubscription>((event, emit) {
@@ -196,8 +201,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         subscriptions: event.subscription == null
             ? null
             : currentState.subscriptions
-                .map((s) =>
-                    s.url == event.subscription!.url ? event.subscription! : s)
+                .map((s) {return s.url == event.subscription!.url ? event.subscription! : s;})
                 .toList(),
         refreshing: currentState.refreshing
             .where((url) => url != event.url)
@@ -305,90 +309,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _refreshSubscription(String url) async {
-    final subscription = await getSubscription(url);
+    final response = await HttpSubscription().getSubscription(subscriptionUrl: url);
 
-    if (subscription != null) {
-      await LocalStorage().saveSubscription(subscription);
-    }
+    response.when(
+      success: (subscription) async {
+        await LocalStorage().saveSubscription(subscription);
 
-    add(SubscriptionRefreshed(url: url, subscription: subscription));
-  }
+        add(SubscriptionRefreshed(url: url, subscription: subscription));
+      },
+      failure: (error) {
 
-  Future<Subscription?> getSubscription(String subscription) async {
-    try {
-      final url = Uri.parse(subscription);
-      final response = await http.get(url);
-
-      if (response.statusCode == HttpStatus.ok) {
-        List<FlutterVlessURL> configs = [];
-        String? title;
-        String? user;
-        String? announce;
-        String? announceUrl;
-        String? supportUrl;
-
-        String decodedConfigs = utf8.decode(base64Url.decode(response.body));
-        configs = FlutterVless.parseMany(decodedConfigs);
-
-        String? titleHeader = response.headers["profile-title"];
-        if (titleHeader != null) {
-          titleHeader = titleHeader.replaceFirst('base64:', '');
-          title = utf8.decode(base64Url.decode(titleHeader));
-        }
-
-        String? contentDispositionHeader = response.headers["content-disposition"];
-        if (contentDispositionHeader != null) {
-          contentDispositionHeader = contentDispositionHeader.replaceFirst('attachment; filename=', '');
-          contentDispositionHeader = contentDispositionHeader.replaceAll("\"", '');
-          if (contentDispositionHeader.isNotEmpty) {
-            user = contentDispositionHeader;
-          }
-        }
-
-        String? announceHeader = response.headers["announce"];
-        if (announceHeader != null) {
-          announceHeader = announceHeader.replaceFirst('base64:', '');
-          announce = utf8.decode(base64Url.decode(announceHeader));
-        }
-
-        announceUrl = response.headers["announce-url"];
-
-        supportUrl = response.headers["support-url"];
-
-        int? usedBytes;
-        int? totalBytes;
-        DateTime? expireAt;
-
-        final userInfo = response.headers["subscription-userinfo"];
-        if (userInfo != null) {
-          final parts = <String, String>{};
-          for (final part in userInfo.split(';')) {
-            final index = part.indexOf('=');
-            if (index > 0) {
-              parts[part.substring(0, index).trim()] =
-                  part.substring(index + 1).trim();
-            }
-          }
-
-          final upload = int.tryParse(parts['upload'] ?? '') ?? 0;
-          final download = int.tryParse(parts['download'] ?? '') ?? 0;
-          usedBytes = upload + download;
-          totalBytes = int.tryParse(parts['total'] ?? '');
-          final expire = int.tryParse(parts['expire'] ?? '');
-          if (expire != null) {
-            expireAt = DateTime.fromMillisecondsSinceEpoch(expire * 1000);
-          }
-        }
-
-        return Subscription(url: subscription, configs: configs, title: title, user: user, announce: announce, announceUrl: announceUrl, supportUrl: supportUrl, usedBytes: usedBytes, totalBytes: totalBytes, expireAt: expireAt);
-      }
-    } catch (ex) {
-      if (kDebugMode) {
-        print("get subscription fail $ex");
-      }
-    }
-
-    return null;
+      },
+    );
   }
 
   Future<void> connect(FlutterVlessURL config) async {

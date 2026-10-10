@@ -73,5 +73,7 @@
   "min": "min",
   "sec": "sec",
   "warning": "Warning",
-  "error": "Error"
+  "error": "Error",
+  "cannotConnectToServer": "Cannot Connect to the Server",
+  "incorrectData": "Incorrect data"
 }
