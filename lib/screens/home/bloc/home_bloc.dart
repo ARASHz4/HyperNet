@@ -2,8 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vless/flutter_vless.dart';
+import 'package:hyper_net/extensions.dart';
 import 'package:hyper_net/http/http_subscription.dart';
 import 'package:hyper_net/http/models/http_error.dart';
+import 'package:hyper_net/l10n/s.dart';
 import 'package:hyper_net/models/subscription.dart';
 import 'package:hyper_net/preferences.dart';
 import 'package:hyper_net/screens/settings/routing_config.dart';
@@ -148,23 +150,42 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (state is! HomeLoaded) return;
 
       final currentState = state as HomeLoaded;
+      final context = navigatorKey.currentContext;
 
-      final response = await HttpSubscription().getSubscription(subscriptionUrl: event.url);
+      context?.showLoading();
 
-      response.when(
-        success: (subscription) async {
-          await LocalStorage().saveSubscription(subscription);
+      try {
+        final response = await HttpSubscription().getSubscription(subscriptionUrl: event.url);
 
-          emit(currentState.copyWith(
-            subscriptions: [...currentState.subscriptions, subscription],
-          ));
-        },
-        failure: (error) {
-          if (kDebugMode) {
-            print("add subscription failed $error");
-          }
-        },
-      );
+        await response.when(
+          success: (subscription) async {
+            await LocalStorage().saveSubscription(subscription);
+
+            emit(currentState.copyWith(
+              subscriptions: [...currentState.subscriptions, subscription],
+            ));
+          },
+          failure: (error) async {
+            if (kDebugMode) {
+              print("add subscription failed $error");
+            }
+
+            if (context != null) {
+              context.showError(message: error.displayMessage());
+            }
+          },
+        );
+      } catch (e) {
+        if (kDebugMode) {
+          print("add subscription exception $e");
+        }
+
+        if (context != null) {
+          context.showError(message: S.current.cannotConnectToServer);
+        }
+      } finally {
+        context?.dismissLoading();
+      }
     });
 
     on<RefreshSubscription>((event, emit) {
