@@ -173,26 +173,14 @@ abstract class AppLocalizations {
   /// No description provided for @lightMode.
   ///
   /// In en, this message translates to:
-  /// **'Light Mode'**
+  /// **'Light'**
   String get lightMode;
 
   /// No description provided for @darkMode.
   ///
   /// In en, this message translates to:
-  /// **'Dark Mode'**
+  /// **'Dark'**
   String get darkMode;
-
-  /// No description provided for @english.
-  ///
-  /// In en, this message translates to:
-  /// **'English'**
-  String get english;
-
-  /// No description provided for @persian.
-  ///
-  /// In en, this message translates to:
-  /// **'Persian'**
-  String get persian;
 
   /// No description provided for @settings.
   ///
@@ -349,12 +337,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add config'**
   String get addConfig;
-
-  /// No description provided for @singleConfigs.
-  ///
-  /// In en, this message translates to:
-  /// **'Single configs'**
-  String get singleConfigs;
 
   /// No description provided for @yourConfigs.
   ///

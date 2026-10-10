@@ -46,16 +46,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get system => 'System';
 
   @override
-  String get lightMode => 'Light Mode';
+  String get lightMode => 'Light';
 
   @override
-  String get darkMode => 'Dark Mode';
-
-  @override
-  String get english => 'English';
-
-  @override
-  String get persian => 'Persian';
+  String get darkMode => 'Dark';
 
   @override
   String get settings => 'Settings';
@@ -137,9 +131,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addConfig => 'Add config';
-
-  @override
-  String get singleConfigs => 'Single configs';
 
   @override
   String get yourConfigs => 'Your Configs';

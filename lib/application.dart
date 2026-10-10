@@ -32,7 +32,7 @@ final List<Language> languages = [
     name: "Persian",
     code: "fa",
     country: "IR",
-    nativeName: "فارسی",
+    nativeName: "پارسی",
     isRTL: true,
     calendar: Calendar.solarJalali,
   ),

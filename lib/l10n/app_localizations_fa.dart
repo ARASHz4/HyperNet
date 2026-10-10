@@ -46,16 +46,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get system => 'پیش‌فرض سیستم';
 
   @override
-  String get lightMode => 'حالت روشن';
+  String get lightMode => 'روشن';
 
   @override
-  String get darkMode => 'حالت تاریک';
-
-  @override
-  String get english => 'انگلیسی';
-
-  @override
-  String get persian => 'فارسی';
+  String get darkMode => 'تاریک';
 
   @override
   String get settings => 'تنظیمات';
@@ -73,7 +67,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get scanQrCode => 'اسکن کد QR';
 
   @override
-  String get switchCamera => 'تبديل دوربين';
+  String get switchCamera => 'جابجایی دوربين';
 
   @override
   String get flash => 'نور';
@@ -97,7 +91,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get removeAction => 'حذف';
 
   @override
-  String get connectedLabel => 'متصل شده';
+  String get connectedLabel => 'وصل شده';
 
   @override
   String get pingingEllipsis => 'در حال تست پینگ...';
@@ -117,7 +111,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get linkCopied => 'لینک کپی شد';
 
   @override
-  String get qrInvalidSubscriptionLink => 'کد QR لینک اشتراک معتبری نیست.';
+  String get qrInvalidSubscriptionLink => 'کد QR لینک همرسانی نادرست است.';
 
   @override
   String get importFromClipboard => 'وارد کردن از حافظه موقت';
@@ -138,13 +132,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get addConfig => 'افزودن کانفیگ';
 
   @override
-  String get singleConfigs => 'کانفیگ‌های تکی';
-
-  @override
   String get yourConfigs => 'کانفیگ‌های شما';
 
   @override
-  String get invalidConfigUrl => 'آدرس کانفیگ نامعتبر است';
+  String get invalidConfigUrl => 'آدرس کانفیگ نادرسا است';
 
   @override
   String get routing => 'مسیریابی';
@@ -156,23 +147,23 @@ class AppLocalizationsFa extends AppLocalizations {
   String get bypassDomains => 'دامنه‌های دور زده (هر کدام در یک خط)';
 
   @override
-  String get bypassApps => 'برنامه‌های دور زده (نام بسته، هر کدام در یک خط)';
+  String get bypassApps => 'نرم‌افزار‌های دور زده (نام بسته، هر کدام در یک خط)';
 
   @override
-  String get applyRules => 'اعمال قوانین';
+  String get applyRules => 'انجام دستورات';
 
   @override
   String get clear => 'پاک کردن';
 
   @override
   String get routingRulesSaved =>
-      'قوانین مسیریابی ذخیره شد. برای اعمال، VPN را دوباره متصل کنید.';
+      'دستورات مسیریابی ذخیره شد. برای انجام، VPN را دوباره وصل کنید.';
 
   @override
-  String get invalidDomainEntry => 'ورودی دامنه نامعتبر است.';
+  String get invalidDomainEntry => 'ورودی دامنه نادرست است.';
 
   @override
-  String get routingSubtitle => 'دامنه‌ها و برنامه‌های دور زده';
+  String get routingSubtitle => 'دامنه‌ها و نرم‌افزار‌های دور زده';
 
   @override
   String get about => 'درباره';

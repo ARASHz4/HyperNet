@@ -778,13 +778,13 @@ class HomeScreen extends StatelessWidget {
 
     final daysLeft = subscription.expireAt?.difference(DateTime.now()).inDays;
 
-    final parts = <String>[
+    final parts = [
       if (subscription.usedBytes != null || subscription.totalBytes != null)
         '${_formatBytes(subscription.usedBytes)} / ${_formatBytes(subscription.totalBytes)}',
       if (daysLeft != null)
         daysLeft < 0 ? AppLocalizations.of(context)!.expiredLabel : AppLocalizations.of(context)!.daysLeft(daysLeft),
       if (subscription.expireAt != null)
-        subscription.expireAt!.dateToYMMMd(context),
+        subscription.expireAt!.dateToYMMMd(context,),
     ];
 
     return Column(

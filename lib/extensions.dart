@@ -59,7 +59,7 @@ extension AppDate on DateTime {
         9: "آذر",
         10: "دی",
         11: "بهمن",
-        12: "اسفند",
+        12: "اسپند",
       };
 
       final jalaliDate = toJalali();
@@ -77,9 +77,7 @@ extension AppDate on DateTime {
   String timeToString(BuildContext context) {
     final dateTime = this;
 
-    return intl.DateFormat(
-        'hh:mm a', Localizations.localeOf(context).languageCode)
-        .format(dateTime);
+    return intl.DateFormat('hh:mm a', Localizations.localeOf(context).languageCode).format(dateTime);
   }
 
   String dateTimeToString(BuildContext context) {
