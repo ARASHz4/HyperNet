@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:hyper_net/application.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
-
-/// Global navigator key, attached to the MaterialApp.
-/// Provides a BuildContext from anywhere in the app.
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 /// Global access to localized strings without a BuildContext.
 ///

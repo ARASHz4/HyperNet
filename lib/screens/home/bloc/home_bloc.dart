@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vless/flutter_vless.dart';
+import 'package:hyper_net/application.dart';
 import 'package:hyper_net/extensions.dart';
 import 'package:hyper_net/http/http_subscription.dart';
 import 'package:hyper_net/http/models/http_error.dart';

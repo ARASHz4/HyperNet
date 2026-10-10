@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
-import 'package:hyper_net/l10n/s.dart';
 import 'package:hyper_net/models/language.dart';
 import 'package:hyper_net/preferences.dart';
 import 'package:hyper_net/screens/home/home_screen.dart';
@@ -38,6 +37,8 @@ final List<Language> languages = [
     calendar: Calendar.solarJalali,
   ),
 ];
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class Application extends StatelessWidget {
   const Application({super.key});
