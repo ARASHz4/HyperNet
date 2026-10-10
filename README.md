@@ -96,8 +96,8 @@
 - **Material 3 Design**: Clean typography, smooth transitions, and glassmorphic card layouts.
 - **Theme Modes**: System Default, Dark Mode, and Light Mode.
 - **Multi-Language Support**:
-  - English 🇬🇧
-  - Persian (Farsi) 🇮🇷 with complete Right-to-Left (RTL) layout and Solar Hijri (Shamsi) date formatting.
+  - English
+  - Persian with complete Right-to-Left (RTL) layout.
 
 ---
 
