@@ -1308,7 +1308,7 @@ class HomeScreen extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        Share.share(url);
+                        SharePlus.instance.share(ShareParams(text: url));
                       },
                       icon: const Icon(Icons.share_rounded, size: 18),
                       label: Text(l10n.share),
