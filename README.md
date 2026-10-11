@@ -197,7 +197,7 @@ lib/
 | [`dio`](https://pub.dev/packages/dio) | HTTP client for downloading subscriptions and handling headers |
 | [`mobile_scanner`](https://pub.dev/packages/mobile_scanner) | Fast, hardware-accelerated QR code scanner |
 | [`qr_flutter`](https://pub.dev/packages/qr_flutter) | Interactive QR code generator for node sharing |
-| [`glassmorphism_ui`](https://pub.dev/packages/glassmorphism_ui) | Glassmorphic visual components |
+| [`flutter_slidable`](https://pub.dev/packages/flutter_slidable) | Slidable action gestures for deleting and sharing configs |
 | [`shamsi_date`](https://pub.dev/packages/shamsi_date) | Solar Hijri (Jalali) date conversion for Persian locale |
 | [`shared_preferences`](https://pub.dev/packages/shared_preferences) | Persistent user settings and bypass configurations |
 

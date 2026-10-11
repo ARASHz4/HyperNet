@@ -8,9 +8,5 @@
 	<array>
 		<string>group.com.arashz4.hypernet</string>
 	</array>
-	<key>com.apple.developer.networking.networkextension</key>
-	<array>
-		<string>packet-tunnel-provider</string>
-	</array>
 </dict>
 </plist>

@@ -27,7 +27,10 @@ class _QrScanScreenState extends State<QrScanScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.scanQrCode),
+        title: Text(
+          l10n.scanQrCode,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: Stack(
         children: [
@@ -46,6 +49,95 @@ class _QrScanScreenState extends State<QrScanScreen> {
                   Navigator.pop(context, code);
                 }
               },
+            ),
+          ),
+          // Viewfinder reticle overlay
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.8), width: 2),
+                  ),
+                  child: Stack(
+                    children: [
+                      // Subtle corner indicators
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Color(0xFF6366F1), width: 4),
+                              left: BorderSide(color: Color(0xFF6366F1), width: 4),
+                            ),
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Color(0xFF6366F1), width: 4),
+                              right: BorderSide(color: Color(0xFF6366F1), width: 4),
+                            ),
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: Color(0xFF6366F1), width: 4),
+                              left: BorderSide(color: Color(0xFF6366F1), width: 4),
+                            ),
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: Color(0xFF6366F1), width: 4),
+                              right: BorderSide(color: Color(0xFF6366F1), width: 4),
+                            ),
+                            borderRadius: BorderRadius.only(bottomRight: Radius.circular(20)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    l10n.enterSubscriptionUrl,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned(
@@ -68,8 +160,8 @@ class _QrScanScreenState extends State<QrScanScreen> {
                       builder: (_, state, _) {
                         return _circleButton(
                           icon: state.torchState == TorchState.on
-                              ? Icons.flash_on
-                              : Icons.flash_off,
+                              ? Icons.flash_on_rounded
+                              : Icons.flash_off_rounded,
                           label: l10n.flash,
                           onPressed: () => _controller.toggleTorch(),
                         );

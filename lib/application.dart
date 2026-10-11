@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hyper_net/l10n/app_localizations.dart';
 import 'package:hyper_net/models/language.dart';
 import 'package:hyper_net/preferences.dart';
+import 'package:hyper_net/theme.dart';
 import 'package:hyper_net/screens/home/home_screen.dart';
 import 'package:hyper_net/screens/home/bloc/home_bloc.dart';
 
@@ -79,17 +80,8 @@ class ApplicationView extends StatelessWidget {
           locale: localeTheme.$1,
           themeMode: localeTheme.$2,
           builder: EasyLoading.init(),
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple,
-              brightness: Brightness.dark,
-            ),
-            useMaterial3: true,
-          ),
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
         );
       },
     );

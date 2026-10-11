@@ -95,9 +95,15 @@ class _RoutingScreenState extends State<RoutingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.routingTitle)),
+      appBar: AppBar(
+        title: Text(
+          l10n.routingTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -105,27 +111,71 @@ class _RoutingScreenState extends State<RoutingScreen> {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _section(l10n.bypassDomains, _domainsController),
-                    const SizedBox(height: 12),
-                    if (Platform.isAndroid)
-                      _section(l10n.bypassApps, _appsController),
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: colorScheme.primary.withValues(alpha: 0.25),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info_outline_rounded, color: colorScheme.primary, size: 22),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'Traffic matching these domains or apps will bypass the VPN tunnel and connect directly. Reconnect the VPN after applying rules.',
+                              style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _section(
+                      title: l10n.bypassDomains,
+                      controller: _domainsController,
+                      count: blockedDomains.length,
+                      hint: 'example.com\n*.google.com\ngeosite:ir\nregexp:^.*\\.local\$',
+                      icon: Icons.language_rounded,
+                    ),
+                    if (Platform.isAndroid) ...[
+                      const SizedBox(height: 16),
+                      _section(
+                        title: l10n.bypassApps,
+                        controller: _appsController,
+                        count: blockedApps.length,
+                        hint: 'com.example.bank\ncom.google.android.youtube',
+                        icon: Icons.apps_rounded,
+                      ),
+                    ],
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
-                  child: FilledButton(
+                  flex: 2,
+                  child: FilledButton.icon(
                     onPressed: _applyRouting,
-                    child: Text(l10n.applyRules),
+                    icon: const Icon(Icons.check_rounded, size: 18),
+                    label: Text(l10n.applyRules),
                   ),
                 ),
                 const SizedBox(width: 12),
-                OutlinedButton(
-                  onPressed: _clearRouting,
-                  child: Text(l10n.clear),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _clearRouting,
+                    icon: const Icon(Icons.clear_all_rounded, size: 18),
+                    label: Text(l10n.clear),
+                  ),
                 ),
               ],
             ),
@@ -135,26 +185,68 @@ class _RoutingScreenState extends State<RoutingScreen> {
     );
   }
 
-  Widget _section(String title, TextEditingController controller) {
+  Widget _section({
+    required String title,
+    required TextEditingController controller,
+    required int count,
+    required String hint,
+    required IconData icon,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(icon, size: 20, color: colorScheme.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                ),
+                if (count > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '$count',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
             SizedBox(
-              height: 140,
+              height: 150,
               child: TextField(
                 controller: controller,
                 maxLines: null,
                 expands: true,
-                decoration: const InputDecoration(
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                  ),
                   isDense: true,
-                  contentPadding: EdgeInsets.all(10),
-                  border: OutlineInputBorder(),
+                  contentPadding: const EdgeInsets.all(12),
                 ),
               ),
             ),

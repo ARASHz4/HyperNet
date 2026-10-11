@@ -16,58 +16,134 @@ class ApplicationAppearanceScreen extends StatefulWidget {
 
 class _ApplicationAppearanceScreenState
     extends State<ApplicationAppearanceScreen> {
-  List<String> appearances = [];
-
   late int selectedIndex;
 
   @override
   void initState() {
     selectedIndex = widget.appearance;
-
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
-    final l10n = AppLocalizations.of(context)!;
-    appearances = [l10n.system, l10n.lightMode, l10n.darkMode];
-
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final options = [
+      (
+        title: l10n.system,
+        subtitle: 'Follow system setting',
+        icon: Icons.brightness_auto_rounded,
+      ),
+      (
+        title: l10n.lightMode,
+        subtitle: 'Clean & bright theme',
+        icon: Icons.light_mode_rounded,
+      ),
+      (
+        title: l10n.darkMode,
+        subtitle: 'Deep dark obsidian theme',
+        icon: Icons.dark_mode_rounded,
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.appearance),
-      ),
-      body: RadioGroup<int>(
-        groupValue: selectedIndex,
-        onChanged: (index) {
-          if (index == null) return;
-          setState(() {
-            selectedIndex = index;
-          });
-
-          Preferences.setAppearance(selectedIndex);
-
-          context.read<ApplicationCubit>().changeTheme(ThemeMode.values[selectedIndex]);
-        },
-        child: ListView.separated(
-          itemCount: appearances.length,
-          itemBuilder: (context, index) {
-            return RadioListTile<int>(
-              value: index,
-              title: Text(appearances[index]),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return const Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(64, 0, 16, 0),
-              child: Divider(height: 1),
-            );
-          },
+        title: Text(
+          l10n.appearance,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
+      ),
+      body: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        itemCount: options.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        itemBuilder: (context, index) {
+          final isSelected = selectedIndex == index;
+          final option = options[index];
+
+          return Card(
+            margin: EdgeInsets.zero,
+            color: isSelected
+                ? colorScheme.primaryContainer.withValues(alpha: 0.35)
+                : colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+              side: BorderSide(
+                color: isSelected
+                    ? colorScheme.primary
+                    : colorScheme.outlineVariant.withValues(alpha: 0.5),
+                width: isSelected ? 1.5 : 1,
+              ),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(18),
+              onTap: () {
+                setState(() {
+                  selectedIndex = index;
+                });
+                Preferences.setAppearance(selectedIndex);
+                context.read<ApplicationCubit>().changeTheme(ThemeMode.values[selectedIndex]);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? colorScheme.primary.withValues(alpha: 0.15)
+                            : colorScheme.surfaceContainerHigh,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        option.icon,
+                        color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            option.title,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            option.subtitle,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isSelected)
+                      Icon(
+                        Icons.check_circle_rounded,
+                        color: colorScheme.primary,
+                        size: 22,
+                      )
+                    else
+                      Icon(
+                        Icons.circle_outlined,
+                        color: colorScheme.outlineVariant,
+                        size: 22,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
