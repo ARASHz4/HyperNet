@@ -40,7 +40,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get language => 'زبان';
 
   @override
-  String get appearance => 'ظاهر';
+  String get appearance => 'نما';
 
   @override
   String get system => 'پیش‌فرض سیستم';
