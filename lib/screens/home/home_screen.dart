@@ -213,56 +213,54 @@ class HomeScreen extends StatelessWidget {
           color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.8),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
-            child: Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                            child: Icon(
-                              Icons.bolt,
-                              size: 20,
-                            ),
-                          ),
-                          TextSpan(
-                            text: AppLocalizations.of(context)!.connected,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(text: '  •  '),
-                        ],
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Text(Duration(seconds: duration).format(context)),
-                  Text.rich(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(text: '  •  '),
                         WidgetSpan(
                           child: Icon(
-                            Icons.arrow_upward,
-                            size: 16,
+                            Icons.bolt,
+                            size: 20,
                           ),
                         ),
-                        TextSpan(text: _formatBytes(context, bytes: upload)),
-                        TextSpan(text: '  •  '),
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.arrow_downward,
-                            size: 16,
-                          ),
+                        TextSpan(
+                          text: AppLocalizations.of(context)!.connected,
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        TextSpan(text: _formatBytes(context, bytes: download)),
+                        TextSpan(text: ' • '),
                       ],
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
+                ),
+                Text(Duration(seconds: duration).format(context)),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: ' • '),
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.arrow_upward,
+                          size: 16,
+                        ),
+                      ),
+                      TextSpan(text: _formatBytes(context, bytes: upload)),
+                      TextSpan(text: ' • '),
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.arrow_downward,
+                          size: 16,
+                        ),
+                      ),
+                      TextSpan(text: _formatBytes(context, bytes: download)),
+                    ],
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
         ),
