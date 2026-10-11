@@ -28,7 +28,7 @@
   "share": "Share",
   "remove": "Remove",
   "connected": "Connected",
-  "pingingEllipsis": "Pinging...",
+  "pinging": "Pinging...",
   "timeout": "timeout",
   "expired": "Expired",
   "daysLeft": "{count} days left",

@@ -223,7 +223,7 @@ class HomeScreen extends StatelessWidget {
                           isConnected
                               ? l10n.connected
                               : isConnecting
-                                  ? l10n.pingingEllipsis.replaceFirst('...', '')
+                                  ? l10n.pinging.replaceFirst('...', '')
                                   : l10n.disconnect,
                           style: TextStyle(
                             fontSize: 12,
@@ -728,7 +728,7 @@ class HomeScreen extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(12),
@@ -888,10 +888,16 @@ class HomeScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (state.pinging.contains(config.url))
-                const SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark ? AppTheme.backgroundDark : AppTheme.backgroundDark,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    l10n.pinging,
+                    style: TextStyle(fontSize: 11),
+                  ),
                 )
               else if (state.delays.containsKey(config.url))
                 Builder(

@@ -266,11 +266,11 @@ abstract class AppLocalizations {
   /// **'Connected'**
   String get connected;
 
-  /// No description provided for @pingingEllipsis.
+  /// No description provided for @pinging.
   ///
   /// In en, this message translates to:
   /// **'Pinging...'**
-  String get pingingEllipsis;
+  String get pinging;
 
   /// No description provided for @timeout.
   ///

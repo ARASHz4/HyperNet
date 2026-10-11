@@ -94,7 +94,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get connected => 'وصل شده';
 
   @override
-  String get pingingEllipsis => 'در حال تست پینگ...';
+  String get pinging => 'در حال تست پینگ...';
 
   @override
   String get timeout => 'زمان تمام شد';

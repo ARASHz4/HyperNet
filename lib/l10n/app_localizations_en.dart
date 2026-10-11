@@ -94,7 +94,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connected => 'Connected';
 
   @override
-  String get pingingEllipsis => 'Pinging...';
+  String get pinging => 'Pinging...';
 
   @override
   String get timeout => 'timeout';

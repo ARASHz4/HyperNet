@@ -32,7 +32,7 @@
   "share": "هم‌رسانی",
   "remove": "حذف",
   "connected": "وصل شده",
-  "pingingEllipsis": "در حال تست پینگ...",
+  "pinging": "در حال تست پینگ...",
   "timeout": "زمان تمام شد",
   "expired": "منقضی شده",
   "daysLeft": "{count} روز باقی مانده",
