@@ -45,12 +45,6 @@ class _ApplicationLanguageScreenState
           final isSelected = selectedIndex == index;
           final language = languages[index];
 
-          final flag = switch (language.code) {
-            'en' => '🇺🇸',
-            'fa' => '🇮🇷',
-            _ => '🌐',
-          };
-
           return Card(
             margin: EdgeInsets.zero,
             color: isSelected
@@ -77,20 +71,8 @@ class _ApplicationLanguageScreenState
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
                   children: [
-                    Container(
-                      width: 44,
+                    SizedBox(
                       height: 44,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? colorScheme.primary.withValues(alpha: 0.15)
-                            : colorScheme.surfaceContainerHigh,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        flag,
-                        style: const TextStyle(fontSize: 22),
-                      ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -98,7 +80,7 @@ class _ApplicationLanguageScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            language.name == "system" ? l10n.system : language.name,
+                            language.name == "system" ? l10n.system : (isSelected ? language.nativeName : language.name),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,

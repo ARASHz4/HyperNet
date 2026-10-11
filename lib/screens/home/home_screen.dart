@@ -745,9 +745,8 @@ class HomeScreen extends StatelessWidget {
                         ),
                         if (subscription.announceUrl != null)
                           IconButton(
-                            iconSize: 18,
+                            iconSize: 20,
                             padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
                             onPressed: () {
                               context.urlLauncher(subscription.announceUrl!);
                             },
