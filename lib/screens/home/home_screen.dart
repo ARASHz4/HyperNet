@@ -826,7 +826,11 @@ class HomeScreen extends StatelessWidget {
               ? Border.all(color: colorScheme.primary.withValues(alpha: 0.6), width: 1.2)
               : Border.all(color: AppTheme.transparent),
         ),
-        child: ListTile(
+        child: Material(
+          color: AppTheme.transparent,
+          borderRadius: BorderRadius.circular(16),
+          clipBehavior: Clip.antiAlias,
+          child: ListTile(
           dense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
           leading: Container(
@@ -935,6 +939,7 @@ class HomeScreen extends StatelessWidget {
           onTap: () {
             context.read<HomeBloc>().add(SelectConfig(config));
           },
+          ),
         ),
       ),
     );
